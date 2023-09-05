@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="72px"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/rl_account"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/app_color_btn">
+
+            <TextView
+                android:id="@+id/tv_account"
+                android:layout_width="240px"
+                android:layout_height="60px"
+                android:layout_centerInParent="true"
+                android:background="@drawable/radius_border_tab"
+                android:gravity="center"
+                android:text="账号与权限管理"
+                android:textColor="@color/app_color_646464"
+                android:textSize="16px" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/app_color_btn">
+
+            <TextView
+                android:id="@+id/tv_upgrades"
+                android:layout_width="240px"
+                android:layout_height="60px"
+                android:layout_centerInParent="true"
+                android:background="@drawable/radius_border_tab_unselect"
+                android:gravity="center"
+                android:text="远程升级"
+                android:textColor="@color/app_color_646464"
+                android:textSize="16px" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/app_color_btn">
+
+            <TextView
+                android:id="@+id/tv_device_setting"
+                android:layout_width="240px"
+                android:layout_height="60px"
+                android:layout_centerInParent="true"
+                android:background="@drawable/radius_border_tab_unselect"
+                android:gravity="center"
+                android:text="设备与网络设置"
+                android:textColor="@color/app_color_646464"
+                android:textSize="16px" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_content_setting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

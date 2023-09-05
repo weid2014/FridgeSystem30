@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="120px">
+
+        <TextView
+            android:id="@+id/tv_CountNumber"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="共88盒"
+            android:textColor="@color/app_color_646464"
+            android:textSize="18sp" />
+
+        <RelativeLayout
+            android:layout_width="1700px"
+            android:layout_height="72px"
+            android:layout_alignParentRight="true"
+            android:layout_margin="24px"
+            android:background="@drawable/app_shape_white_radius_9">
+
+            <SearchView
+                android:id="@+id/sv_InventoryList"
+                android:layout_width="match_parent"
+                android:layout_height="72px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="24px"
+                android:background="@android:color/transparent"
+                android:queryHint="请输入商品名称或商品编码"
+                android:textColor="@color/app_color_646464"
+                android:textSize="30sp" />
+
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="24px"
+                android:src="@mipmap/ic_search"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_gravity="center_horizontal"
+        android:background="#00D3CF" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="72px"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5">
+
+            <TextView
+                android:id="@+id/tv_DrugNumber"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="商品编号" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5">
+
+            <TextView
+                android:id="@+id/tv_DrugName"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="商品名称" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_DrugSpec"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="商品规格" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5">
+
+            <TextView
+                android:id="@+id/tv_DrugManufacturers"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="生产厂家" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5">
+
+            <TextView
+                android:id="@+id/tv_unit"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="单位" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5">
+
+            <TextView
+                android:id="@+id/tv_number"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="数量" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5">
+
+            <TextView
+                android:id="@+id/tv_remain"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="试剂余量" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5">
+
+            <TextView
+                android:id="@+id/tv_BatchNumber"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="批号" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_ValidityDate"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="有效期" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_ValidityStatus"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="效期状态" />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_cell_number"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="位置" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:gravity="center"
+            android:text="单品码"
+            android:textColor="@color/app_color_646464"
+            android:textSize="16px" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_gravity="center_horizontal"
+        android:background="#00D3CF" />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_DrugContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/app_white" />
+
+        <ImageView
+            android:id="@+id/im_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_empty"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+</LinearLayout>

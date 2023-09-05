@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
+        android:text="当前系统版本:"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/tv_version"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:text="当前系统版本:"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/tv_version_info"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
+        android:text="软件已经是最新版本"
+        android:textSize="17sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="60dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_updateSetting"
+                android:layout_width="170dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/app_shape_bottom_green_radius_5"
+                android:gravity="center"
+                android:text="配置更新地址"
+                android:textColor="@color/app_white"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_update"
+                android:layout_width="170dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="54dp"
+                android:background="@drawable/app_shape_white_radius_5"
+                android:gravity="center"
+                android:text="更新软件系统"
+                android:textColor="@color/app_white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="120dp"
+        android:background="@drawable/app_shape_white_radius_9"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="更新文件地址:"
+                android:textColor="@color/app_black"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/ed_update_json_address"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/app_shape_white_radius_9"
+                android:hint="请输入"
+                android:text="@string/update_json_address"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="更新包地址:"
+                android:textColor="@color/app_black"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/ed_update_apk_address"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/app_shape_white_radius_9"
+                android:hint="请输入"
+                android:text="@string/update_apk_address"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/btn_cancle"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_centerInParent="true"
+
+                    android:background="@drawable/app_shape_white_radius_5"
+                    android:gravity="center"
+                    android:text="取消"
+                    android:textColor="@color/app_white"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_save"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="54dp"
+                    android:background="@drawable/app_shape_bottom_green_radius_5"
+                    android:gravity="center"
+                    android:text="保存"
+                    android:textColor="@color/app_white"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,124 @@
+﻿.ax_default {
+  font-family:'ArialMT', 'Arial', sans-serif;
+  font-weight:400;
+  font-style:normal;
+  font-size:13px;
+  letter-spacing:normal;
+  color:#333333;
+  vertical-align:none;
+  text-align:center;
+  line-height:normal;
+  text-transform:none;
+}
+.heading_1 {
+  font-family:'ArialMT', 'Arial', sans-serif;
+  font-weight:bold;
+  font-style:normal;
+  font-size:32px;
+  text-align:left;
+}
+.heading_2 {
+  font-family:'ArialMT', 'Arial', sans-serif;
+  font-weight:bold;
+  font-style:normal;
+  font-size:24px;
+  text-align:left;
+}
+.heading_3 {
+  font-family:'ArialMT', 'Arial', sans-serif;
+  font-weight:bold;
+  font-style:normal;
+  font-size:18px;
+  text-align:left;
+}
+.heading_4 {
+  font-family:'ArialMT', 'Arial', sans-serif;
+  font-weight:bold;
+  font-style:normal;
+  font-size:14px;
+  text-align:left;
+}
+.heading_5 {
+  font-family:'ArialMT', 'Arial', sans-serif;
+  font-weight:bold;
+  font-style:normal;
+  text-align:left;
+}
+.heading_6 {
+  font-family:'ArialMT', 'Arial', sans-serif;
+  font-weight:bold;
+  font-style:normal;
+  font-size:10px;
+  text-align:left;
+}
+.paragraph {
+  text-align:left;
+}
+.text_link {
+  color:#0000FF;
+}
+.text_link_mouse_over {
+}
+.text_link_mouse_down {
+}
+.form_hint {
+  color:#999999;
+}
+.form_disabled {
+}
+._形状 {
+  font-family:'MicrosoftYaHei', 'Microsoft YaHei', sans-serif;
+  font-weight:normal;
+  font-style:normal;
+  font-size:14px;
+  color:rgba(204, 204, 204, 0.647058823529412);
+  text-align:center;
+  line-height:22px;
+}
+._一级标题 {
+  font-family:'ArialMT', 'Arial', sans-serif;
+  font-weight:bold;
+  font-style:normal;
+  font-size:32px;
+  text-align:left;
+}
+.image {
+}
+.box_2 {
+}
+.flow_shape {
+}
+.box_1 {
+}
+.line {
+}
+.ellipse {
+}
+.box_3 {
+}
+.placeholder {
+}
+.label {
+  font-size:14px;
+  text-align:left;
+}
+.icon {
+}
+.shape {
+}
+.text_field {
+  color:#000000;
+  text-align:left;
+}
+.connector {
+  font-family:'PingFangSC-Semibold', 'PingFang SC Semibold', 'PingFang SC', sans-serif;
+  font-weight:650;
+  font-style:normal;
+  font-size:12px;
+  color:#999999;
+}
+.table_cell {
+}
+._形状1 {
+}
+textarea, select, input, button { outline: none; }

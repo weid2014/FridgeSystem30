@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="app_white">#FFFFFFFF</color>
+    <color name="app_black">#000000</color>
+
+    <color name="app_color_4991e3">#4991E3</color>
+    <color name="app_color_00d88e">#00D88E</color>
+    <color name="app_color_3366ff">#3366FF</color>
+    <color name="app_color_0000ff">#0000FF</color>
+    <color name="app_color_5e5eff">#FF5E5E</color>
+    <color name="app_color_c7e5ff">#C7E5FF</color>
+    <color name="app_color_1a8df0">#1A8DF0</color>
+    <color name="app_color_1775ef">#1775EF</color>
+    <color name="app_color_fae1df">#FAE1DF</color>
+    <color name="app_color_ee9a96">#EE9A96</color>
+    <color name="app_color_ede2fd">#EDE2FD</color>
+    <color name="app_color_c49ef9">#C49EF9</color>
+    <color name="app_color_e0e3fd">#E0E3FD</color>
+    <color name="app_color_99a3f8">#99A3F8</color>
+    <color name="app_color_d1e9fd">#D1E9FD</color>
+    <color name="app_color_67b6f9">#67B6F9</color>
+    <color name="app_color_3568fe">#3568FE</color>
+    <color name="app_color_7fde72">#7FDE72</color>
+    <color name="app_color_fbaf5d">#FBAF5D</color>
+    <color name="app_color_ff0000">#FF0000</color>
+    <color name="app_color_8e8e8e">#8E8E8E</color>
+    <color name="app_color_ffcf71">#FFCF71</color>
+    <color name="app_color_7cc576">#7CC576</color>
+    <color name="app_color_ff8830">#FF8830</color>
+    <color name="app_color_ff3030">#FF3030</color>
+
+    <color name="app_color_969696">#00FFFFFF</color>
+    <color name="app_color_646464">#646464</color>
+    <color name="app_color_323232">#323232</color>
+    <color name="app_color_cccccc">#cccccc</color>
+    <color name="app_color_f6f6f6">#f6f6f6</color>
+    <color name="app_color_7a7a7a">#7a7a7a</color>
+    <color name="app_color_6C92D0">#6C92D0</color>
+
+    <color name="app_color_c7aafa">#9900FF</color>
+    <color name="app_color_29cfcf">#29CFCF</color>
+    <color name="app_color_btn">#00ACC1</color>
+    <color name="app_color_login_bg_contain">#B7E7ED</color>
+    <color name="app_item_line">#00ACC1</color>
+    <color name="app_bottom_green_line">#00D3CF</color>
+    <color name="app_blue">#3E97FF</color>
+    <color name="app_blue_20">#B6D7FF</color>
+    <color name="app_blue_40">#84BBFF</color>
+    <color name="app_blue_60">#5DA8FF</color>
+    <color name="app_blue_80">#3893FF</color>
+    <color name="app_blue_100">#1B84FF</color>
+    <color name="app_in_gray">#979797</color>
+    <color name="app_tab_unselect_bg">#4DC5D3</color>
+    <color name="app_tab_cells_bg1">#31A7B5</color>
+    <color name="app_tab_cells_bg2">#74C7D1</color>
+
+
+</resources>

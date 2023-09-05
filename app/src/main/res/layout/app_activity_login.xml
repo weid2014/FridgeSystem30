@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg"
+    android:orientation="vertical">
+
+    <!--标题栏-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="116dp"
+        android:orientation="horizontal">
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.camera.view.PreviewView
+                android:id="@+id/viewFinder"
+                android:layout_width="0.1dp"
+                android:layout_height="0.1dp" />
+        </FrameLayout>
+        <TextView
+            android:layout_width="384dp"
+            android:layout_height="67dp"
+            android:layout_marginStart="54dp"
+            android:layout_marginTop="49dp"
+            android:text="智能库存监管系统"
+            android:textColor="@color/app_white"
+            android:textSize="32sp" />
+
+        <ImageView
+            android:id="@+id/im_testLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="31dp"
+            android:layout_marginEnd="54dp"
+            android:src="@drawable/logo" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_HFCard"
+        android:layout_width="match_parent"
+        android:layout_height="1080dp"
+        android:layout_marginStart="54dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="54dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:background="@mipmap/sbanner1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="108dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="常规存储区"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+
+                <TextView
+                    android:id="@+id/tv_normalNum"
+                    android:layout_width="130dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_marginEnd="72dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|right"
+                    android:text="共18盒"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="148dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="28dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/app_tab_cells_bg1"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:singleLine="false"
+                    android:text="第 1 层"
+                    android:textColor="@color/app_white"
+                    android:textSize="18sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent1_1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_color_login_bg_contain" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent1_2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_tab_cells_bg1" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent1_3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_color_login_bg_contain" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="148dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="28dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/app_tab_cells_bg2"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:singleLine="false"
+                    android:text="第 2 层"
+                    android:textColor="@color/app_white"
+                    android:textSize="18sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent2_1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_tab_cells_bg1" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent2_2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_color_login_bg_contain" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent2_3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_tab_cells_bg1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="148dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="28dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/app_tab_cells_bg1"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:singleLine="false"
+                    android:text="第 3 层"
+                    android:textColor="@color/app_white"
+                    android:textSize="18sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent3_1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_color_login_bg_contain" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent3_2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_tab_cells_bg1" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent3_3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_color_login_bg_contain" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="148dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="28dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/app_tab_cells_bg2"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:singleLine="false"
+                    android:text="第 4 层"
+                    android:textColor="@color/app_white"
+                    android:textSize="18sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent4_1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_tab_cells_bg1" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent4_2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_color_login_bg_contain" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent4_3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_tab_cells_bg1" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="148dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="28dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/app_tab_cells_bg1"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:singleLine="false"
+                    android:text="第 5 层"
+                    android:textColor="@color/app_white"
+                    android:textSize="18sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent5_1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_color_login_bg_contain" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent5_2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_tab_cells_bg1" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_NormalContent5_3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/app_color_login_bg_contain" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_gravity="center_horizontal"
+                android:background="#00FFB0" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/app_shape_bottom_green_radius_5" />
+
+            <LinearLayout
+                android:id="@+id/ll_LoginByAccount"
+                android:layout_width="580dp"
+                android:layout_height="54dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="请在下方刷卡或 "
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/login_by_account"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text=" 解锁"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!--账号密码界面-->
+    <RelativeLayout
+        android:id="@+id/ll_Account"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:paddingBottom="120dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edUserName"
+                android:layout_width="504dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center"
+                android:background="@color/app_white"
+                android:hint="请输入账户"
+                android:paddingStart="26dp"
+                android:textSize="18px" />
+
+            <EditText
+                android:id="@+id/edPassword"
+                android:layout_width="504dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@color/app_white"
+                android:hint="请输入密码"
+                android:inputType="textPassword"
+                android:paddingStart="26dp"
+                android:textSize="18px" />
+
+
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="504dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@color/app_color_btn"
+                android:text="登录"
+                android:textColor="@color/app_white"
+                android:textSize="24px" />
+
+            <LinearLayout
+                android:id="@+id/ll_LoginByCard"
+                android:layout_width="580dp"
+                android:layout_height="54dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="请输入账号密码或 "
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/login_by_card"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text=" 解锁"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

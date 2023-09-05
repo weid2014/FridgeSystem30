@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="1160dp"
+    android:layout_height="960dp"
+    android:layout_marginStart="120dp"
+    android:layout_marginEnd="120dp"
+    android:background="@drawable/radius_border"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="1160dp"
+        android:layout_height="100dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingStart="54dp"
+            android:text="编辑位置"
+            android:textColor="@color/app_black"
+            android:textSize="28sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="1160dp"
+        android:layout_height="540dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="54dp"
+            android:layout_marginEnd="27dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="层"
+                    android:textColor="@color/app_black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="6dp"
+                    android:text="*"
+                    android:textColor="@color/colorTextRed"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <com.jhteck.icebox.view.CustomNestRadioGroup
+                android:id="@+id/rg_layer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/app_shape_white_radius_9">
+
+                    <RadioButton
+                        android:id="@+id/rb_layer1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/radiobutton_style"
+                        android:button="@null"
+                        android:checked="false"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:text="第1层"
+                        android:textColor="@drawable/radiobutton_select_color"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:id="@+id/tv_layer1_select"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:gravity="center"
+                        android:text="已选"
+                        android:textColor="@color/app_white"
+                        android:textSize="18sp" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/app_shape_white_radius_9">
+
+                    <RadioButton
+                        android:id="@+id/rb_layer2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/radiobutton_style"
+                        android:button="@null"
+                        android:checked="false"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:text="第2层"
+                        android:textColor="@drawable/radiobutton_select_color"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:id="@+id/tv_layer2_select"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:gravity="center"
+                        android:text="已选"
+                        android:textColor="@color/app_white"
+                        android:textSize="18sp" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/app_shape_white_radius_9">
+
+                    <RadioButton
+                        android:id="@+id/rb_layer3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/radiobutton_style"
+                        android:button="@null"
+                        android:checked="false"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:text="第3层"
+                        android:textColor="@drawable/radiobutton_select_color"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:id="@+id/tv_layer3_select"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:gravity="center"
+                        android:text="已选"
+                        android:textColor="@color/app_white"
+                        android:textSize="18sp" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/app_shape_white_radius_9">
+
+                    <RadioButton
+                        android:id="@+id/rb_layer4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/radiobutton_style"
+                        android:button="@null"
+                        android:checked="false"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:text="第4层"
+                        android:textColor="@drawable/radiobutton_select_color"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:id="@+id/tv_layer4_select"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:gravity="center"
+                        android:text="已选"
+                        android:textColor="@color/app_white"
+                        android:textSize="18sp" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/app_shape_white_radius_9">
+
+                    <RadioButton
+                        android:id="@+id/rb_layer5"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/radiobutton_style"
+                        android:button="@null"
+                        android:checked="false"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:text="第5层"
+                        android:textColor="@drawable/radiobutton_select_color"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:id="@+id/tv_layer5_select"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:gravity="center"
+                        android:text="已选"
+                        android:textColor="@color/app_white"
+                        android:textSize="18sp" />
+
+                </FrameLayout>
+
+            </com.jhteck.icebox.view.CustomNestRadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="54dp"
+            android:layout_marginEnd="27dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="位置"
+                    android:textColor="@color/app_black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="6dp"
+                    android:text="*"
+                    android:textColor="@color/colorTextRed"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <com.jhteck.icebox.view.CustomNestRadioGroup
+                android:id="@+id/rg_left_right"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="54dp"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/app_shape_white_radius_9">
+
+                    <RadioButton
+                        android:id="@+id/rb_left"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/radiobutton_style"
+                        android:button="@null"
+                        android:checked="false"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:text="左"
+                        android:textColor="@drawable/radiobutton_select_color"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="160dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="6dp"
+                        android:gravity="bottom|center_horizontal"
+                        android:text="已选"
+                        android:textColor="@color/app_white"
+                        android:textSize="18sp" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/app_shape_white_radius_9">
+
+                    <RadioButton
+                        android:id="@+id/rb_middle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/radiobutton_style"
+                        android:button="@null"
+                        android:checked="false"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:text="中"
+                        android:textColor="@drawable/radiobutton_select_color"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="160dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="6dp"
+                        android:gravity="bottom|center_horizontal"
+                        android:text="已选"
+                        android:textColor="@color/app_white"
+                        android:textSize="18sp" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/app_shape_white_radius_9">
+
+                    <RadioButton
+                        android:id="@+id/rb_right"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/radiobutton_style"
+                        android:button="@null"
+                        android:checked="false"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:text="右"
+                        android:textColor="@drawable/radiobutton_select_color"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="160dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="6dp"
+                        android:gravity="bottom|center_horizontal"
+                        android:text="已选"
+                        android:textColor="@color/app_white"
+                        android:textSize="18sp" />
+                </FrameLayout>
+
+            </com.jhteck.icebox.view.CustomNestRadioGroup>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="1160dp"
+        android:layout_height="202dp"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="54dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="位置示例"
+                android:textColor="@color/app_black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="6dp"
+                android:text="*"
+                android:textColor="@color/colorTextRed"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tv_select_left"
+                    android:layout_width="160dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/app_shape_white_radius_9"
+                    android:gravity="center"
+                    android:text="左"
+                    android:textColor="@color/app_black"
+                    android:textSize="18sp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tv_select_middle"
+                    android:layout_width="160dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/app_shape_white_radius_9"
+                    android:gravity="center"
+                    android:text="中"
+                    android:textColor="@color/app_black"
+                    android:textSize="18sp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tv_select_right"
+                    android:layout_width="160dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/app_shape_white_radius_9"
+                    android:gravity="center"
+                    android:text="右"
+                    android:textColor="@color/app_black"
+                    android:textSize="18sp" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_select_layer"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_marginStart="54dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="54dp"
+            android:background="@color/app_color_btn"
+            android:gravity="center"
+            android:textColor="@color/app_white"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:scaleType="center"
+        android:src="@mipmap/ic_cell_number_location"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="1160dp"
+        android:layout_height="120dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="108dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn_cancle"
+                android:layout_width="228px"
+                android:layout_height="72px"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:background="@drawable/btn_grey_radius_5"
+                android:gravity="center"
+                android:text="返回"
+                android:textColor="@color/app_white"
+                android:textSize="20sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingStart="12dp">
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="228px"
+                android:layout_height="72px"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:background="@drawable/btn_shape_radius_5"
+                android:text="保存"
+                android:textColor="@color/app_white"
+                android:textSize="20sp" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

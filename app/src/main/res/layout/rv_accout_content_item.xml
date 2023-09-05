@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_NickName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="姓名"
+        android:textColor="@color/app_color_646464"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/tv_UserName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="用户名"
+        android:textColor="@color/app_color_646464"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/tv_UserID"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="User ID"
+        android:textColor="@color/app_color_646464"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/tv_Account_Type"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="账号类型"
+        android:textColor="@color/app_color_646464"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/tv_NFC"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="NFC"
+        android:textColor="@color/app_color_646464"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/tv_In_Number"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="药存次数"
+        android:textColor="@color/app_color_646464"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/tv_Out_Number"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="取药次数"
+        android:textColor="@color/app_color_646464"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/tv_Pause_Number"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="暂存次数"
+        android:textColor="@color/app_color_646464"
+        android:textSize="16dp" />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5">
+
+        <Button
+            android:id="@+id/btn_edit"
+            android:layout_width="96px"
+            android:layout_height="42px"
+            android:background="@drawable/btn_shape_radius_5"
+            android:text="编辑"
+            android:layout_marginLeft="24px"
+            android:layout_centerVertical="true"
+            android:textColor="@color/app_white"
+            android:textSize="14px" />
+
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="96px"
+            android:layout_height="42px"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="54px"
+            android:background="@drawable/btn_shape_red_radius_5"
+            android:gravity="center"
+            android:text="删除"
+            android:textColor="@color/app_white"
+            android:textSize="14px" />
+    </RelativeLayout>
+
+
+</LinearLayout>

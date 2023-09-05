@@ -1,0 +1,132 @@
+{
+    "code": 200,
+    "msg": "ok",
+    "results": {
+        "avail_rfids": [
+            {
+                "id": 77,
+                "rfid": "E1234567000000000000004D",
+                "remain": 100,
+                "eas_supplier_number": "01.19.16.9005",
+                "eas_supplier_name": "上海科华生物工程股份有限公司",
+                "created_at": "2022-12-12T14:34:37.168+08:00",
+                "is_out_eas": false,
+                "material": {
+                    "eas_material_id": "Xe8AAAiuS+RECefw",
+                    "eas_material_number": "02.01.0130.10007.00001",
+                    "eas_material_name": "磁套面盖（辐照）",
+                    "eas_unit_id": "Xe8AAAAAnXNbglxX",
+                    "eas_unit_number": "Zhi1",
+                    "eas_unit_name": "只",
+                    "eas_material_desc": "",
+                    "eas_manufacturer": "厂商3"
+                },
+                "material_batch": {
+                    "eas_lot": "20210625",
+                    "eas_specs": "2只/包",
+                    "expired_at": "2024-08-30T00:00:00.000+08:00"
+                }
+            },
+            {
+                "id": 76,
+                "rfid": "E1234567000000000000004C",
+                "remain": 100,
+                "eas_supplier_number": "01.19.16.9005",
+                "eas_supplier_name": "上海科华生物工程股份有限公司",
+                "created_at": "2022-12-12T14:34:37.160+08:00",
+                "is_out_eas": false,
+                "material": {
+                    "eas_material_id": "Xe8AAAiuS+RECefw",
+                    "eas_material_number": "02.01.0130.10007.00001",
+                    "eas_material_name": "磁套面盖（辐照）",
+                    "eas_unit_id": "Xe8AAAAAnXNbglxX",
+                    "eas_unit_number": "Zhi1",
+                    "eas_unit_name": "只",
+                    "eas_material_desc": "",
+                    "eas_manufacturer": "厂商3"
+                },
+                "material_batch": {
+                    "eas_lot": "20210625",
+                    "eas_specs": "2只/包",
+                    "expired_at": "2024-08-30T00:00:00.000+08:00"
+                }
+            },
+            {
+                "id": 66,
+                "rfid": "E12345670000000000000042",
+                "remain": 100,
+                "eas_supplier_number": "01.19.17.0002",
+                "eas_supplier_name": "复星诊断科技（上海）有限公司",
+                "created_at": "2022-10-28T12:02:24.839+08:00",
+                "is_out_eas": false,
+                "material": {
+                    "eas_material_id": "Xe8AAAAkKS5ECefw",
+                    "eas_material_number": "01.03.0012.10037.00001",
+                    "eas_material_name": "30040201CM01 NSE CLIA 神经元特异性烯醇化酶检测试剂盒（磁微粒化学发光法）",
+                    "eas_unit_id": "Xe8AAAAAnWFbglxX",
+                    "eas_unit_number": "He",
+                    "eas_unit_name": "盒",
+                    "eas_material_desc": "",
+                    "eas_manufacturer": "厂商2"
+                },
+                "material_batch": {
+                    "eas_lot": "20220304",
+                    "eas_specs": "100T",
+                    "expired_at": "2023-03-03T00:00:00.000+08:00"
+                }
+            },
+            {
+                "id": 62,
+                "rfid": "E1234567000000000000003E",
+                "remain": 100,
+                "eas_supplier_number": "01.19.17.0002",
+                "eas_supplier_name": "复星诊断科技（上海）有限公司",
+                "created_at": "2022-10-28T12:02:24.782+08:00",
+                "is_out_eas": false,
+                "material": {
+                    "eas_material_id": "Xe8AAAAkKS5ECefw",
+                    "eas_material_number": "01.03.0012.10037.00001",
+                    "eas_material_name": "30040201CM01 NSE CLIA 神经元特异性烯醇化酶检测试剂盒（磁微粒化学发光法）",
+                    "eas_unit_id": "Xe8AAAAAnWFbglxX",
+                    "eas_unit_number": "He",
+                    "eas_unit_name": "盒",
+                    "eas_material_desc": "",
+                    "eas_manufacturer": "厂商2"
+                },
+                "material_batch": {
+                    "eas_lot": "20220304",
+                    "eas_specs": "100T",
+                    "expired_at": "2023-03-03T00:00:00.000+08:00"
+                }
+            },
+            {
+                "id": 4,
+                "rfid": "E12345670000000000000004",
+                "remain": 100,
+                "eas_supplier_number": "01.04.04.0010",
+                "eas_supplier_name": "广州市宝迪科技有限公司",
+                "created_at": "2022-10-26T17:47:26.647+08:00",
+                "is_out_eas": true,
+                "material": {
+                    "eas_material_id": "Xe8AAAACkjBECefw",
+                    "eas_material_number": "01.02.0008.30005.00001",
+                    "eas_material_name": "181 心肌标志物质控物 水平1",
+                    "eas_unit_id": "Xe8AAAAAnWFbglxX",
+                    "eas_unit_number": "He",
+                    "eas_unit_name": "盒",
+                    "eas_material_desc": "",
+                    "eas_manufacturer": "厂商1"
+                },
+                "material_batch": {
+                    "eas_lot": "87821",
+                    "eas_specs": "6*3ml",
+                    "expired_at": "2023-07-16T00:00:00.000+08:00"
+                }
+            }
+        ],
+        "unavail_rfids": [
+            "22",
+            "3"
+        ]
+    }
+}

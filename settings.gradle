@@ -1,0 +1,14 @@
+rootProject.name = "icebox"
+include ':app'
+
+include ':lib-api'
+include ':lib-common'
+include ':lib-base'
+include ':lib-cache'
+include ':lib-router'
+
+project(':lib-api').projectDir = new File("./AppFrameWork/lib-api")
+project(':lib-common').projectDir = new File("./AppFrameWork/lib-common")
+project(':lib-base').projectDir = new File("./AppFrameWork/lib-base")
+project(':lib-cache').projectDir = new File("./AppFrameWork/lib-cache")
+project(':lib-router').projectDir = new File("./AppFrameWork/lib-router")

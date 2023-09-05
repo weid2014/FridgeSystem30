@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="60dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_url_select"
+                android:layout_width="170dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/app_shape_white_radius_5"
+                android:gravity="center"
+                android:text="平台地址选择"
+                android:textColor="@color/app_white"
+                android:textSize="16sp" />
+
+
+            <Button
+                android:id="@+id/btn_fridges_operate"
+                android:layout_width="170dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="54dp"
+                android:background="@drawable/app_shape_bottom_green_radius_5"
+                android:gravity="center"
+                android:text="冰箱操作"
+                android:textColor="@color/app_white"
+                android:textSize="16sp" />
+
+
+            <Button
+                android:id="@+id/btn_get_ant_power"
+                android:layout_width="170dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="54dp"
+                android:background="@drawable/app_shape_bottom_green_radius_5"
+                android:gravity="center"
+                android:text="查询功率"
+                android:textColor="@color/app_white"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_fridges_operate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="120dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="冰箱序列号:"
+                android:textColor="@color/app_black"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/ed_sncode"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/app_shape_white_radius_9"
+                android:hint="请输入"
+                android:text="@string/sncode"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="设备别名:"
+                android:textColor="@color/app_black"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/ed_device_alias"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/app_shape_white_radius_9"
+                android:hint="请输入"
+                android:text="@string/sncode"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="管理员账号名:"
+                android:textColor="@color/app_black"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/ed_admin_name"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/app_shape_white_radius_9"
+                android:hint="请输入"
+                android:text="admin"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="管理员密码:"
+                android:textColor="@color/app_black"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/ed_admin_password"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/app_shape_white_radius_9"
+                android:hint="请输入"
+                android:text="Jinghe233"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="库位:"
+                android:textColor="@color/app_black"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/ed_location"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/app_shape_white_radius_9"
+                android:hint="请输入"
+                android:text="广州中心"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="冰箱温度:"
+                android:textColor="@color/app_black"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/ed_temperature"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/app_shape_white_radius_9"
+                android:hint="请输入"
+                android:text="1000"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="类型:"
+                android:textColor="@color/app_black"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/ed_style"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/app_shape_white_radius_9"
+                android:hint="请输入"
+                android:text="1"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="格子数量:"
+                android:textColor="@color/app_black"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/ed_cells"
+                android:layout_width="500dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/app_shape_white_radius_9"
+                android:hint="请输入"
+                android:text="1"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_cancle"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/app_shape_white_radius_5"
+                    android:gravity="center"
+                    android:text="取消"
+                    android:textColor="@color/app_white"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:visibility="gone"
+                    android:id="@+id/btn_active"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="54dp"
+                    android:background="@drawable/app_shape_bottom_green_radius_5"
+                    android:gravity="center"
+                    android:text="激活"
+                    android:textColor="@color/app_white"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_edit_save"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="54dp"
+                    android:background="@drawable/app_shape_bottom_green_radius_5"
+                    android:gravity="center"
+                    android:text="编辑保存"
+                    android:textColor="@color/app_white"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_sync_account"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="54dp"
+                    android:background="@drawable/app_shape_bottom_green_radius_5"
+                    android:gravity="center"
+                    android:text="同步账号"
+                    android:textColor="@color/app_white"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_Url_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="120dp"
+        android:background="@drawable/app_shape_white_radius_9"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RadioGroup
+            android:id="@+id/rg_Url_select"
+            android:layout_width="match_parent"
+            android:layout_height="108dp"
+            android:background="@drawable/app_shape_white_radius_9"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_Url1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/radiobutton_style"
+                android:button="@null"
+                android:checked="true"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:text="@string/url_test"
+                android:textColor="#000000"
+                android:textSize="22sp" />
+
+            <RadioButton
+                android:id="@+id/rb_url2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/radiobutton_style"
+                android:button="@null"
+                android:checked="false"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:text="@string/url_km"
+                android:textColor="#000000"
+                android:textSize="22sp" />
+
+
+        </RadioGroup>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/btn_cancle_url"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_centerInParent="true"
+
+                    android:background="@drawable/app_shape_white_radius_5"
+                    android:gravity="center"
+                    android:text="取消"
+                    android:textColor="@color/app_white"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_save_url"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="54dp"
+                    android:background="@drawable/app_shape_bottom_green_radius_5"
+                    android:gravity="center"
+                    android:text="保存"
+                    android:textColor="@color/app_white"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_ant_power"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="120dp"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_ant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/btn_cancle_ant"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_centerInParent="true"
+
+                    android:background="@drawable/app_shape_white_radius_5"
+                    android:gravity="center"
+                    android:text="取消"
+                    android:textColor="@color/app_white"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_save_ant"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="54dp"
+                    android:background="@drawable/app_shape_bottom_green_radius_5"
+                    android:gravity="center"
+                    android:text="保存"
+                    android:textColor="@color/app_white"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

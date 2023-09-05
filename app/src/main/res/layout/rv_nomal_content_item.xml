@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="120dp"
+    android:layout_height="140dp"
+    android:layout_margin="4dp"
+    android:background="@drawable/app_shape_white_radius_10"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_DrugNo"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:text="批次"
+        android:textColor="@color/app_color_646464"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_DrugName"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:text="物料号"
+        android:textColor="@color/app_color_646464"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="100dp"
+        android:layout_height="2dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="10dp"
+        android:background="@color/app_item_line" />
+
+    <TextView
+        android:id="@+id/tv_DrugNumber"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:text="@string/login_tip_hfc_fail"
+        android:textColor="@color/app_item_line"
+        android:textSize="16px" />
+
+</LinearLayout>

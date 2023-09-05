@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="72px"
+    android:orientation="horizontal">
+
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5">
+
+        <TextView
+            android:id="@+id/tv_DrugNumber"
+            style="@style/TextViewInventoryListTitleStyle"
+            android:text="商品编号" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5">
+
+        <TextView
+            android:id="@+id/tv_DrugName"
+            style="@style/TextViewInventoryListTitleStyle"
+            android:text="商品名称" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.6">
+
+        <TextView
+            android:id="@+id/tv_DrugSpec"
+            style="@style/TextViewInventoryListTitleStyle"
+            android:text="商品规格" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tv_DrugManufacturers"
+            style="@style/TextViewInventoryListTitleStyle"
+            android:text="生产厂家" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.6">
+
+        <TextView
+            android:id="@+id/tv_unit"
+            style="@style/TextViewInventoryListTitleStyle"
+            android:text="单位" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.6">
+
+        <TextView
+            android:id="@+id/tv_number"
+            style="@style/TextViewInventoryListTitleStyle"
+            android:text="数量" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tv_BatchNumber"
+            style="@style/TextViewInventoryListTitleStyle"
+            android:text="批号" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.6">
+
+        <TextView
+            android:id="@+id/tv_operation_type"
+            style="@style/TextViewInventoryListTitleStyle"
+            android:text="类型" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.6">
+
+        <TextView
+            android:id="@+id/tv_operator"
+            style="@style/TextViewInventoryListTitleStyle"
+            android:text="操作人" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5">
+
+        <TextView
+            android:id="@+id/tv_operator_time"
+            style="@style/TextViewInventoryListTitleStyle"
+            android:text="操作时间" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.6">
+
+        <Button
+            android:id="@+id/btn_ItemCode"
+            android:layout_width="96px"
+            android:layout_height="42px"
+            android:layout_centerInParent="true"
+            android:background="@drawable/btn_shape_radius_5"
+            android:text="查看"
+            android:textColor="@color/app_white"
+            android:textSize="14px" />
+    </RelativeLayout>
+
+
+</LinearLayout>

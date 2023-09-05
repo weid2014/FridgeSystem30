@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="600dp"
+    android:layout_height="48dp"
+    android:layout_gravity="center_horizontal"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_marginStart="54px"
+        android:id="@+id/tvDrugName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:textColor="@color/app_color_7a7a7a"
+        android:textSize="16sp"
+        android:gravity="center_vertical" />
+
+    <TextView
+        android:text="x1"
+        android:textColor="@color/app_color_7a7a7a"
+        android:textSize="16sp"
+        android:id="@+id/tvDrugNo"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center" />
+
+
+</LinearLayout>

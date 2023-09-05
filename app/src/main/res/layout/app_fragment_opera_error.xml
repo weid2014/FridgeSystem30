@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120px"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_begin_time"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="258dp"
+                android:layout_height="72px"
+                android:layout_marginStart="54dp"
+                android:background="@drawable/app_shape_round_cccccc_radius_5"
+                android:drawableRight="@mipmap/ic_date_select"
+                android:hint="开始时间"
+                android:paddingEnd="24px"
+                android:textColor="@color/app_color_646464"
+                android:textColorHint="@color/app_color_646464"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="72px"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="至"
+                android:textColor="@color/app_color_646464"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_end_time"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="258dp"
+                android:layout_height="72px"
+                android:background="@drawable/app_shape_round_cccccc_radius_5"
+                android:drawableRight="@mipmap/ic_date_select"
+                android:hint="结束时间"
+                android:paddingEnd="24px"
+                android:textColor="@color/app_color_646464"
+                android:textColorHint="@color/app_color_646464"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_Today"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="108px"
+                android:layout_height="36dp"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/app_selector_1775ef_white"
+                android:gravity="center"
+                android:text="今天"
+                android:textColor="@color/app_selector_1775ef_white"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_Yesterday"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="108px"
+                android:layout_height="36dp"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/app_selector_1775ef_white"
+                android:gravity="center"
+                android:text="昨天"
+                android:textColor="@color/app_selector_1775ef_white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="72px"
+                android:layout_gravity="center"
+                android:layout_margin="24px"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <SearchView
+                    android:id="@+id/sv_InventoryList"
+                    android:layout_width="288px"
+                    android:layout_height="72px"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/app_shape_round_cccccc_radius_5"
+                    android:queryHint="请输入商品名称或商品编码"
+                    android:textColor="@color/app_color_646464"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="72px"
+                android:layout_gravity="center"
+                android:layout_margin="24px"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/sp_refer"
+                    android:layout_width="288px"
+                    android:layout_height="72px"
+                    android:layout_gravity="center"
+                    android:background="@drawable/app_shape_round_cccccc_radius_5" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_gravity="center_horizontal"
+        android:background="#00D3CF" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="72px"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_operator"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="操作时间" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_DrugName"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="设备情况" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_DrugSpec"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="APP详情" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6">
+
+            <TextView
+                android:id="@+id/tv_operation_type"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="类型" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6">
+
+            <TextView
+                android:id="@+id/tv_unit"
+                style="@style/TextViewInventoryListTitleStyle"
+                android:drawableEnd="@mipmap/ic_triangle_down"
+                android:text="操作人" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_gravity="center_horizontal"
+        android:background="#00D3CF" />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_DrugContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/app_white" />
+
+        <ImageView
+            android:id="@+id/im_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_empty"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+</LinearLayout>

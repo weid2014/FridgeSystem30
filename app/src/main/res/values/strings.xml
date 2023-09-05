@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">金域医学</string>
+    <string name="login_tip">登陆中，请稍等...</string>
+    <string name="login_tip_fail">帐号或密码不正确，请重试或重置帐号密码</string>
+    <string name="login_tip_hfc_fail">此卡无权限，请重新刷卡</string>
+    <string name="login_by_account"><u>密码登录</u></string>
+    <string name="login_by_card"><u>刷卡</u></string>
+
+    <string name="type_prompt">选择一个角色</string>
+    <string-array name="type_arrays">
+        <item>系统管理员</item>
+        <item>仓库管理员</item>
+        <item>现场人员</item>
+    </string-array>
+
+    <string name="update_json_address">https://file.lavandachen.com/jhwms/fridge_app/update.json</string>
+    <string name="update_apk_address">https://file.lavandachen.com/jhwms/fridge_app/icu.apk</string>
+
+    <string name="sncode">FEDCBA01CC000001</string>
+    <string name="url_test">https://jh.test.lavandachen.com</string>
+    <string name="url_km">http://10.128.81.174:8086</string>
+    <string name="admin_password">Jinghe233</string>
+
+
+</resources>
