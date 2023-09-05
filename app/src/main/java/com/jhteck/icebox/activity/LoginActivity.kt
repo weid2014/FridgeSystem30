@@ -23,6 +23,7 @@ import com.jhteck.icebox.adapter.LoginPageShowItemAdapter
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.bean.InventoryDao
 import com.jhteck.icebox.databinding.AppActivityLoginBinding
+import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.utils.ToastUtils
@@ -114,12 +115,17 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
         }
         viewModel.loadRfidsFromLocal();
         //测试入口
+        RfidManage.getInstance().initReader()
+        RfidManage.getInstance().linkDevice(true)
         binding.imTestLogin.setOnClickListener {
 //            viewModel.loginTest()
 //            viewModel.getdataTest()
 //            viewModel.getUserListTest()
-            if (DEBUG)
-                service?.sendRfid()
+            if (DEBUG){
+//                service?.sendRfid()
+
+                RfidManage.getInstance().startStop(true)
+            }
         }
 //        initPermission()
         doRegisterReceiver();

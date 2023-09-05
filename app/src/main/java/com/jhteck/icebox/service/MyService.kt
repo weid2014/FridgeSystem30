@@ -7,6 +7,7 @@ import android.os.IBinder
 import android.util.Log
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.nfcmodel.NfcManage
+import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.tcpServer.MyTcpServerListener
 import com.jhteck.icebox.utils.BroadcastUtil
 import java.util.*
@@ -49,7 +50,11 @@ class MyService : Service() {
         Log.d(TAG, "MyService onCreate")
 //        LogUpLoadManager.startUploadAsync();
 
-        NfcManage.getInstance().startNfcPort()
+//        NfcManage.getInstance().startNfcPort()
+        /*RfidManage.getInstance().initReader()
+        RfidManage.getInstance().linkDevice(true)
+            RfidManage.getInstance().startStop(true)*/
+
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
@@ -125,8 +130,16 @@ class MyService : Service() {
 //        }.start()
     }
 
+    var isClick=true
     fun sendRfid() {
-        sendContentBroadcast(HFCard, "1698A858A115F60401010004880432E54BD9")
+//        sendContentBroadcast(HFCard, "1698A858A115F60401010004880432E54BD9")
+        Log.d(TAG,"sendRfid")
+//        RfidManage.getInstance().linkDevice(true)
+        if(isClick) {
+            RfidManage.getInstance().linkDevice(true)
+//            RfidManage.getInstance().startStop(true)
+            isClick=!isClick
+        }
     }
 
     fun sendExitMsg() {
