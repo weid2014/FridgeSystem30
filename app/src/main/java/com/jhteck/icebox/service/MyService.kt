@@ -6,6 +6,7 @@ import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 import com.jhteck.icebox.api.*
+import com.jhteck.icebox.nfcmodel.NfcManage
 import com.jhteck.icebox.tcpServer.MyTcpServerListener
 import com.jhteck.icebox.utils.BroadcastUtil
 import java.util.*
@@ -44,9 +45,11 @@ class MyService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        MyTcpServerListener.getInstance().startServer();
+//        MyTcpServerListener.getInstance().startServer();
         Log.d(TAG, "MyService onCreate")
-        LogUpLoadManager.startUploadAsync();
+//        LogUpLoadManager.startUploadAsync();
+
+        NfcManage.getInstance().startNfcPort()
     }
 
     override fun onUnbind(intent: Intent?): Boolean {

@@ -52,9 +52,9 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     override fun initView() {
         startService()
         // 检查是否是第一次运行应用程序
-        var isFirstRun =
-            SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
-//        var isFirstRun = true
+//        var isFirstRun =
+//            SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
+        var isFirstRun = false
         if (isFirstRun) {
             var steps = mutableListOf<String>()
             steps.add("Step 1")
