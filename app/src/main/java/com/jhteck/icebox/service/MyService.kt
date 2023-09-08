@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.nfcmodel.NfcManage
 import com.jhteck.icebox.rfidmodel.RfidManage
@@ -37,8 +38,8 @@ class MyService : Service() {
                 sendContentBroadcast(LOCKED_SUCCESS, "lock")
             } else if (it.type.equals(HFCard)) {
                 sendContentBroadcast(HFCard, it.content)
-            }else {
-                sendContentBroadcast(it.type,it.content)
+            } else {
+                sendContentBroadcast(it.type, it.content)
             }
         }
         return binder
@@ -50,10 +51,12 @@ class MyService : Service() {
         Log.d(TAG, "MyService onCreate")
 //        LogUpLoadManager.startUploadAsync();
 
-//        NfcManage.getInstance().startNfcPort()
-        /*RfidManage.getInstance().initReader()
+        NfcManage.getInstance().startNfcPort()
+        RfidManage.getInstance().initReader()
         RfidManage.getInstance().linkDevice(true)
-            RfidManage.getInstance().startStop(true)*/
+        RfidManage.getInstance().startStop(true)
+
+        LockManage.getInstance().initSerialByPort("/dev/ttyS2")
 
     }
 
@@ -130,15 +133,15 @@ class MyService : Service() {
 //        }.start()
     }
 
-    var isClick=true
+    var isClick = true
     fun sendRfid() {
 //        sendContentBroadcast(HFCard, "1698A858A115F60401010004880432E54BD9")
-        Log.d(TAG,"sendRfid")
+        Log.d(TAG, "sendRfid")
 //        RfidManage.getInstance().linkDevice(true)
-        if(isClick) {
+        if (isClick) {
             RfidManage.getInstance().linkDevice(true)
 //            RfidManage.getInstance().startStop(true)
-            isClick=!isClick
+            isClick = !isClick
         }
     }
 

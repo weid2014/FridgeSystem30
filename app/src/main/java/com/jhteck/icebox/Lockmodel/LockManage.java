@@ -3,7 +3,12 @@ package com.jhteck.icebox.Lockmodel;
 import android.icu.text.SimpleDateFormat;
 import android.util.Log;
 
+import com.headleader.MrbBoard.ICallBack;
+import com.headleader.MrbBoard.LockInfo;
+import com.headleader.MrbBoard.MrbBoardHandler;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -11,6 +16,8 @@ import android_serialport_api.ComBean;
 import android_serialport_api.MyFunc;
 import android_serialport_api.SerialHelper;
 import android_serialport_api.SerialPortFinder;
+import ku.util.KuConvert;
+import ku.util.KuFunction;
 
 /**
  * @author wade
@@ -18,7 +25,7 @@ import android_serialport_api.SerialPortFinder;
  * @date 2023/9/5 22:59
  */
 public class LockManage {
-    private String TAG="NfcManage";
+    private String TAG="LockManage";
     private static LockManage instance;
 
     private LockManage() {
@@ -33,310 +40,151 @@ public class LockManage {
         return instance;
     }
 
-    SerialControl serialCom;//串口
-    DispQueueThread DispQueue;//刷新显示线程
-    SimpleDateFormat m_sdfDate = new SimpleDateFormat("HH:mm:ss ");
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); // 国际化标志时间格式类
+    MySerial mySerial;
 
-    SerialPortFinder mSerialPortFinder;//串口设备搜索
-
-    private byte[] gcardnum = new byte[4];  //防冲突的时候缓存卡片uid
-
-    private byte[] recvdata = new byte[1500];   //发送接收缓存
-    private int recvlen=0;
-
-    private String PASSWORD_CRYPT_KEY = new String("1234567812345679");
-    private String PASSWORD_IV = new String("00000000");
-    private String str = new String("asas534534534");
-
-    static private int openfileDialogId = 0;
-    static private String openfilepath;
-
-    static public int currentbar=0;
-
-    //------------------------------------------显示消息
-    private void ShowMessage(String sMsg) {
-        StringBuilder sbMsg = new StringBuilder();
-        /*sbMsg.append(editTextRecDisp.getText());
-//        sbMsg.append(m_sdfDate.format(new Date()));
-        sbMsg.append(sMsg);
-        sbMsg.append("\r\n");
-        editTextRecDisp.setText(sbMsg);
-        editTextRecDisp.setSelection(sbMsg.length(), sbMsg.length());*/
-        Log.d(TAG,sMsg);
+    public void initSerialByPort(String port){
+        initSerial();
+        mySerial.port(port);
+        open();
     }
 
-    //----------------------------------------------------串口控制类
-    private class SerialControl extends SerialHelper {
-        public SerialControl() {
-        }
-
-        @Override
-        protected void onDataReceived(final ComBean ComRecData) {
-            DispQueue.AddQueue(ComRecData);// 线程定时刷新显示(推荐)
-        }
-    }
-
-    //----------------------------------------------------关闭串口
-    private void CloseComPort(SerialHelper ComPort) {
-        if (ComPort != null) {
-            ComPort.stopSend();
-            ComPort.close();
-        }
-    }
-
-    public void startNfcPort(){
-        DispQueue = new DispQueueThread();
-        DispQueue.start();
-        serialCom = new SerialControl();
-        serialCom.setPort("/dev/ttyS0");
-        serialCom.setBaudRate(Integer.parseInt(
-                "9600"));
-        Log.d(TAG,serialCom.getPort());
-        Log.d(TAG,serialCom.getBaudRate()+"");
-//        OpenComPort(serialCom);
-        OpenComPort(serialCom);
-    }
-
-    //----------------------------------------------------打开串口
-    public void OpenComPort(SerialHelper ComPort) {
-        try {
-            ComPort.open();
-        } catch (SecurityException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //----------------------------------------------------刷新显示线程
-    private class DispQueueThread extends Thread {
-        private Queue<ComBean> QueueList = new LinkedList<ComBean>();
-        @Override
-        public void run() {
-            super.run();
-            while (!isInterrupted()) {
-                final ComBean ComData;
-                while ((ComData = QueueList.poll()) != null) {
-
-                    /*runOnUiThread(new Runnable() {
-                        public void run() {
-                            DispRecData(ComData);
-                        }
-                    });*/
-                    Log.d(TAG,DispRecData(ComData));
-
-                    try {
-                        Thread.sleep(100);// 显示性能高的话，可以把此数值调小。
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    break;
+    private void initSerial() {
+        Log.d(TAG,"initSerial");
+        if (Instances.serial == null){
+            Instances.serial = new MySerial();
+            Instances.serial.baudrate(115200);
+            mySerial = Instances.serial;
+            mySerial.listener = new MySerial.Listener() {
+                @Override
+                public void onReceived( byte[] datas ) {
+                    String strTemp = KuConvert.toHex(datas, " ");
+//                    Instances.fragLog.AddLog(String.format("Serial Received: %s", strTemp));
+//                    fragTest.handle(datas);
                 }
-            }
-        }
-        public synchronized void AddQueue(ComBean ComData) {
-            QueueList.add(ComData);
-        }
-    }
 
-    //----------------------------------------------------显示接收数据
-    private String DispRecData(ComBean ComRecData) {
-        StringBuilder sMsg = new StringBuilder();
-        byte[] temp = new byte[20];
-        long cardint=0;
-        long wg26_1=0;
-        long wg26_2=0;
-        long wg34_1=0;
-        long wg34_2=0;
+                @Override
+                public void onSent( byte[] datas ) {
+                    String strTemp = KuConvert.toHex(datas, " ");
+//                    Instances.fragLog.AddLog(String.format("Serial Sent: %s", strTemp));
+                }
+            };
+            initHandler();
+
+        }
+        ArrayList<String> list = new ArrayList<>();
         try {
-            sMsg.append("recv: "+ MyFunc.ByteArrToHex(ComRecData.bRec));
-            ShowMessage(sMsg.toString());
-
-            if(solveRecv(ComRecData.bRec, temp)==0){    //主动刷卡的数据处理
-                int len = temp[0];
-                byte[] cardnum = new byte[4];
-                System.arraycopy( temp,1, cardnum, 0, 4);   //只保留前面4个字节卡号
-
-                sMsg.append("\n原始卡号："+MyFunc.ByteArrToHex(cardnum)+"\n");
-
-                cardint = Long.parseLong(MyFunc.ByteArrToHex(cardnum, 0, 4), 16);
-                sMsg.append("正码转十进制："+String.format("%010d", cardint)+"\n");
-
-                wg26_1 = Long.parseLong(MyFunc.ByteArrToHex(cardnum,1,1), 16);
-                wg26_2 = Long.parseLong(MyFunc.ByteArrToHex(cardnum,2,2), 16);
-                sMsg.append("正码转韦根26："+String.format("%03d,%05d", wg26_1, wg26_2)+"\n");
-
-                wg34_1 = Long.parseLong(MyFunc.ByteArrToHex(cardnum,0,2), 16);
-                wg34_2 = Long.parseLong(MyFunc.ByteArrToHex(cardnum,2,2), 16);
-                sMsg.append("正码转韦根34："+String.format("%05d,%05d", wg34_1, wg34_2)+"\n");
-
-                MyFunc.reverseByte(cardnum);
-                cardint = Long.parseLong(MyFunc.ByteArrToHex(cardnum, 0, 4), 16);
-                sMsg.append("反码转十进制："+String.format("%010d", cardint)+"\n");
-
-                wg26_1 = Long.parseLong(MyFunc.ByteArrToHex(cardnum,1,1), 16);
-                wg26_2 = Long.parseLong(MyFunc.ByteArrToHex(cardnum,2,2), 16);
-                sMsg.append("反码转韦根26："+String.format("%03d,%05d", wg26_1, wg26_2)+"\n");
-
-                wg34_1 = Long.parseLong(MyFunc.ByteArrToHex(cardnum,0,2), 16);
-                wg34_2 = Long.parseLong(MyFunc.ByteArrToHex(cardnum,2,2), 16);
-                sMsg.append("反码转韦根34："+String.format("%05d,%05d", wg34_1, wg34_2)+"\n");
-
-
-//                runOnUiThread(new Runnable() {
-//                    public void run() {
-                        String data = getMifareSertorData();
-
-                        //立刻切换回读卡
-                        serialCom.sendSocket((byte)0x00, (byte)0x2E, (short) 0, recvdata, recvdata, 100);
-
-                        sMsg.append(data);
-                        ShowMessage(sMsg.toString());
-//                    }
-//                });
-                return sMsg.toString();
-            }
-
+            for (String port: mySerial.list())
+                list.add(port);
         } catch (Exception ex) {
-            Log.d(TAG,ex.getMessage());
-            return ex.getMessage();
+//            Common.toast((KuFunction.getError(ex)));
         }
-        return "abc";
+//        cboPort.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, list));
     }
 
-    //识别主动刷卡数据
-    private int solveRecv(byte[] bRec, byte[] retRec) {
-        int sta = -1;
+    private void open() {
+        try {
+            mySerial.open();
+//            fragTest.enable( true);
+//            btnOpen.setText(Common.getString(R.string.close));
+        } catch (Exception ex) {
+//            Common.toast(KuFunction.getError(ex));
+        }
+    }
+    private void close() {
+        mySerial.close();
+//        fragTest.enable(false);
+//        btnOpen.setText(Common.getString(R.string.open));
+    }
 
-        if((byte)bRec[0] == 0x02){
+    public void openLock(){
+        //开锁
+        int relay = Integer.parseInt("1");
+        int time = 0xFFFF;
+//        if (cboAutoRelease.getSelectedItemPosition() > 0)
+//            time =(int) (Float.parseFloat(cboAutoRelease.getSelectedItem().toString()) * 100);
+        SendData(handler.dataOfUnlock(relay,  time, 1));
+    }
 
-            byte len = bRec[1];
-            if(len <= bRec.length){
+    public void closeLock(){
+        //关锁
+        int relay = Integer.parseInt("1");
+        int time = 0xFFFF;
+//        if (cboAutoRelease.getSelectedItemPosition() > 0)
+//            time =(int) (Float.parseFloat(cboAutoRelease.getSelectedItem().toString()) * 100);
+        SendData(handler.dataOfUnlock(relay,  time, 0));
+    }
 
-                byte result = MyFunc.bccCalc(bRec, 1, len-3);
-                if((byte)bRec[len-2] == (byte)result){
-                    retRec[0] = (byte) (len-5);
-                    System.arraycopy( bRec,3,retRec, 1,len-5);
-                    sta = 0;
-                }
+    public void getLockStutas(){
+        int relay = Integer.parseInt("1");
+        SendData(handler.dataOfLockStatus(relay));
+    }
+
+    private void SendData( byte[] datas ) {
+        try{
+//            if (mode == 0){
+                Instances.serial.write(datas);
+//            } else if (mode == 1){
+//                Instances.socket.write(datas);
+//            } else if (mode == 2){
+//                Instances.usb.write(datas);
+//            }
+        } catch (Exception ex){
+//            Common.toast(KuFunction.getError(ex));
+            Log.e(TAG,KuFunction.getError(ex));
+        }
+    }
+    public void handle(byte[] datas)     {
+        handler.handle(datas);
+    }
+
+    private MrbBoardHandler handler;
+
+    private void initHandler(){
+        handler = new MrbBoardHandler(new ICallBack() {
+            @Override
+            public void NormalHandle( String devID ) {
+                if (!devID.isEmpty())
+                    SendData(handler.dataOfHeartBreak(devID));
             }
-        }
+            @Override
+            public void ErrorHandle( Exception ex ) {
+                Log.e(TAG,KuFunction.getError(ex));
+            }
+            @Override
+            public void UnlockResult( boolean ret ) {
+                Log.e(TAG,ret ? "操作完成" : "操作失败");
+            }
+            @Override
+            public void LockStatusResult(LockInfo info) {
+                   /* String strTemp = String.format(getString(R.string.lockstatetemplate),
+                            info.lock, info.sensor);
+                    runOnUiThread(() -> txtLockStatus.setText(strTemp));*/
+                Log.e(TAG,"LockStatusResult");
+            }
 
-        return sta;
+            @Override
+            public void UnlockExResult(boolean ret) {
+                Log.e(TAG,ret ? "操作完成" : "操作失败");
+            }
+
+            @Override
+            public void LockStatusExResult(LockInfo info) {
+                    /*String strTemp = String.format(getString(R.string.lockstatetemplate),
+                            info.lock, info.sensor);
+                    runOnUiThread(() -> txtLockStatusEx.setText(strTemp));*/
+                Log.e(TAG,"LockStatusExResult");
+            }
+
+            @Override
+            public void SetIDResult( boolean ret ) {
+                Log.e(TAG,ret ? "操作完成" : "操作失败");
+            }
+            @Override
+            public void FirmwareVersionResult( String ver ) {
+//                    runOnUiThread(() -> txtFirmwareVersion.setText(ver));
+                Log.e(TAG,"FirmwareVersionResult");
+            }
+        });
     }
 
-    //读Mifare扇区
-    private String getMifareSertorData(){
-        StringBuilder sMsg = new StringBuilder();
-        byte[] rdata = new byte[500];
-        byte[] sdata = new byte[500];
-        int sendlen=0;
-        byte[] snr = new byte[4];
-//
-//        //寻卡
-//        sendlen = 0;
-//        sdata[sendlen] = (byte)0x52;  sendlen++;
-//        recvlen = serialCom.sendSocket((byte)0x00, (byte)0x40, (short) sendlen, sdata, rdata, 100);
-//        if(recvlen<0)
-//            return "";
-//
-//        //反冲突
-//        sendlen = 0;
-//        sdata[sendlen] = (byte)0x93;  sendlen++;
-//        recvlen = serialCom.sendSocket((byte)0x00, (byte)0x41, (short) sendlen, sdata, rdata, 100);
-//        if(recvlen<0)
-//            return "";
-//
-//        System.arraycopy( rdata, 0 , snr, 0, 4);
-//
-//        //选卡
-//        sendlen = 0;
-//        sdata[sendlen] = (byte)0x93;  sendlen++;
-//        System.arraycopy( snr, 0 , sdata, sendlen, 4);    sendlen += 4;
-//        recvlen = serialCom.sendSocket((byte)0x00, (byte)0x42, (short) sendlen, sdata, rdata, 100);
-//        if(recvlen<0)
-//            return "";
-
-//        //寻卡+防冲突+选卡
-//        sendlen = 0;
-//        sdata[sendlen] = (byte)0x52;  sendlen++;
-//        recvlen = serialCom.sendSocket((byte)0x00, (byte)0x43, (short) sendlen, sdata, rdata, 200);
-//        if(recvlen<0)
-//            return "";
-//
-//        System.arraycopy( rdata, 4 , snr, 0, 4);
-//        Log.d(TAG, "snr:"+MyFunc.ByteArrToHex(snr, 0, 4));
-//
-//        //验证卡片密码
-//        sendlen = 0;
-//        sdata[sendlen] = (byte)0x60;   sendlen++;//keyA
-//        sdata[sendlen] = (byte)0x00;   sendlen++;//block0
-//        sdata[sendlen] = (byte)0xFF;   sendlen++;//key
-//        sdata[sendlen] = (byte)0xFF;   sendlen++;
-//        sdata[sendlen] = (byte)0xFF;   sendlen++;
-//        sdata[sendlen] = (byte)0xFF;   sendlen++;
-//        sdata[sendlen] = (byte)0xFF;   sendlen++;
-//        sdata[sendlen] = (byte)0xFF;   sendlen++;
-//        System.arraycopy( snr, 0 , sdata, sendlen, 4);    sendlen += 4;
-//        recvlen = serialCom.sendSocket((byte)0x00, (byte)0x50, (short) sendlen, sdata, rdata, 300);
-//        if(recvlen<0)
-//            return "";
-//
-//        //读块
-//        sendlen = 0;
-//        sdata[sendlen] = (byte)0x00;   sendlen++;//block0
-//        recvlen = serialCom.sendSocket((byte)0x00, (byte)0x51, (short) sendlen, sdata, rdata, 100);
-//        if(recvlen<0)
-//            return "";
-//        sMsg.append("block0:"+MyFunc.ByteArrToHex(rdata, 0, recvlen)+"\n");
-//        Log.d(TAG, "block0:"+MyFunc.ByteArrToHex(rdata, 0, recvlen));
-//
-//        //读块
-//        sendlen = 0;
-//        sdata[sendlen] = (byte)0x01;   sendlen++;//block1
-//        recvlen = serialCom.sendSocket((byte)0x00, (byte)0x51, (short) sendlen, sdata, rdata, 100);
-//        if(recvlen<0)
-//            return "";
-//        sMsg.append("block1:"+MyFunc.ByteArrToHex(rdata, 0, recvlen)+"\n");
-//        Log.d(TAG, "block1:"+MyFunc.ByteArrToHex(rdata, 0, recvlen));
-//
-//        //读块
-//        sendlen = 0;
-//        sdata[sendlen] = (byte)0x02;   sendlen++;//block2
-//        recvlen = serialCom.sendSocket((byte)0x00, (byte)0x51, (short) sendlen, sdata, rdata, 100);
-//        if(recvlen<0)
-//            return "";
-//        sMsg.append("block2:"+MyFunc.ByteArrToHex(rdata, 0, recvlen)+"\n");
-//        Log.d(TAG, "block2:"+MyFunc.ByteArrToHex(rdata, 0, recvlen));
-//
-//        //读块
-//        sendlen = 0;
-//        sdata[sendlen] = (byte)0x03;   sendlen++;//block3
-//        recvlen = serialCom.sendSocket((byte)0x00, (byte)0x51, (short) sendlen, sdata, rdata, 100);
-//        if(recvlen<0)
-//            return "";
-//        sMsg.append( "block3:"+MyFunc.ByteArrToHex(rdata, 0, recvlen)+"\n");
-//        Log.d(TAG, "block3:"+MyFunc.ByteArrToHex(rdata, 0, recvlen));
-
-        //寻卡+反冲突+选卡+验证密码+读块
-        sendlen = 0;
-        sdata[sendlen] = (byte)0x60;   sendlen++;//keyA
-        sdata[sendlen] = (byte)0x00;   sendlen++;//从0块开始读
-        sdata[sendlen] = (byte)0x03;   sendlen++;//一共读3块
-        sdata[sendlen] = (byte)0xFF;   sendlen++;//key
-        sdata[sendlen] = (byte)0xFF;   sendlen++;
-        sdata[sendlen] = (byte)0xFF;   sendlen++;
-        sdata[sendlen] = (byte)0xFF;   sendlen++;
-        sdata[sendlen] = (byte)0xFF;   sendlen++;
-        sdata[sendlen] = (byte)0xFF;   sendlen++;
-        recvlen = serialCom.sendSocket((byte)0x00, (byte)0x54, (short) sendlen, sdata, rdata, 500);
-        Log.d(TAG, ""+recvlen);
-        if(recvlen<=0)
-            return "";
-        sMsg.append( "block0:"+MyFunc.ByteArrToHex(rdata, 0, 16)+"\n");
-        sMsg.append( "block1:"+MyFunc.ByteArrToHex(rdata, 16, 16)+"\n");
-        sMsg.append( "block2:"+MyFunc.ByteArrToHex(rdata, 32, 16)+"\n");
-
-        Log.d(TAG, MyFunc.ByteArrToHex(rdata, 0, recvlen));
-        return sMsg.toString();
-    }
 }

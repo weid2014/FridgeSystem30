@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.hele.mrd.app.lib.base.BaseActivity
 import com.jhteck.cameratest.FileUtils
+import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.adapter.LoginPageShowItemAdapter
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.bean.InventoryDao
@@ -124,7 +125,8 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
             if (DEBUG){
 //                service?.sendRfid()
 
-                RfidManage.getInstance().startStop(true)
+//                RfidManage.getInstance().startStop(true)
+                LockManage.getInstance().openLock()
             }
         }
 //        initPermission()
