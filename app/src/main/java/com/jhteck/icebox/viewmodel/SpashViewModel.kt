@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
+import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.api.AntPowerDao
 import com.jhteck.icebox.api.FridgesActiveBo
 import com.jhteck.icebox.api.SNCODE
@@ -13,6 +14,7 @@ import com.jhteck.icebox.apiserver.RetrofitClient
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.OperationErrorLogEntity
 import com.jhteck.icebox.repository.entity.SysOperationErrorEntity
+import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.tcpServer.MyTcpServerListener
 import com.jhteck.icebox.utils.*
 import kotlinx.coroutines.Dispatchers
@@ -179,7 +181,8 @@ class SpashViewModel(application: android.app.Application) :
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 showLoading("正在获取天线功率，请稍等...")
-                MyTcpServerListener.getInstance().getAntPower()
+//                MyTcpServerListener.getInstance().getAntPower()
+                RfidManage.getInstance().getOutputPower()
             } catch (e: Exception) {
                 toast("获取天线功率异常${e.message}")
             } finally {
@@ -204,7 +207,12 @@ class SpashViewModel(application: android.app.Application) :
     }
 
     fun openLock() {
-        MyTcpServerListener.getInstance().openLock()
+//        MyTcpServerListener.getInstance().openLock()
+        LockManage.getInstance().openLock()
+    }
+
+    fun closeLock(){
+        LockManage.getInstance().closeLock()
     }
 
     fun openLamp() {

@@ -486,33 +486,33 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="72dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/app_shape_white_radius_9">
+                        android:background="@drawable/app_shape_white_radius_9"
+                        android:orientation="horizontal">
 
                         <androidx.appcompat.widget.AppCompatSpinner
                             android:id="@+id/sp_sync_other_system"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="match_parent"
                             android:layout_marginStart="20dp"
+                            android:layout_weight="1"
                             android:hint="不同步"
                             android:text="@string/admin_password"
                             android:textSize="16sp" />
 
                         <EditText
-                            android:visibility="gone"
                             android:id="@+id/ed_old_sncode"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="match_parent"
                             android:layout_marginStart="20dp"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:hint="请输入"
                             android:text="@string/sncode"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -556,27 +556,58 @@
             android:id="@+id/ll_step3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="180dp"
+            android:layout_marginStart="54dp"
             android:layout_marginTop="60dp"
-            android:layout_marginEnd="180dp"
+            android:layout_marginEnd="54dp"
             android:orientation="vertical">
 
             <LinearLayout
-                android:gravity="center_horizontal"
-                android:layout_gravity="center_horizontal"
-                android:layout_width="match_parent"
+                android:layout_width="500dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="500dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:text="天线强度设置 "
+                        android:textColor="@color/app_black"
+                        android:textSize="22sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_ant"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="48dp"
+                android:layout_width="500dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_width="500dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
@@ -584,158 +615,132 @@
                             android:layout_width="wrap_content"
                             android:layout_height="48dp"
                             android:gravity="center_vertical"
-                            android:text="天线强度设置 "
+                            android:text="开关锁设置 "
                             android:textColor="@color/app_black"
                             android:textSize="22sp" />
                     </LinearLayout>
 
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center">
+                        android:layout_height="72dp"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rv_ant"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                        <Button
+                            android:id="@+id/btn_open_lock"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="72dp"
+                            android:background="@drawable/app_shape_bottom_green_radius_5"
+                            android:text="开锁"
+                            android:textColor="@color/app_white"
+                            android:textSize="24sp" />
+
+                        <Button
+                            android:id="@+id/btn_close_lock"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="72dp"
+                            android:layout_marginStart="12dp"
+                            android:background="@drawable/btn_grey_radius_5"
+                            android:text="关锁"
+                            android:textColor="@color/app_white"
+                            android:textSize="24sp" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="500dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginStart="48dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:gravity="center_vertical"
+                            android:text="开关灯设置 "
+                            android:textColor="@color/app_black"
+                            android:textSize="22sp" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="48dp"
-                                android:gravity="center_vertical"
-                                android:text="开关锁设置 "
-                                android:textColor="@color/app_black"
-                                android:textSize="22sp" />
-
-                        </LinearLayout>
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="72dp"
-                            android:layout_gravity="center"
-                            android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/btn_open_lock"
-                                android:layout_width="300dp"
-                                android:layout_height="72dp"
-                                android:background="@drawable/app_shape_bottom_green_radius_5"
-                                android:text="开锁"
-                                android:textColor="@color/app_white"
-                                android:textSize="24sp" />
-                        </LinearLayout>
                     </LinearLayout>
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:orientation="vertical">
+                        android:layout_height="72dp"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="48dp"
-                                android:gravity="center_vertical"
-                                android:text="开关灯设置 "
-                                android:textColor="@color/app_black"
-                                android:textSize="22sp" />
-
-                        </LinearLayout>
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <Button
+                            android:id="@+id/btn_open_lamb"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="72dp"
-                            android:layout_gravity="center"
-                            android:orientation="horizontal">
+                            android:background="@drawable/app_shape_bottom_green_radius_5"
+                            android:text="开灯"
+                            android:textColor="@color/app_white"
+                            android:textSize="24sp" />
 
-                            <Button
-                                android:id="@+id/btn_open_lamb"
-                                android:layout_width="150dp"
-                                android:layout_height="72dp"
-                                android:background="@drawable/app_shape_bottom_green_radius_5"
-                                android:text="开灯"
-                                android:textColor="@color/app_white"
-                                android:textSize="24sp" />
-
-                            <Button
-                                android:id="@+id/btn_close_lamb"
-                                android:layout_width="150dp"
-                                android:layout_height="72dp"
-                                android:layout_marginStart="12dp"
-                                android:background="@drawable/btn_grey_radius_5"
-                                android:text="关灯"
-                                android:textColor="@color/app_white"
-                                android:textSize="24sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="48dp"
-                                android:gravity="center_vertical"
-                                android:text="NFC参数 "
-                                android:textColor="@color/app_black"
-                                android:textSize="22sp" />
-
-                        </LinearLayout>
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <Button
+                            android:id="@+id/btn_close_lamb"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="72dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/app_shape_white_radius_9"
-                            android:orientation="horizontal">
-
-
-                            <TextView
-                                android:id="@+id/tv_nfcId"
-                                android:layout_width="300dp"
-                                android:layout_height="72dp"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="48dp"
-                                android:gravity="center"
-                                android:textColor="@color/app_color_646464"
-                                android:textSize="24sp" />
-                        </LinearLayout>
+                            android:layout_marginStart="12dp"
+                            android:background="@drawable/btn_grey_radius_5"
+                            android:text="关灯"
+                            android:textColor="@color/app_white"
+                            android:textSize="24sp" />
                     </LinearLayout>
-
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:gravity="center_vertical"
+                            android:text="NFC参数 "
+                            android:textColor="@color/app_black"
+                            android:textSize="22sp" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/app_shape_white_radius_9"
+                        android:orientation="horizontal">
+
+
+                        <TextView
+                            android:id="@+id/tv_nfcId"
+                            android:layout_width="300dp"
+                            android:layout_height="72dp"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="48dp"
+                            android:gravity="center"
+                            android:textColor="@color/app_color_646464"
+                            android:textSize="24sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
 
             </LinearLayout>
 

@@ -7,6 +7,7 @@ import android.os.IBinder
 import android.util.Log
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.api.*
+import com.jhteck.icebox.myinterface.MyCallback
 import com.jhteck.icebox.nfcmodel.NfcManage
 import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.tcpServer.MyTcpServerListener
@@ -42,6 +43,17 @@ class MyService : Service() {
                 sendContentBroadcast(it.type, it.content)
             }
         }
+        NfcManage.getInstance().setStringMyCallback(object : MyCallback<String>{
+            override fun callback(result: String) {
+                //返回卡号
+                sendContentBroadcast(HFCard, result)
+            }
+        })
+        RfidManage.getInstance().setAntPowerArrayCallback(object : MyCallback<String>{
+            override fun callback(result: String) {
+                sendContentBroadcast(REPORT_ANT_POWER_30, result)
+            }
+        })
         return binder
     }
 
@@ -52,12 +64,12 @@ class MyService : Service() {
 //        LogUpLoadManager.startUploadAsync();
 
         NfcManage.getInstance().startNfcPort()
+
         RfidManage.getInstance().initReader()
         RfidManage.getInstance().linkDevice(true)
-        RfidManage.getInstance().startStop(true)
+        RfidManage.getInstance().setOutputPower()
 
         LockManage.getInstance().initSerialByPort("/dev/ttyS2")
-
     }
 
     override fun onUnbind(intent: Intent?): Boolean {

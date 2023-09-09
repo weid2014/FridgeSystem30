@@ -3,6 +3,9 @@ package com.jhteck.icebox.rfidmodel;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+import com.jhteck.icebox.api.AppConstantsKt;
+import com.jhteck.icebox.bean.MyTcpMsg;
+import com.jhteck.icebox.myinterface.MyCallback;
 import com.naz.serial.port.ModuleManager;
 import com.naz.serial.port.SerialPortFinder;
 import com.payne.connect.port.SerialPortHandle;
@@ -10,13 +13,26 @@ import com.payne.reader.Reader;
 import com.payne.reader.base.Consumer;
 import com.payne.reader.bean.config.AntennaCount;
 import com.payne.reader.bean.config.Session;
+import com.payne.reader.bean.receive.Failure;
 import com.payne.reader.bean.receive.InventoryFailure;
 import com.payne.reader.bean.receive.InventoryTag;
 import com.payne.reader.bean.receive.InventoryTagEnd;
+import com.payne.reader.bean.receive.OutputPower;
+import com.payne.reader.bean.receive.Success;
+import com.payne.reader.bean.receive.WorkAntenna;
 import com.payne.reader.bean.send.FastSwitchEightAntennaInventory;
 import com.payne.reader.bean.send.InventoryConfig;
+import com.payne.reader.bean.send.OutputPowerConfig;
+import com.payne.reader.bean.send.PowerEightAntenna;
 import com.payne.reader.process.ReaderImpl;
 import com.payne.reader.util.ArrayUtils;
+import com.work.tcp.utils.Data_syn;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author wade
@@ -32,6 +48,11 @@ public class RfidManage {
     private Reader mReader;
     private String[] mDevicesPath;
     private boolean mKeyF4Pressing = false;
+    private MyCallback<String> antPowerArrayCallback;
+
+    public void setAntPowerArrayCallback(MyCallback<String> antPowerArrayCallback) {
+        this.antPowerArrayCallback = antPowerArrayCallback;
+    }
 
     private RfidManage() {
         // 私有构造方法，防止外部实例化
@@ -215,6 +236,65 @@ public class RfidManage {
 //            btnInventory.setText(R.string.start_inventory);
             mReader.stopInventory();
         }
+    }
+
+    //查询读写器当前工作天线
+    public void getWorkAntenna(){
+        if (!mReader.isConnected()) {
+            Log.d(TAG, "please_link_device");
+            return;
+        }
+        mReader.getWorkAntenna(new Consumer<WorkAntenna>() {
+            @Override
+            public void accept(WorkAntenna workAntenna) throws Exception {
+                Log.d(TAG, "success="+workAntenna.toString());
+            }
+        }, new Consumer<Failure>() {
+            @Override
+            public void accept(Failure failure) throws Exception {
+                Log.d(TAG, "Failure="+failure.toString());
+            }
+        });
+    }
+    //查询读写器当前输出功率
+    public void getOutputPower(){
+        if (!mReader.isConnected()) {
+            Log.d(TAG, "please_link_device");
+            return;
+        }
+        mReader.getOutputPower(new Consumer<OutputPower>() {
+            @Override
+            public void accept(OutputPower outputPower) throws Exception {
+                Log.d(TAG, "success="+outputPower.toString());
+                antPowerArrayCallback.callback(Arrays.toString(outputPower.getOutputPower()));
+            }
+        }, new Consumer<Failure>() {
+            @Override
+            public void accept(Failure failure) throws Exception {
+
+            }
+        });
+    }
+    //2.4.3.2	设置每个天线的射频输出功率
+    public void setOutputPower(){
+        if (!mReader.isConnected()) {
+            Log.d(TAG, "please_link_device");
+            return;
+        }
+        mReader.setOutputPower(
+                OutputPowerConfig.outputPower(new PowerEightAntenna.Builder().powerA((byte) 23).powerF((byte) 23).build()),
+                new Consumer<Success>() {
+                    @Override
+                    public void accept(Success success) throws Exception {
+
+                    }
+                }, new Consumer<Failure>() {
+                    @Override
+                    public void accept(Failure failure) throws Exception {
+
+                    }
+                }
+        );
     }
 
 }

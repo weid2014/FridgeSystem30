@@ -1,12 +1,13 @@
 package com.jhteck.icebox.api
 
-const val DEBUG = true//测试模式
+const val DEBUG = false//测试模式
 const val IS_FIRST_RUN = "is_first_run"//是否第一次运行
 const val LOCKED_SUCCESS = "全关锁成功提示"
 const val LOCKED_SHUT = "锁一直未关提示"
 const val INVENTORY_OVER = "结束盘点"
 const val HFCard = "HFCard"
 const val REPORT_ANT_POWER = "report_ant_power"
+const val REPORT_ANT_POWER_30 = "report_ant_power_30"
 const val ROLE_ID = "role_id"
 const val BROADCAST_INTENT_FILTER = "com.jhteck.icebox.content"
 const val TCP_MSG_KEY = "tcp_msg_key"

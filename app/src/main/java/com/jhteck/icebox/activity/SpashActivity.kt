@@ -54,7 +54,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         // 检查是否是第一次运行应用程序
 //        var isFirstRun =
 //            SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
-        var isFirstRun = false
+        var isFirstRun = true
         if (isFirstRun) {
             var steps = mutableListOf<String>()
             steps.add("Step 1")
@@ -88,6 +88,9 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
 
             binding.btnOpenLock.setOnClickListener {
                 viewModel.openLock()
+            }
+            binding.btnCloseLock.setOnClickListener {
+                viewModel.closeLock()
             }
             binding.btnCloseLamb.setOnClickListener {
                 viewModel.closeLamp()
@@ -188,6 +191,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
             }
+
 
     }
 
@@ -336,6 +340,15 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 initAntRecycleView(tempList)
             } else if (key.equals(HFCard)) {
                 binding.tvNfcId.text = value
+            }else if(key.equals(REPORT_ANT_POWER_30)){
+                tempList.clear()
+                val jsonArray = JSONArray(value.toString())
+                for (i in 0 until jsonArray.length()) {
+                    val antid = i.toString()
+                    val po = jsonArray[i].toString()
+                    tempList.add(AntPowerDao("$antid", po))
+                }
+                initAntRecycleView(tempList)
             }
         }
     }

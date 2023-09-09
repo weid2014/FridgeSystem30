@@ -3,6 +3,8 @@ package com.jhteck.icebox.nfcmodel;
 import android.icu.text.SimpleDateFormat;
 import android.util.Log;
 
+import com.jhteck.icebox.myinterface.MyCallback;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -20,6 +22,11 @@ import android_serialport_api.SerialPortFinder;
 public class NfcManage {
     private String TAG="NfcManage";
     private static NfcManage instance;
+    private MyCallback<String> stringMyCallback;
+
+    public void setStringMyCallback(MyCallback<String> stringMyCallback) {
+        this.stringMyCallback = stringMyCallback;
+    }
 
     private NfcManage() {
         // 私有构造方法，防止外部实例化
@@ -157,7 +164,7 @@ public class NfcManage {
                 System.arraycopy( temp,1, cardnum, 0, 4);   //只保留前面4个字节卡号
 
                 sMsg.append("\n原始卡号："+MyFunc.ByteArrToHex(cardnum)+"\n");
-
+                stringMyCallback.callback(MyFunc.ByteArrToHex(cardnum).replace(" ",""));
                 cardint = Long.parseLong(MyFunc.ByteArrToHex(cardnum, 0, 4), 16);
                 sMsg.append("正码转十进制："+String.format("%010d", cardint)+"\n");
 

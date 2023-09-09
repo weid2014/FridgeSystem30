@@ -60,12 +60,14 @@ public class LockManage {
                     String strTemp = KuConvert.toHex(datas, " ");
 //                    Instances.fragLog.AddLog(String.format("Serial Received: %s", strTemp));
 //                    fragTest.handle(datas);
+                    Log.e(TAG,strTemp);
                 }
 
                 @Override
                 public void onSent( byte[] datas ) {
                     String strTemp = KuConvert.toHex(datas, " ");
 //                    Instances.fragLog.AddLog(String.format("Serial Sent: %s", strTemp));
+                    Log.e(TAG,strTemp);
                 }
             };
             initHandler();
@@ -99,7 +101,8 @@ public class LockManage {
     public void openLock(){
         //开锁
         int relay = Integer.parseInt("1");
-        int time = 0xFFFF;
+//        int time = 0xFFFF;
+        int time = 9999999*1000;
 //        if (cboAutoRelease.getSelectedItemPosition() > 0)
 //            time =(int) (Float.parseFloat(cboAutoRelease.getSelectedItem().toString()) * 100);
         SendData(handler.dataOfUnlock(relay,  time, 1));
@@ -186,5 +189,5 @@ public class LockManage {
             }
         });
     }
-
+ 
 }
