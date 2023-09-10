@@ -3,6 +3,7 @@ package com.jhteck.icebox.rfidmodel;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+import com.jhteck.icebox.api.AntPowerDao;
 import com.jhteck.icebox.api.AppConstantsKt;
 import com.jhteck.icebox.bean.MyTcpMsg;
 import com.jhteck.icebox.myinterface.MyCallback;
@@ -33,6 +34,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author wade
@@ -276,13 +280,42 @@ public class RfidManage {
         });
     }
     //2.4.3.2	设置每个天线的射频输出功率
-    public void setOutputPower(){
+    public void setOutputPower(List<AntPowerDao> antPowerList){
         if (!mReader.isConnected()) {
             Log.d(TAG, "please_link_device");
             return;
         }
+        byte powerA=33;
+        byte powerB=33;
+        byte powerC=33;
+        byte powerD=33;
+        byte powerE=33;
+        byte powerF=33;
+        byte powerG=33;
+        byte powerH=33;
+        for (int i=0;i<antPowerList.size();i++){
+            if(i==0){
+                powerA= Byte.parseByte(antPowerList.get(i).getPower());
+            }else if(i==1){
+                powerB= Byte.parseByte(antPowerList.get(i).getPower());
+            }else if(i==2){
+                powerC= Byte.parseByte(antPowerList.get(i).getPower());
+            }else if(i==3){
+                powerD= Byte.parseByte(antPowerList.get(i).getPower());
+            }else if(i==4){
+                powerE= Byte.parseByte(antPowerList.get(i).getPower());
+            }else if(i==5){
+                powerF= Byte.parseByte(antPowerList.get(i).getPower());
+            }else if(i==6){
+                powerG= Byte.parseByte(antPowerList.get(i).getPower());
+            }else if(i==7){
+                powerH= Byte.parseByte(antPowerList.get(i).getPower());
+            }
+        }
         mReader.setOutputPower(
-                OutputPowerConfig.outputPower(new PowerEightAntenna.Builder().powerA((byte) 23).powerF((byte) 23).build()),
+                OutputPowerConfig.outputPower(new PowerEightAntenna.Builder().powerA(powerA).powerB(powerB)
+                                .powerC(powerC).powerD(powerD).powerE(powerE)
+                        .powerF(powerF).powerG(powerG).powerH(powerH).build()),
                 new Consumer<Success>() {
                     @Override
                     public void accept(Success success) throws Exception {

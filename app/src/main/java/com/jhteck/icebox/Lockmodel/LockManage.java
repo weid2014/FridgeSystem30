@@ -60,7 +60,7 @@ public class LockManage {
                     String strTemp = KuConvert.toHex(datas, " ");
 //                    Instances.fragLog.AddLog(String.format("Serial Received: %s", strTemp));
 //                    fragTest.handle(datas);
-                    Log.e(TAG,strTemp);
+//                    Log.e(TAG,strTemp);
                 }
 
                 @Override
@@ -189,5 +189,5 @@ public class LockManage {
             }
         });
     }
- 
+
 }

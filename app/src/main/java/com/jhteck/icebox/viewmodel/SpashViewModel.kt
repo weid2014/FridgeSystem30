@@ -15,7 +15,6 @@ import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.OperationErrorLogEntity
 import com.jhteck.icebox.repository.entity.SysOperationErrorEntity
 import com.jhteck.icebox.rfidmodel.RfidManage
-import com.jhteck.icebox.tcpServer.MyTcpServerListener
 import com.jhteck.icebox.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -195,7 +194,8 @@ class SpashViewModel(application: android.app.Application) :
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 showLoading("正在设置天线功率，请稍等...")
-                MyTcpServerListener.getInstance().setAntPower(antPowerDaoList)
+//                MyTcpServerListener.getInstance().setAntPower(antPowerDaoList)
+                RfidManage.getInstance().setOutputPower(antPowerDaoList)
                 delay(1000)
             } catch (e: Exception) {
                 toast("设置天线功率异常${e.message}")
@@ -211,18 +211,18 @@ class SpashViewModel(application: android.app.Application) :
         LockManage.getInstance().openLock()
     }
 
-    fun closeLock(){
+    fun closeLock() {
         LockManage.getInstance().closeLock()
     }
 
     fun openLamp() {
         //开灯
-        MyTcpServerListener.getInstance().sendOpenLamp()
+//        MyTcpServerListener.getInstance().sendOpenLamp()
     }
 
     fun closeLamp() {
         //关灯
-        MyTcpServerListener.getInstance().sendCloseLamp()
+//        MyTcpServerListener.getInstance().sendCloseLamp()
     }
 
     fun getOldInfo(requestUrl: String) {

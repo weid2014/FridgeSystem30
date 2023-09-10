@@ -22,6 +22,7 @@ import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.AccountOperationEntity
 import com.jhteck.icebox.repository.entity.OperationErrorLogEntity
 import com.jhteck.icebox.repository.entity.RfidOperationEntity
+import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.tcpServer.MyTcpServerListener
 import com.jhteck.icebox.utils.DateUtils
 import com.jhteck.icebox.utils.DbUtil
@@ -94,6 +95,35 @@ class MainViewModel(application: android.app.Application) :
                         Log.d(TAG, "弹出pop")
                         rfidsSync(it.toList())
                     }
+                } catch (e: Exception) {
+//                    scanStatus.postValue(false)
+                    toast("结算异常")
+                } finally {
+                    hideLoading()
+                }
+            }
+        }
+    }
+
+    fun startFCLInventory30() {
+        //防止响应过于频繁
+        var time = SystemClock.uptimeMillis();//局部变量
+        if (time - lastonclickTime <= 8000) {
+
+        } else {
+            lastonclickTime = time
+            viewModelScope.launch {
+                try {
+                    RfidManage.getInstance().startStop(true)
+                    showLoading("正在结算中，请稍等...")
+
+                    delay(5000)
+                    RfidManage.getInstance().startStop(false)
+//                    scanStatus.postValue(true)
+                    /*MyTcpServerListener.getInstance().setOnInventoryResult {
+
+                        rfidsSync(it.toList())
+                    }*/
                 } catch (e: Exception) {
 //                    scanStatus.postValue(false)
                     toast("结算异常")

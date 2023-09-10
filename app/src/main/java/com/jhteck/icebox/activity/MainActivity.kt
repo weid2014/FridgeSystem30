@@ -28,6 +28,7 @@ import com.jhteck.icebox.fragment.InventoryListFrag
 import com.jhteck.icebox.fragment.OperationLogFrag
 import com.jhteck.icebox.fragment.SettingFrag
 import com.jhteck.icebox.repository.entity.AccountEntity
+import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.tcpServer.MyTcpServerListener
 import com.jhteck.icebox.utils.DensityUtil
@@ -461,11 +462,11 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             when (key) {
                 LOCKED_SUCCESS -> {
                     if (DEBUG) {
-                        showPopWindow(
-                            localData!!.results.avail_rfids,
-                            localData!!.results.avail_rfids,
-
-                        )
+//                        showPopWindow(
+//                            localData!!.results.avail_rfids,
+//                            localData!!.results.avail_rfids,
+//                        )
+                        viewModel.startFCLInventory30()
                     } else {
                         try {
                             retryScanNum = 0
