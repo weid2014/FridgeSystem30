@@ -1,6 +1,7 @@
 package com.jhteck.icebox.api
 
 const val DEBUG = true//测试模式
+const val EXIST_HARD_DEVICE = true//是否存在硬件
 const val IS_FIRST_RUN = "is_first_run"//是否第一次运行
 const val LOCKED_SUCCESS = "全关锁成功提示"
 const val LOCKED_SHUT = "锁一直未关提示"
