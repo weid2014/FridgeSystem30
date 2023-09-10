@@ -47,7 +47,6 @@ class MainViewModel(application: android.app.Application) :
         return IMainApiService::class.java
     }
 
-
     fun loadDataLocal() {
         viewModelScope.launch(Dispatchers.Default) {//使用Room操作本地数据库 (Dispatchers.Default) 不能省略
             try {
@@ -86,15 +85,25 @@ class MainViewModel(application: android.app.Application) :
             viewModelScope.launch {
                 try {
                     showLoading("正在结算中，请稍等...")
-                    MyTcpServerListener.getInstance().getFCLInventory()
-                    delay(5000)
-//                    scanStatus.postValue(true)
-                    MyTcpServerListener.getInstance().setOnInventoryResult {
-                        //扫描结束后获取到rfid集合
-//                        inventoryData.postValue(it.toList())
+
+                    RfidManage.getInstance().setRfidArraysRendEndCallback{
                         Log.d(TAG, "弹出pop")
+                        Log.d(TAG, it.toList().toString())
                         rfidsSync(it.toList())
+                        RfidManage.getInstance().startStop(false);//停止
+                        RfidManage.getInstance().setRfidArraysRendEndCallback();//清空掉
                     }
+                    delay(200)
+                    RfidManage.getInstance().startStop(true);
+//                    MyTcpServerListener.getInstance().getFCLInventory()
+//                    delay(5000)
+////                    scanStatus.postValue(true)
+//                    MyTcpServerListener.getInstance().setOnInventoryResult {
+//                        //扫描结束后获取到rfid集合
+////                        inventoryData.postValue(it.toList())
+//                        Log.d(TAG, "弹出pop")
+//                        rfidsSync(it.toList())
+//                    }
                 } catch (e: Exception) {
 //                    scanStatus.postValue(false)
                     toast("结算异常")

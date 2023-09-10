@@ -1,11 +1,8 @@
 package com.jhteck.icebox.rfidmodel;
 
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.jhteck.icebox.api.AntPowerDao;
-import com.jhteck.icebox.api.AppConstantsKt;
-import com.jhteck.icebox.bean.MyTcpMsg;
 import com.jhteck.icebox.myinterface.MyCallback;
 import com.naz.serial.port.ModuleManager;
 import com.naz.serial.port.SerialPortFinder;
@@ -27,16 +24,13 @@ import com.payne.reader.bean.send.OutputPowerConfig;
 import com.payne.reader.bean.send.PowerEightAntenna;
 import com.payne.reader.process.ReaderImpl;
 import com.payne.reader.util.ArrayUtils;
-import com.work.tcp.utils.Data_syn;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * @author wade
@@ -48,7 +42,8 @@ public class RfidManage {
     private static RfidManage instance;
 
     private boolean mLoopInventory;
-    private ArrayAdapter<String> mArrayAdapter;
+    private List<String> rfidArrays;
+    private Lock lock = new ReentrantLock();
     private Reader mReader;
     private String[] mDevicesPath;
     private boolean mKeyF4Pressing = false;
@@ -56,6 +51,25 @@ public class RfidManage {
 
     public void setAntPowerArrayCallback(MyCallback<String> antPowerArrayCallback) {
         this.antPowerArrayCallback = antPowerArrayCallback;
+    }
+
+    public interface OnInventoryResult {
+        void onInventoryResult(List<String> rfids);
+    }
+
+    private OnInventoryResult rfidArraysRendEndCallback;
+
+    /**
+     * 获取rfid回调
+     *
+     * @param rfidArraysRendEndCallback
+     */
+    public void setRfidArraysRendEndCallback(OnInventoryResult rfidArraysRendEndCallback) {
+        this.rfidArraysRendEndCallback = rfidArraysRendEndCallback;
+    }
+
+    public void setRfidArraysRendEndCallback() {
+        this.rfidArraysRendEndCallback = null;
     }
 
     private RfidManage() {
@@ -78,7 +92,7 @@ public class RfidManage {
     }
 
     public void initReader() {
-        Log.d(TAG,"initReader");
+        Log.d(TAG, "initReader");
         mReader = ReaderImpl.create(AntennaCount.EIGHT_CHANNELS);
         mReader.setOriginalDataCallback(
                 new Consumer<byte[]>() {
@@ -102,8 +116,19 @@ public class RfidManage {
                 .setOnInventoryTagSuccess(new Consumer<InventoryTag>() {
                     @Override
                     public void accept(final InventoryTag inventoryTag) throws Exception {
-                        //盘存成功回调
                         Log.e("gpenghui", "标签信息: " + inventoryTag.toString());
+                        try {
+                            lock.lock();
+
+                            rfidArrays = new ArrayList<>();
+                            rfidArrays.add(inventoryTag.getEpc());
+                        } catch (Exception ex) {
+                            Log.e(TAG, ex.getMessage());
+                        } finally {
+                            lock.unlock();
+                        }
+                        //盘存成功回调
+
                         /*runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -116,7 +141,21 @@ public class RfidManage {
                     @Override
                     public void accept(InventoryTagEnd inventoryTagEnd) throws Exception {
                         //一次盘存结束回调
-//                        Log.e("gpenghui", "一次盘存结束: " + inventoryTagEnd.toString());
+                        Log.e("gpenghui", "一次盘存结束: " + inventoryTagEnd.toString());
+
+                        try {
+                            if (rfidArraysRendEndCallback != null) {
+                                lock.lock();
+                                List<String> copyRfids = rfidArrays.stream().collect(Collectors.toList());
+
+                                rfidArraysRendEndCallback.onInventoryResult(copyRfids);
+                            }
+
+                        } catch (Exception ex) {
+                            Log.e(TAG, ex.getMessage());
+                        } finally {
+                            lock.unlock();
+                        }
                     }
                 })
                 .setOnFailure(new Consumer<InventoryFailure>() {
@@ -139,7 +178,7 @@ public class RfidManage {
      *             连接or断开连接
      */
     public void linkDevice(boolean link) {
-        Log.d(TAG,"linkDevice");
+        Log.d(TAG, "linkDevice");
 //        initReader();
         ModuleManager.newInstance().setUHFStatus(true);
         try {
@@ -243,7 +282,7 @@ public class RfidManage {
     }
 
     //查询读写器当前工作天线
-    public void getWorkAntenna(){
+    public void getWorkAntenna() {
         if (!mReader.isConnected()) {
             Log.d(TAG, "please_link_device");
             return;
@@ -251,17 +290,18 @@ public class RfidManage {
         mReader.getWorkAntenna(new Consumer<WorkAntenna>() {
             @Override
             public void accept(WorkAntenna workAntenna) throws Exception {
-                Log.d(TAG, "success="+workAntenna.toString());
+                Log.d(TAG, "success=" + workAntenna.toString());
             }
         }, new Consumer<Failure>() {
             @Override
             public void accept(Failure failure) throws Exception {
-                Log.d(TAG, "Failure="+failure.toString());
+                Log.d(TAG, "Failure=" + failure.toString());
             }
         });
     }
+
     //查询读写器当前输出功率
-    public void getOutputPower(){
+    public void getOutputPower() {
         if (!mReader.isConnected()) {
             Log.d(TAG, "please_link_device");
             return;
@@ -269,7 +309,7 @@ public class RfidManage {
         mReader.getOutputPower(new Consumer<OutputPower>() {
             @Override
             public void accept(OutputPower outputPower) throws Exception {
-                Log.d(TAG, "success="+outputPower.toString());
+                Log.d(TAG, "success=" + outputPower.toString());
                 antPowerArrayCallback.callback(Arrays.toString(outputPower.getOutputPower()));
             }
         }, new Consumer<Failure>() {
@@ -279,42 +319,43 @@ public class RfidManage {
             }
         });
     }
+
     //2.4.3.2	设置每个天线的射频输出功率
-    public void setOutputPower(List<AntPowerDao> antPowerList){
+    public void setOutputPower(List<AntPowerDao> antPowerList) {
         if (!mReader.isConnected()) {
             Log.d(TAG, "please_link_device");
             return;
         }
-        byte powerA=33;
-        byte powerB=33;
-        byte powerC=33;
-        byte powerD=33;
-        byte powerE=33;
-        byte powerF=33;
-        byte powerG=33;
-        byte powerH=33;
-        for (int i=0;i<antPowerList.size();i++){
-            if(i==0){
-                powerA= Byte.parseByte(antPowerList.get(i).getPower());
-            }else if(i==1){
-                powerB= Byte.parseByte(antPowerList.get(i).getPower());
-            }else if(i==2){
-                powerC= Byte.parseByte(antPowerList.get(i).getPower());
-            }else if(i==3){
-                powerD= Byte.parseByte(antPowerList.get(i).getPower());
-            }else if(i==4){
-                powerE= Byte.parseByte(antPowerList.get(i).getPower());
-            }else if(i==5){
-                powerF= Byte.parseByte(antPowerList.get(i).getPower());
-            }else if(i==6){
-                powerG= Byte.parseByte(antPowerList.get(i).getPower());
-            }else if(i==7){
-                powerH= Byte.parseByte(antPowerList.get(i).getPower());
+        byte powerA = 33;
+        byte powerB = 33;
+        byte powerC = 33;
+        byte powerD = 33;
+        byte powerE = 33;
+        byte powerF = 33;
+        byte powerG = 33;
+        byte powerH = 33;
+        for (int i = 0; i < antPowerList.size(); i++) {
+            if (i == 0) {
+                powerA = Byte.parseByte(antPowerList.get(i).getPower());
+            } else if (i == 1) {
+                powerB = Byte.parseByte(antPowerList.get(i).getPower());
+            } else if (i == 2) {
+                powerC = Byte.parseByte(antPowerList.get(i).getPower());
+            } else if (i == 3) {
+                powerD = Byte.parseByte(antPowerList.get(i).getPower());
+            } else if (i == 4) {
+                powerE = Byte.parseByte(antPowerList.get(i).getPower());
+            } else if (i == 5) {
+                powerF = Byte.parseByte(antPowerList.get(i).getPower());
+            } else if (i == 6) {
+                powerG = Byte.parseByte(antPowerList.get(i).getPower());
+            } else if (i == 7) {
+                powerH = Byte.parseByte(antPowerList.get(i).getPower());
             }
         }
         mReader.setOutputPower(
                 OutputPowerConfig.outputPower(new PowerEightAntenna.Builder().powerA(powerA).powerB(powerB)
-                                .powerC(powerC).powerD(powerD).powerE(powerE)
+                        .powerC(powerC).powerD(powerD).powerE(powerE)
                         .powerF(powerF).powerG(powerG).powerH(powerH).build()),
                 new Consumer<Success>() {
                     @Override
