@@ -122,8 +122,6 @@ public class RfidManage {
                         Log.e("gpenghui", "标签信息: " + inventoryTag.toString());
                         try {
                             lock.lock();
-
-                            rfidArrays = new ArrayList<>();
                             rfidArrays.add(inventoryTag.getEpc());
                         } catch (Exception ex) {
                             Log.e(TAG, ex.getMessage());
@@ -276,6 +274,7 @@ public class RfidManage {
 //            btnInventory.setSelected(true);
 //            btnInventory.setText(R.string.stop_inventory);
 //            mArrayAdapter.clear();
+            rfidArrays = new ArrayList<>();
             mReader.startInventory(true);
         } else {
 //            btnInventory.setSelected(false);
