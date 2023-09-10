@@ -67,7 +67,6 @@ class MyService : Service() {
 
         RfidManage.getInstance().initReader()
         RfidManage.getInstance().linkDevice(true)
-        RfidManage.getInstance().setOutputPower()
 
         LockManage.getInstance().initSerialByPort("/dev/ttyS2")
     }

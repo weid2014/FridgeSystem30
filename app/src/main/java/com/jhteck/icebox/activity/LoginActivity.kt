@@ -119,14 +119,9 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
         RfidManage.getInstance().initReader()
         RfidManage.getInstance().linkDevice(true)
         binding.imTestLogin.setOnClickListener {
-//            viewModel.loginTest()
-//            viewModel.getdataTest()
-//            viewModel.getUserListTest()
             if (DEBUG){
+                viewModel.login("admin", "Jinghe233")
 //                service?.sendRfid()
-
-//                RfidManage.getInstance().startStop(true)
-                LockManage.getInstance().openLock()
             }
         }
 //        initPermission()

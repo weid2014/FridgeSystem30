@@ -50,12 +50,15 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     }
 
     override fun initView() {
+        binding.llFridgesOperate.visibility=View.GONE
         startService()
         // 检查是否是第一次运行应用程序
-//        var isFirstRun =
-//            SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
-        var isFirstRun = true
+        var isFirstRun =
+            SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
+//        var isFirstRun = true
         if (isFirstRun) {
+            binding.llFridgesOperate.visibility=View.VISIBLE
+            binding.rlSpash.visibility=View.GONE
             var steps = mutableListOf<String>()
             steps.add("Step 1")
             steps.add("Step 2")
@@ -106,6 +109,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
 
         } else {
             // 不是第一次运行应用程序的操作
+            binding.rlSpash.visibility=View.VISIBLE
             Glide.with(this)
                 .load("file:///android_asset/start.gif")
                 .into(binding.ivGif)
