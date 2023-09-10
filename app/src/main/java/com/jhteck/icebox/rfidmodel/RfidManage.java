@@ -271,7 +271,7 @@ public class RfidManage {
 //            btnInventory.setSelected(true);
 //            btnInventory.setText(R.string.stop_inventory);
 //            mArrayAdapter.clear();
-            rfidArrays = new ArrayList<>();
+            rfidArrays = new ArrayList<>();//先清空
             mReader.startInventory(true);
         } else {
 //            btnInventory.setSelected(false);
