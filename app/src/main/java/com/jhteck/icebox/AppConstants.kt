@@ -21,9 +21,11 @@ const val UPDATE_JSON_ADDRESS = "update_json_address"
 const val UPDATE_APK_ADDRESS = "update_apk_address"
 const val SNCODE = "sncode"
 const val SNCODE_TEST = "FEDCBA0123456788"
+
 //const val SNCODE_TEST = "FEDCBA01CC000001"
 const val SNCODE_ORIGEN = "FEDCBA01CC000001"
 const val URL_REQUEST = "url_request"
 const val URL_TEST = "https://jh.test.lavandachen.com"
 const val URL_KM = "http://10.128.81.174:8086"
+const val NOT_HARD_DEVICE = true
 
