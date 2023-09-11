@@ -118,10 +118,7 @@ public class RfidManage {
                         Log.e("gpenghui", "标签信息: " + inventoryTag.toString());
                         try {
 //                            lock.lock();
-
-
-                            rfidArrays.add(inventoryTag.getEpc().replace(" ",""));
-                            epcSet.add(inventoryTag.getEpc().replace(" ",""));
+                            rfidArrays.add(inventoryTag.getEpc());
                         } catch (Exception ex) {
                             Log.e(TAG, ex.getMessage());
                         } finally {
@@ -273,6 +270,7 @@ public class RfidManage {
 //            btnInventory.setSelected(true);
 //            btnInventory.setText(R.string.stop_inventory);
 //            mArrayAdapter.clear();
+//            rfidArrays = new ArrayList<>();//先清空
             rfidArrays = new HashSet<String>();
             mReader.startInventory(true);
         } else {

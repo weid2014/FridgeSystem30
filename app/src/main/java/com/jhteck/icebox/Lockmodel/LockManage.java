@@ -5,7 +5,7 @@ import android.util.Log;
 import com.headleader.MrbBoard.ICallBack;
 import com.headleader.MrbBoard.LockInfo;
 import com.headleader.MrbBoard.MrbBoardHandler;
-import com.jhteck.icebox.myinterface.MyCallback;
+import com.jhteck.icebox.api.AppConstantsKt;
 
 import java.util.ArrayList;
 
@@ -43,6 +43,7 @@ public class LockManage {
     public void initSerialByPort(String port){
         initSerial();
         mySerial.port(port);
+        if (AppConstantsKt.NOT_HARD_DEVICE)return;//无硬件模式
         open();
     }
 
