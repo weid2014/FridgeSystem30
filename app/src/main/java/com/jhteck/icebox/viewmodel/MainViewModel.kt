@@ -18,6 +18,7 @@ import com.jhteck.icebox.apiserver.LocalService
 import com.jhteck.icebox.apiserver.RetrofitClient
 import com.jhteck.icebox.bean.AccountOperationEnum
 import com.jhteck.icebox.bean.OperationErrorEnum
+import com.jhteck.icebox.myinterface.MyCallback
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.AccountOperationEntity
 import com.jhteck.icebox.repository.entity.OperationErrorLogEntity
@@ -86,15 +87,6 @@ class MainViewModel(application: android.app.Application) :
                 try {
                     showLoading("正在结算中，请稍等...")
 
-                    RfidManage.getInstance().setRfidArraysRendEndCallback{
-                        Log.d(TAG, "弹出pop")
-                        Log.d(TAG, it.toList().toString())
-                        rfidsSync(it.toList())
-                        RfidManage.getInstance().startStop(false);//停止
-                        RfidManage.getInstance().setRfidArraysRendEndCallback();//清空掉
-                    }
-                    delay(200)
-                    RfidManage.getInstance().startStop(true);
 //                    MyTcpServerListener.getInstance().getFCLInventory()
 //                    delay(5000)
 ////                    scanStatus.postValue(true)
@@ -125,18 +117,18 @@ class MainViewModel(application: android.app.Application) :
                 try {
                     RfidManage.getInstance().startStop(true)
                     showLoading("正在结算中，请稍等...")
-
-                    delay(5000)
-                    RfidManage.getInstance().startStop(false)
-//                    scanStatus.postValue(true)
-                    /*MyTcpServerListener.getInstance().setOnInventoryResult {
-
+                    RfidManage.getInstance().setRfidArraysRendEndCallback {
+                        Log.d(TAG,"正在结算中，请稍等...${it.toString()}")
                         rfidsSync(it.toList())
-                    }*/
+
+                    }
+                    delay(8000)
+                    RfidManage.getInstance().startStop(false)
                 } catch (e: Exception) {
 //                    scanStatus.postValue(false)
                     toast("结算异常")
                 } finally {
+                    RfidManage.getInstance().setRfidArraysRendEndCallback();//清空掉
                     hideLoading()
                 }
             }
@@ -155,7 +147,8 @@ class MainViewModel(application: android.app.Application) :
                     rfidList.add(RfidSync(1, 100, rfid))
                 }
                 val bodySync = genBody(requestSync(rfidList))
-                val repSync = apiService.syncRfids(bodySync)
+//                apiService.syncRfids()
+                val repSync = RetrofitClient.getService().syncRfids(bodySync)
                 rfidsSync.postValue(rfids)
             } catch (e: Exception) {
                 toast("上报异常$e")
@@ -178,7 +171,7 @@ class MainViewModel(application: android.app.Application) :
             try {
                 showLoading("正在查询RFID，请稍等...")
                 val body = genBody(RequestRfidsDao(rfids))
-                val rep = apiService.getRfids(body)
+                val rep = RetrofitClient.getService().getRfids(body)
                 val data = rep.body()
                 //获取到之后跟本地数据对比(增加或减少了什么)
                 val tempList = mutableListOf<String>()
@@ -227,6 +220,7 @@ class MainViewModel(application: android.app.Application) :
                     closeStatus.postValue(true)
                 }
             } catch (e: Exception) {
+                Log.e(TAG,e.toString())
                 toast("查询异常$e")
             } finally {
                 hideLoading()

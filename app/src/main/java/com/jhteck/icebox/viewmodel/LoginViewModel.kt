@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
+import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
 import com.jhteck.icebox.api.DEBUG
 import com.jhteck.icebox.api.RfidResults
@@ -90,8 +91,9 @@ class LoginViewModel(application: android.app.Application) :
                     delay(1000)
                     //wait wait wait
                     if (!DEBUG) {
-                        MyTcpServerListener.getInstance().openLock()
+//                        MyTcpServerListener.getInstance().openLock()
                     }
+                    LockManage.getInstance().openLock()
                     loginUserInfo.postValue(userInfo)
                     SharedPreferencesUtils.setPrefString(
                         ContextUtils.getApplicationContext(),

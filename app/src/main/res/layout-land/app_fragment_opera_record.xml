@@ -4,48 +4,122 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="120px">
+        android:layout_height="120px"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_CountNumber"
-            android:layout_width="200dp"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="共88盒"
-            android:textColor="@color/app_color_646464"
-            android:textSize="18sp" />
+            android:layout_weight="3"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <RelativeLayout
-            android:layout_width="1700px"
-            android:layout_height="72px"
-            android:layout_alignParentRight="true"
-            android:layout_margin="24px"
-            android:background="@drawable/app_shape_white_radius_9">
-
-            <SearchView
-                android:id="@+id/sv_InventoryList"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/btn_begin_time"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="258dp"
                 android:layout_height="72px"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="24px"
-                android:background="@android:color/transparent"
-                android:queryHint="请输入商品名称或商品编码"
+                android:layout_marginStart="54dp"
+                android:background="@drawable/app_shape_round_cccccc_radius_5"
+                android:drawableRight="@mipmap/ic_date_select"
+                android:hint="开始时间"
+                android:paddingEnd="24px"
                 android:textColor="@color/app_color_646464"
-                android:textSize="30sp" />
+                android:textColorHint="@color/app_color_646464"
+                android:textSize="16sp" />
 
-
-            <ImageView
-                android:layout_width="32dp"
+            <TextView
+                android:layout_width="72px"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_marginEnd="24px"
-                android:src="@mipmap/ic_search"
-                android:visibility="gone" />
+                android:gravity="center"
+                android:text="至"
+                android:textColor="@color/app_color_646464"
+                android:textSize="16sp" />
 
-        </RelativeLayout>
-    </RelativeLayout>
+            <Button
+                android:id="@+id/btn_end_time"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="258dp"
+                android:layout_height="72px"
+                android:background="@drawable/app_shape_round_cccccc_radius_5"
+                android:drawableRight="@mipmap/ic_date_select"
+                android:hint="结束时间"
+                android:paddingEnd="24px"
+                android:textColor="@color/app_color_646464"
+                android:textColorHint="@color/app_color_646464"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_Today"
+                android:textColor="@color/app_selector_1775ef_white"
+                android:background="@drawable/app_selector_1775ef_white"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="108px"
+                android:layout_height="36dp"
+                android:layout_marginStart="24dp"
+                android:gravity="center"
+                android:text="今天"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_Yesterday"
+                android:textColor="@color/app_selector_1775ef_white"
+                android:background="@drawable/app_selector_1775ef_white"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_marginStart="24dp"
+                android:layout_width="108px"
+                android:layout_height="36dp"
+                android:gravity="center"
+                android:text="昨天"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="72px"
+                android:layout_gravity="center"
+                android:layout_margin="24px"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <SearchView
+                    android:id="@+id/sv_OperationRecord"
+                    android:layout_width="288px"
+                    android:layout_height="72px"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/app_shape_round_cccccc_radius_5"
+                    android:queryHint="请输入商品名称或商品编码"
+                    android:textColor="@color/app_color_646464"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="72px"
+                android:layout_gravity="center"
+                android:layout_margin="24px"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/sp_refer"
+                    android:layout_width="288px"
+                    android:layout_height="72px"
+                    android:layout_gravity="center"
+                    android:background="@drawable/app_shape_round_cccccc_radius_5" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -85,7 +159,7 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="0.6">
 
             <TextView
                 android:id="@+id/tv_DrugSpec"
@@ -98,7 +172,7 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.5">
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/tv_DrugManufacturers"
@@ -111,7 +185,7 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5">
+            android:layout_weight="0.6">
 
             <TextView
                 android:id="@+id/tv_unit"
@@ -123,7 +197,7 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5">
+            android:layout_weight="0.6">
 
             <TextView
                 android:id="@+id/tv_number"
@@ -132,23 +206,11 @@
                 android:text="数量" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5">
-
-            <TextView
-                android:id="@+id/tv_remain"
-                style="@style/TextViewInventoryListTitleStyle"
-                android:drawableEnd="@mipmap/ic_triangle_down"
-                android:text="试剂余量" />
-
-        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5">
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/tv_BatchNumber"
@@ -162,44 +224,45 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="0.6">
 
             <TextView
-                android:id="@+id/tv_ValidityDate"
+                android:id="@+id/tv_operation_type"
                 style="@style/TextViewInventoryListTitleStyle"
                 android:drawableEnd="@mipmap/ic_triangle_down"
-                android:text="有效期" />
+                android:text="类型" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="0.6">
 
             <TextView
-                android:id="@+id/tv_ValidityStatus"
+                android:id="@+id/tv_operator"
                 style="@style/TextViewInventoryListTitleStyle"
                 android:drawableEnd="@mipmap/ic_triangle_down"
-                android:text="效期状态" />
+                android:text="操作人" />
 
         </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1.5">
 
             <TextView
-                android:id="@+id/tv_cell_number"
+                android:id="@+id/tv_operator_time"
                 style="@style/TextViewInventoryListTitleStyle"
                 android:drawableEnd="@mipmap/ic_triangle_down"
-                android:text="位置" />
+                android:text="操作时间" />
 
         </RelativeLayout>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="0.6"
             android:gravity="center"
             android:text="单品码"
             android:textColor="@color/app_color_646464"
@@ -219,7 +282,7 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_DrugContent"
+            android:id="@+id/rv_OperaContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/app_white" />

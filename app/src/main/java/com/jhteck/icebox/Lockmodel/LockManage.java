@@ -1,21 +1,14 @@
 package com.jhteck.icebox.Lockmodel;
 
-import android.icu.text.SimpleDateFormat;
 import android.util.Log;
 
 import com.headleader.MrbBoard.ICallBack;
 import com.headleader.MrbBoard.LockInfo;
 import com.headleader.MrbBoard.MrbBoardHandler;
+import com.jhteck.icebox.myinterface.MyCallback;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
-import android_serialport_api.ComBean;
-import android_serialport_api.MyFunc;
-import android_serialport_api.SerialHelper;
-import android_serialport_api.SerialPortFinder;
 import ku.util.KuConvert;
 import ku.util.KuFunction;
 
@@ -27,6 +20,11 @@ import ku.util.KuFunction;
 public class LockManage {
     private String TAG="LockManage";
     private static LockManage instance;
+    private MyCallback<String> lockCallback;
+
+    public void setLockCallback(MyCallback<String> lockCallback) {
+        this.lockCallback = lockCallback;
+    }
 
     private LockManage() {
         // 私有构造方法，防止外部实例化
@@ -60,6 +58,7 @@ public class LockManage {
                     String strTemp = KuConvert.toHex(datas, " ");
 //                    Instances.fragLog.AddLog(String.format("Serial Received: %s", strTemp));
 //                    fragTest.handle(datas);
+                    handler.handle(datas);
 //                    Log.e(TAG,strTemp);
                 }
 
@@ -71,7 +70,6 @@ public class LockManage {
                 }
             };
             initHandler();
-
         }
         ArrayList<String> list = new ArrayList<>();
         try {
@@ -81,31 +79,55 @@ public class LockManage {
 //            Common.toast((KuFunction.getError(ex)));
         }
 //        cboPort.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, list));
+
     }
 
+    private boolean continueGetLockStatus=true;
     private void open() {
         try {
             mySerial.open();
+
 //            fragTest.enable( true);
 //            btnOpen.setText(Common.getString(R.string.close));
         } catch (Exception ex) {
 //            Common.toast(KuFunction.getError(ex));
+            continueGetLockStatus=false;
         }
     }
     private void close() {
         mySerial.close();
 //        fragTest.enable(false);
 //        btnOpen.setText(Common.getString(R.string.open));
+
     }
 
+    private Thread lockStatusThread;
     public void openLock(){
         //开锁
         int relay = Integer.parseInt("1");
-//        int time = 0xFFFF;
-        int time = 9999999*1000;
+        int time = 0xFFFF;
+//        int time = 9999999*1000;
 //        if (cboAutoRelease.getSelectedItemPosition() > 0)
 //            time =(int) (Float.parseFloat(cboAutoRelease.getSelectedItem().toString()) * 100);
         SendData(handler.dataOfUnlock(relay,  time, 1));
+
+        continueGetLockStatus=true;
+        lockStatusThread=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (continueGetLockStatus){
+                    try {
+                        Thread.sleep(5000);
+//                        Log.d(TAG,"开锁");
+//                        SendData(handler.dataOfUnlock(relay,  time, 1));
+                        getLockStutas();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        lockStatusThread.start();
     }
 
     public void closeLock(){
@@ -115,10 +137,23 @@ public class LockManage {
 //        if (cboAutoRelease.getSelectedItemPosition() > 0)
 //            time =(int) (Float.parseFloat(cboAutoRelease.getSelectedItem().toString()) * 100);
         SendData(handler.dataOfUnlock(relay,  time, 0));
+       clearThread();
+    }
+
+    public void clearThread(){
+        continueGetLockStatus=false;
+        if(lockStatusThread!=null){
+            lockStatusThread.interrupt();
+            lockStatusThread=null;
+        }
     }
 
     public void getLockStutas(){
+//        Log.d(TAG,"getLockStutas");
         int relay = Integer.parseInt("1");
+//        Log.d(TAG,"获取版本号");
+//        SendData(handler.dataOfFirmwareVersion());
+        Log.d(TAG,"获取锁状态");
         SendData(handler.dataOfLockStatus(relay));
     }
 
@@ -133,19 +168,21 @@ public class LockManage {
 //            }
         } catch (Exception ex){
 //            Common.toast(KuFunction.getError(ex));
-            Log.e(TAG,KuFunction.getError(ex));
+            Log.e(TAG, KuFunction.getError(ex));
         }
     }
     public void handle(byte[] datas)     {
         handler.handle(datas);
     }
 
-    private MrbBoardHandler handler;
+    private  MrbBoardHandler handler;
 
     private void initHandler(){
+        Log.d(TAG,"initHandler");
         handler = new MrbBoardHandler(new ICallBack() {
             @Override
             public void NormalHandle( String devID ) {
+                Log.d(TAG,"NormalHandle");
                 if (!devID.isEmpty())
                     SendData(handler.dataOfHeartBreak(devID));
             }
@@ -162,7 +199,10 @@ public class LockManage {
                    /* String strTemp = String.format(getString(R.string.lockstatetemplate),
                             info.lock, info.sensor);
                     runOnUiThread(() -> txtLockStatus.setText(strTemp));*/
-                Log.e(TAG,"LockStatusResult");
+                Log.e(TAG,"LockStatusResult="+info.lock);
+                if(info.lock==1){
+                    lockCallback.callback(info.lock+"");
+                }
             }
 
             @Override

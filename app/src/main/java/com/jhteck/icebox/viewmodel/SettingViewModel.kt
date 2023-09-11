@@ -12,6 +12,7 @@ import com.jhteck.icebox.api.SNCODE
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.RetrofitClient
 import com.jhteck.icebox.repository.entity.FridgesInfoEntity
+import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.tcpServer.MyTcpServerListener
 import com.jhteck.icebox.utils.ContextUtils
 import com.jhteck.icebox.utils.DbUtil
@@ -185,7 +186,8 @@ class SettingViewModel(application: Application) : BaseViewModel<ILoginApiServic
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 showLoading("正在获取天线功率，请稍等...")
-                MyTcpServerListener.getInstance().getAntPower()
+                RfidManage.getInstance().getOutputPower()
+//                MyTcpServerListener.getInstance().getAntPower()
             } catch (e: Exception) {
                 toast("获取天线功率异常${e.message}")
             } finally {
@@ -198,7 +200,8 @@ class SettingViewModel(application: Application) : BaseViewModel<ILoginApiServic
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 showLoading("正在设置天线功率，请稍等...")
-                MyTcpServerListener.getInstance().setAntPower(antPowerDaoList)
+                RfidManage.getInstance().setOutputPower(antPowerDaoList)
+//                MyTcpServerListener.getInstance().setAntPower(antPowerDaoList)
             } catch (e: Exception) {
                 toast("设置天线功率异常${e.message}")
             } finally {

@@ -54,8 +54,14 @@ class MyService : Service() {
                 sendContentBroadcast(REPORT_ANT_POWER_30, result)
             }
         })
+        LockManage.getInstance().setLockCallback(object : MyCallback<String>{
+            override fun callback(result: String) {
+                sendContentBroadcast(LOCKED_SUCCESS, "lock")
+            }
+        })
         return binder
     }
+
 
     override fun onCreate() {
         super.onCreate()

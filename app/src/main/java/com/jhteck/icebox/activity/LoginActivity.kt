@@ -116,8 +116,6 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
         }
         viewModel.loadRfidsFromLocal();
         //测试入口
-        RfidManage.getInstance().initReader()
-        RfidManage.getInstance().linkDevice(true)
         binding.imTestLogin.setOnClickListener {
             if (DEBUG){
                 viewModel.login("admin", "Jinghe233")
@@ -294,8 +292,8 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        stopService()
-        cameraExecutor.shutdown()
+//        stopService()
+//        cameraExecutor.shutdown()
     }
 
     override fun onRestart() {
@@ -320,10 +318,10 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
     private fun changLoginType(isLoginByCard: Boolean) {
         if (isLoginByCard) {
             binding.llHFCard.visibility = View.VISIBLE
-            binding.llAccount.visibility = View.GONE
+            binding.llAccount?.visibility = View.GONE
         } else {
             binding.llHFCard.visibility = View.GONE
-            binding.llAccount.visibility = View.VISIBLE
+            binding.llAccount?.visibility = View.VISIBLE
         }
     }
 

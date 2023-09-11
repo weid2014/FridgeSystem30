@@ -117,7 +117,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1.5"
+        android:layout_weight="2"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -129,6 +129,7 @@
                 android:id="@+id/btn_ItemCode"
                 android:layout_width="96px"
                 android:layout_height="42px"
+                android:layout_marginEnd="4dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/btn_shape_radius_5"
                 android:gravity="center"

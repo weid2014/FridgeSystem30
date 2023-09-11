@@ -246,6 +246,15 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
                     tempList.add(AntPowerDao("$antid", po))
                 }
                 initAntRecycleView(tempList)
+            }else if(key.equals(REPORT_ANT_POWER_30)){
+                tempList.clear()
+                val jsonArray = JSONArray(value.toString())
+                for (i in 0 until jsonArray.length()) {
+                    val antid = i.toString()
+                    val po = jsonArray[i].toString()
+                    tempList.add(AntPowerDao("$antid", po))
+                }
+                initAntRecycleView(tempList)
             }
         }
     }

@@ -196,7 +196,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                 if (edPassWord.text.toString() == "" || edCommitPassWord.text.toString()
                     == "" || edUsername.text.toString() == ""
                     || edUserId.text.toString()
-                    == "" || tv_nfcId?.text.toString().length != "1698A858A115F60401010004880432E54BD9".length
+                    == "" || tv_nfcId?.text.toString().length ==0
                 ) {
                     tvTips.setText("请输入必填项，请检查！")
                 } else if (edPassWord.text.toString() != edCommitPassWord.text.toString()) {
@@ -296,7 +296,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                 if (edPassWord.text.toString() == "" || edCommitPassWord.text.toString()
                     == "" || edUsername.text.toString() == ""
                     || edUserId.text.toString()
-                    == "" || tv_nfcId?.text.toString().length != "1698A858A115F60401010004880432E54BD9".length
+                    == "" || tv_nfcId?.text.toString().length ==0
                 ) {
                     tvTips.setText("请输入必填项，请检查！")
                 } else if (edPassWord.text.toString() != edCommitPassWord.text.toString()) {

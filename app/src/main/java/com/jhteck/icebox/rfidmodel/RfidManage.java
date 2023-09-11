@@ -27,7 +27,9 @@ import com.payne.reader.util.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -42,7 +44,7 @@ public class RfidManage {
     private static RfidManage instance;
 
     private boolean mLoopInventory;
-    private List<String> rfidArrays;
+    private Set<String> rfidArrays;
     private Lock lock = new ReentrantLock();
     private Reader mReader;
     private String[] mDevicesPath;
@@ -53,17 +55,14 @@ public class RfidManage {
         this.antPowerArrayCallback = antPowerArrayCallback;
     }
 
+
     public interface OnInventoryResult {
-        void onInventoryResult(List<String> rfids);
+        void onInventoryResult(Set<String> rfids);
     }
 
     private OnInventoryResult rfidArraysRendEndCallback;
 
-    /**
-     * 获取rfid回调
-     *
-     * @param rfidArraysRendEndCallback
-     */
+
     public void setRfidArraysRendEndCallback(OnInventoryResult rfidArraysRendEndCallback) {
         this.rfidArraysRendEndCallback = rfidArraysRendEndCallback;
     }
@@ -90,7 +89,7 @@ public class RfidManage {
         mDevicesPath = portFinder.getAllDevicesPath();
 
     }
-
+    private Set<String> epcSet = new HashSet<>();
     public void initReader() {
         Log.d(TAG, "initReader");
         mReader = ReaderImpl.create(AntennaCount.EIGHT_CHANNELS);
@@ -118,14 +117,15 @@ public class RfidManage {
                     public void accept(final InventoryTag inventoryTag) throws Exception {
                         Log.e("gpenghui", "标签信息: " + inventoryTag.toString());
                         try {
-                            lock.lock();
+//                            lock.lock();
 
-                            rfidArrays = new ArrayList<>();
-                            rfidArrays.add(inventoryTag.getEpc());
+
+                            rfidArrays.add(inventoryTag.getEpc().replace(" ",""));
+                            epcSet.add(inventoryTag.getEpc().replace(" ",""));
                         } catch (Exception ex) {
                             Log.e(TAG, ex.getMessage());
                         } finally {
-                            lock.unlock();
+//                            lock.unlock();
                         }
                         //盘存成功回调
 
@@ -144,17 +144,17 @@ public class RfidManage {
                         Log.e("gpenghui", "一次盘存结束: " + inventoryTagEnd.toString());
 
                         try {
-                            if (rfidArraysRendEndCallback != null) {
-                                lock.lock();
-                                List<String> copyRfids = rfidArrays.stream().collect(Collectors.toList());
+//                            if (rfidArraysRendEndCallback != null) {
+//                                lock.lock();
+//                                Set<String> copyRfids = rfidArrays.stream().collect(Collectors.toList());
 
-                                rfidArraysRendEndCallback.onInventoryResult(copyRfids);
-                            }
+
+//                            }
 
                         } catch (Exception ex) {
                             Log.e(TAG, ex.getMessage());
                         } finally {
-                            lock.unlock();
+//                            lock.unlock();
                         }
                     }
                 })
@@ -273,11 +273,17 @@ public class RfidManage {
 //            btnInventory.setSelected(true);
 //            btnInventory.setText(R.string.stop_inventory);
 //            mArrayAdapter.clear();
+            rfidArrays = new HashSet<String>();
             mReader.startInventory(true);
         } else {
 //            btnInventory.setSelected(false);
 //            btnInventory.setText(R.string.start_inventory);
             mReader.stopInventory();
+            //结束扫描后返回结果
+//            rfidArraysRendEndCallback.onInventoryResult(epcSet);
+            Log.e("gpenghui", "一次盘存结束: " + rfidArrays.toString());
+            rfidArraysRendEndCallback.onInventoryResult(rfidArrays);
+//            resultArrayCallback.callback(rfidArrays);
         }
     }
 

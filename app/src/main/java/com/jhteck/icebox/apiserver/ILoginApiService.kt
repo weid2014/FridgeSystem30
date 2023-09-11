@@ -9,10 +9,7 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Url
+import retrofit2.http.*
 
 
 interface ILoginApiService :IAccountService, ApiService {
@@ -49,4 +46,7 @@ interface ILoginApiService :IAccountService, ApiService {
     @GET
     suspend fun getUpdateInfo(@Url url: String?): UpdateInfoDto
 
+    //全量上报
+    @PUT("/api/f/rfids/sync")
+    suspend fun syncRfids(@Body body: RequestBody): Response<RfidDao>
 }

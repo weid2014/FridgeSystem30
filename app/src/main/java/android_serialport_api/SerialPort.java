@@ -44,12 +44,11 @@ public class SerialPort {
 			try {
 				/* Missing read/write permission, trying to chmod the file */
 				Process su;
-				su = Runtime.getRuntime().exec("/system/bin/su");
-				String cmd = "chmod 666 " + device.getAbsolutePath() + "\n"
-						+ "exit\n";
+//				su = Runtime.getRuntime().exec("/system/bin/su");
+				su = Runtime.getRuntime().exec("su");
+				String cmd = "chmod 666 " + device.getAbsolutePath() + "\n" + "exit\n";
 				su.getOutputStream().write(cmd.getBytes());
-				if ((su.waitFor() != 0) || !device.canRead()
-						|| !device.canWrite()) {
+				if ((su.waitFor() != 0) || !device.canRead() || !device.canWrite()) {
 					throw new SecurityException();
 				}
 			} catch (Exception e) {
@@ -58,18 +57,13 @@ public class SerialPort {
 			}
 		}
 
-		try {
-			mFd = open(device.getAbsolutePath(), baudrate, flags);
-			if (mFd == null) {
-				Log.e(TAG, "native open returns null");
-				throw new IOException();
-			}
-			mFileInputStream = new FileInputStream(mFd);
-			mFileOutputStream = new FileOutputStream(mFd);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new SecurityException();
+		mFd = open(device.getAbsolutePath(), baudrate, flags);
+		if (mFd == null) {
+//			Log.e(TAG, "native open returns null");
+			throw new IOException();
 		}
+		mFileInputStream = new FileInputStream(mFd);
+		mFileOutputStream = new FileOutputStream(mFd);
 	}
 
 	// Getters and setters
@@ -86,5 +80,10 @@ public class SerialPort {
 	public native void close();
 	static {
 		System.loadLibrary("serial_port");
+		System.loadLibrary("SerialPort1");
 	}
+	/*static {
+		System.loadLibrary("serial_port");
+		System.loadLibrary("SerialPort1");
+	}*/
 }
