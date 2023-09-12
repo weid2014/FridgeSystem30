@@ -118,7 +118,7 @@ public class RfidManage {
                         Log.e("gpenghui", "标签信息: " + inventoryTag.toString());
                         try {
 //                            lock.lock();
-                            rfidArrays.add(inventoryTag.getEpc());
+                            rfidArrays.add(inventoryTag.getEpc().replace(" ",""));
                         } catch (Exception ex) {
                             Log.e(TAG, ex.getMessage());
                         } finally {

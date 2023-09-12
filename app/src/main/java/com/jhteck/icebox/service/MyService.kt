@@ -33,7 +33,7 @@ class MyService : Service() {
     private val binder = MyBinder()
     private val generator: Random = Random()
     override fun onBind(intent: Intent?): IBinder? {
-        MyTcpServerListener.getInstance().setOnResultListener {
+        /*MyTcpServerListener.getInstance().setOnResultListener {
             Log.d("tcpserver", "setOnResultListener MyTcpMsg${it.toString()}")
             if (it.type.equals(LOCKED_SUCCESS)) {
                 sendContentBroadcast(LOCKED_SUCCESS, "lock")
@@ -42,7 +42,7 @@ class MyService : Service() {
             } else {
                 sendContentBroadcast(it.type, it.content)
             }
-        }
+        }*/
         NfcManage.getInstance().setStringMyCallback(object : MyCallback<String>{
             override fun callback(result: String) {
                 //返回卡号
@@ -128,7 +128,7 @@ class MyService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        MyTcpServerListener.getInstance().startServer();
+//        MyTcpServerListener.getInstance().startServer();
         Log.d(TAG, "MyService onDestroy")
     }
 

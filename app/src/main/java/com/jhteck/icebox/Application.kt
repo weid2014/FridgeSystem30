@@ -77,16 +77,8 @@ class Application : BaseApp() {
     override fun onCreate() {
         super.onCreate()
         //腾讯bugly捕获bug日志
-        /*CoroutineScope(Dispatchers.IO).launch {
-            if (NetworkUtil.isNetSystemUsable(this@Application)) {
-                try {
-                    if (NetworkUtil.isNetOnline()) {
-                        CrashReport.initCrashReport(applicationContext, "30a4125338", false);
-                    }
-                } catch (e: Exception) {
-                }
-            }
-        }*/
+        CrashReport.initCrashReport(applicationContext, "30a4125338", false);
+
         // object 对象表达式,创建一个匿名类，并重写 run() 方法
         /*object : Thread() {
             override fun run() {

@@ -44,7 +44,7 @@ public class LockManage {
     public void initSerialByPort(String port) {
         initSerial();
         mySerial.port(port);
-        if (AppConstantsKt.NOT_HARD_DEVICE) return;//无硬件模式
+//        if (AppConstantsKt.NOT_HARD_DEVICE) return;//无硬件模式
         open();
     }
 

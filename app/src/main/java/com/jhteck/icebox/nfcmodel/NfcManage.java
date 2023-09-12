@@ -104,7 +104,7 @@ public class NfcManage {
         Log.d(TAG,serialCom.getPort());
         Log.d(TAG,serialCom.getBaudRate()+"");
 //        OpenComPort(serialCom);
-        if (!AppConstantsKt.NOT_HARD_DEVICE)return;//无硬件模式
+//        if (!AppConstantsKt.NOT_HARD_DEVICE)return;//无硬件模式
         OpenComPort(serialCom);
     }
 

@@ -470,7 +470,8 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                     } else {
                         try {
                             retryScanNum = 0
-                            viewModel.startFCLInventory()
+                            viewModel.startFCLInventory30()
+//                            viewModel.startFCLInventory()
                         } catch (e: Exception) {
                         }
                     }

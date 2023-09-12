@@ -36,19 +36,19 @@ class SettingViewModel(application: Application) : BaseViewModel<ILoginApiServic
     }
 
     fun openLock() {
-        MyTcpServerListener.getInstance().openLock()
+//        MyTcpServerListener.getInstance().openLock()
     }
 
     fun openLamp() {
         //开灯
 //        LightHelp().Test()
 //        LightHelp.testStatic()
-        MyTcpServerListener.getInstance().sendOpenLamp()
+//        MyTcpServerListener.getInstance().sendOpenLamp()
     }
 
     fun closeLamp() {
         //关灯
-        MyTcpServerListener.getInstance().sendCloseLamp()
+//        MyTcpServerListener.getInstance().sendCloseLamp()
     }
 
     private var lastonclickTime = 0L;//全局变量

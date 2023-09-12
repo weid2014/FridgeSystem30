@@ -15,7 +15,6 @@ import com.jhteck.icebox.api.request.RequestRfidsDao
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.LocalService
 import com.jhteck.icebox.repository.entity.AccountEntity
-import com.jhteck.icebox.tcpServer.MyTcpServerListener
 import com.jhteck.icebox.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -52,7 +51,8 @@ class LoginViewModel(application: android.app.Application) :
 //                    loginStatus.postValue(true)
                     //wait wait wait
                     if (!DEBUG) {
-                        MyTcpServerListener.getInstance().openLock()
+//                        MyTcpServerListener.getInstance().openLock()
+                        LockManage.getInstance().openLock()
                     }
                     loginUserInfo.postValue(userInfo)
                     SharedPreferencesUtils.setPrefString(

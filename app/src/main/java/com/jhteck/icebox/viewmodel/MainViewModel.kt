@@ -109,7 +109,7 @@ class MainViewModel(application: android.app.Application) :
     fun startFCLInventory30() {
         //防止响应过于频繁
         var time = SystemClock.uptimeMillis();//局部变量
-        if (time - lastonclickTime <= 8000) {
+        if (time - lastonclickTime <= 18000) {
 
         } else {
             lastonclickTime = time
@@ -120,7 +120,6 @@ class MainViewModel(application: android.app.Application) :
                     RfidManage.getInstance().setRfidArraysRendEndCallback {
                         Log.d(TAG,"正在结算中，请稍等...${it.toString()}")
                         rfidsSync(it.toList())
-
                     }
                     delay(8000)
                     RfidManage.getInstance().startStop(false)
