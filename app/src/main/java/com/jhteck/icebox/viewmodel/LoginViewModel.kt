@@ -2,6 +2,7 @@ package com.jhteck.icebox.viewmodel
 
 import android.content.Context
 import android.os.SystemClock
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.hele.mrd.app.lib.base.BaseApp
@@ -27,7 +28,7 @@ import kotlinx.coroutines.launch
  */
 class LoginViewModel(application: android.app.Application) :
     BaseViewModel<ILoginApiService>(application) {
-
+    private val TAG="LoginViewModel"
     private val userDao = DbUtil.getDb().accountDao();
     fun login(username: String?, password: String?) {
         viewModelScope.launch(Dispatchers.Default) {
@@ -74,34 +75,35 @@ class LoginViewModel(application: android.app.Application) :
     fun loginByCark(myTcpMsg: String) {
         //防止刷卡响应过于频繁
         var time = SystemClock.uptimeMillis();//局部变量
-        if (time - lastonclickTime <= 2000) {
+        if (time - lastonclickTime <= 8000) {
 
         } else {
             lastonclickTime = time
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.Default) {
                 try {
                     showLoading(BaseApp.app.getString(R.string.login_tip))
                     var userInfo = userDao.findByNfcId(myTcpMsg);
+                    Log.d(TAG,userInfo.nfc_id)
                     if (userInfo == null) {
-
                         toast("${myTcpMsg} 未注册")
                         return@launch;
                     }
 
-                    delay(1000)
                     //wait wait wait
                     if (!DEBUG) {
 //                        MyTcpServerListener.getInstance().openLock()
+                        LockManage.getInstance().openLock()
                     }
-                    LockManage.getInstance().openLock()
+//                    delay(1000)
                     loginUserInfo.postValue(userInfo)
                     SharedPreferencesUtils.setPrefString(
                         ContextUtils.getApplicationContext(),
                         "loginUserInfo",
                         Gson().toJson(userInfo)
                     )
-                    cardStatus.postValue(true)
+//                    cardStatus.postValue(true)
                 } catch (e: Exception) {
+                    Log.e(TAG,e.toString())
                     toast(BaseApp.app.getString(R.string.login_tip_hfc_fail))
                 } finally {
                     hideLoading()

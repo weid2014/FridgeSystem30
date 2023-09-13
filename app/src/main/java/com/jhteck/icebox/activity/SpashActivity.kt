@@ -286,7 +286,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         super.initObservables()
         viewModel.loginStatus.observe(this) {
             startActivity(Intent(this, LoginActivity::class.java))
-//            finish()
+            finish()
             // 将标志位设置为 false，表示应用程序已经被安装过
             SharedPreferencesUtils.setPrefBoolean(this@SpashActivity, IS_FIRST_RUN, false)
         }
@@ -379,7 +379,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     }
 
     private fun stopService() {
-        unbindService(conn);
+//        unbindService(conn);
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }

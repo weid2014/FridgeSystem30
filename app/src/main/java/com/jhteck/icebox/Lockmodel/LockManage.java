@@ -5,11 +5,11 @@ import android.util.Log;
 import com.headleader.MrbBoard.ICallBack;
 import com.headleader.MrbBoard.LockInfo;
 import com.headleader.MrbBoard.MrbBoardHandler;
-import com.jhteck.icebox.api.AppConstantsKt;
 import com.jhteck.icebox.myinterface.MyCallback;
 
 import java.util.ArrayList;
 
+import android_serialport_api.SerialHelper;
 import ku.util.KuConvert;
 import ku.util.KuFunction;
 
@@ -22,6 +22,7 @@ public class LockManage {
     private String TAG = "LockManage";
     private static LockManage instance;
     private MyCallback<String> lockCallback;
+    private SendThread mSendThread;
 
     public void setLockCallback(MyCallback<String> lockCallback) {
         this.lockCallback = lockCallback;
@@ -46,6 +47,9 @@ public class LockManage {
         mySerial.port(port);
 //        if (AppConstantsKt.NOT_HARD_DEVICE) return;//无硬件模式
         open();
+        mSendThread=new SendThread();
+        mSendThread.setSuspendFlag();
+        mSendThread.start();
     }
 
     private void initSerial() {
@@ -89,20 +93,13 @@ public class LockManage {
     private void open() {
         try {
             mySerial.open();
-
-//            fragTest.enable( true);
-//            btnOpen.setText(Common.getString(R.string.close));
         } catch (Exception ex) {
-//            Common.toast(KuFunction.getError(ex));
             continueGetLockStatus = false;
         }
     }
 
     private void close() {
         mySerial.close();
-//        fragTest.enable(false);
-//        btnOpen.setText(Common.getString(R.string.open));
-
     }
 
     private Thread lockStatusThread;
@@ -115,64 +112,69 @@ public class LockManage {
 //        if (cboAutoRelease.getSelectedItemPosition() > 0)
 //            time =(int) (Float.parseFloat(cboAutoRelease.getSelectedItem().toString()) * 100);
         SendData(handler.dataOfUnlock(relay, time, 1));
+        mSendThread.setResume();
 
-        continueGetLockStatus = true;
-        lockStatusThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (continueGetLockStatus) {
-                    try {
-                        Thread.sleep(5000);
-//                        Log.d(TAG,"开锁");
-//                        SendData(handler.dataOfUnlock(relay,  time, 1));
-                        getLockStutas();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+    }
+
+    private class SendThread extends Thread {
+        public boolean suspendFlag = true;// 控制线程的执行
+
+        @Override
+        public void run() {
+            super.run();
+            while (!isInterrupted()) {
+                synchronized (this) {
+                    while (suspendFlag) {
+                        try {
+                            wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+                try {
+                    Thread.sleep(10000);
+                    getLockStutas();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        });
-        lockStatusThread.start();
+        }
+
+        //线程暂停
+        public void setSuspendFlag() {
+            this.suspendFlag = true;
+        }
+
+        //唤醒线程
+        public synchronized void setResume() {
+            this.suspendFlag = false;
+            notify();
+        }
     }
 
     public void closeLock() {
         //关锁
         int relay = Integer.parseInt("1");
         int time = 0xFFFF;
-//        if (cboAutoRelease.getSelectedItemPosition() > 0)
-//            time =(int) (Float.parseFloat(cboAutoRelease.getSelectedItem().toString()) * 100);
         SendData(handler.dataOfUnlock(relay, time, 0));
         clearThread();
     }
 
     public void clearThread() {
-        continueGetLockStatus = false;
-        if (lockStatusThread != null) {
-            lockStatusThread.interrupt();
-            lockStatusThread = null;
-        }
+        mSendThread.setSuspendFlag();
     }
 
     public void getLockStutas() {
-//        Log.d(TAG,"getLockStutas");
         int relay = Integer.parseInt("1");
-//        Log.d(TAG,"获取版本号");
-//        SendData(handler.dataOfFirmwareVersion());
         Log.d(TAG, "获取锁状态");
         SendData(handler.dataOfLockStatus(relay));
     }
 
     private void SendData(byte[] datas) {
         try {
-//            if (mode == 0){
             Instances.serial.write(datas);
-//            } else if (mode == 1){
-//                Instances.socket.write(datas);
-//            } else if (mode == 2){
-//                Instances.usb.write(datas);
-//            }
         } catch (Exception ex) {
-//            Common.toast(KuFunction.getError(ex));
             Log.e(TAG, KuFunction.getError(ex));
         }
     }
@@ -184,11 +186,9 @@ public class LockManage {
     private MrbBoardHandler handler;
 
     private void initHandler() {
-        Log.d(TAG, "initHandler");
         handler = new MrbBoardHandler(new ICallBack() {
             @Override
             public void NormalHandle(String devID) {
-                Log.d(TAG, "NormalHandle");
                 if (!devID.isEmpty())
                     SendData(handler.dataOfHeartBreak(devID));
             }
@@ -210,6 +210,7 @@ public class LockManage {
                     runOnUiThread(() -> txtLockStatus.setText(strTemp));*/
                 Log.e(TAG, "LockStatusResult=" + info.lock);
                 if (info.lock == 1) {
+                    clearThread();
                     lockCallback.callback(info.lock + "");
                 }
             }
@@ -221,9 +222,6 @@ public class LockManage {
 
             @Override
             public void LockStatusExResult(LockInfo info) {
-                    /*String strTemp = String.format(getString(R.string.lockstatetemplate),
-                            info.lock, info.sensor);
-                    runOnUiThread(() -> txtLockStatusEx.setText(strTemp));*/
                 Log.e(TAG, "LockStatusExResult");
             }
 
@@ -234,7 +232,6 @@ public class LockManage {
 
             @Override
             public void FirmwareVersionResult(String ver) {
-//                    runOnUiThread(() -> txtFirmwareVersion.setText(ver));
                 Log.e(TAG, "FirmwareVersionResult");
             }
         });

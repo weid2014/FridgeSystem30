@@ -123,7 +123,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
             }
         }
 //        initPermission()
-        doRegisterReceiver();
+//        doRegisterReceiver();
     }
 
     override fun tryLoadData() {
@@ -286,13 +286,17 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("loginUserInfo", Gson().toJson(viewModel.loginUserInfo.value));
         startActivity(intent)
-//        finish()
+        finish()
     }
 
+    override fun onStart() {
+        super.onStart()
+        doRegisterReceiver()
+    }
 
     override fun onDestroy() {
         super.onDestroy()
-//        stopService()
+        stopService()
 //        cameraExecutor.shutdown()
     }
 
@@ -309,7 +313,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
     }
 
     private fun stopService() {
-        unbindService(conn);
+//        unbindService(conn);
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }

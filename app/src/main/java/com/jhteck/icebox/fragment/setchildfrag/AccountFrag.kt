@@ -43,6 +43,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
 
     private var popupWindowAdd: PopupWindow? = null
     private var popupWindowEdit: PopupWindow? = null
+    private var inAccountPage: Boolean = false
 
     companion object {
         fun newInstance(): AccountFrag {
@@ -116,6 +117,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
         val roleID = SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10)
         //弹出结算界面
         popupWindowEdit = PopupWindow().apply {
+            inAccountPage = true
             //入口参数配置
             val layoutInflater = LayoutInflater.from(BaseApp.app)
             contentView =
@@ -196,7 +198,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                 if (edPassWord.text.toString() == "" || edCommitPassWord.text.toString()
                     == "" || edUsername.text.toString() == ""
                     || edUserId.text.toString()
-                    == "" || tv_nfcId?.text.toString().length ==0
+                    == "" || tv_nfcId?.text.toString().length == 0
                 ) {
                     tvTips.setText("请输入必填项，请检查！")
                 } else if (edPassWord.text.toString() != edCommitPassWord.text.toString()) {
@@ -242,6 +244,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
         val roleID = SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10)
         //弹出结算界面
         popupWindowAdd = PopupWindow().apply {
+            inAccountPage = true
             //入口参数配置
             val layoutInflater = LayoutInflater.from(requireActivity())
             contentView =
@@ -296,7 +299,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                 if (edPassWord.text.toString() == "" || edCommitPassWord.text.toString()
                     == "" || edUsername.text.toString() == ""
                     || edUserId.text.toString()
-                    == "" || tv_nfcId?.text.toString().length ==0
+                    == "" || tv_nfcId?.text.toString().length == 0
                 ) {
                     tvTips.setText("请输入必填项，请检查！")
                 } else if (edPassWord.text.toString() != edCommitPassWord.text.toString()) {
@@ -346,6 +349,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
             popupWindowEdit?.dismiss()
         }
         popupWindowEdit = null
+        inAccountPage = false
         DensityUtil.backgroundAlpha(requireActivity(), 1f)
     }
 
@@ -389,8 +393,10 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
             val value = intent.getStringExtra(TCP_MSG_VALUE)
             if (key == SYNC_ACCOUNT_MSG) {
                 viewModel.getAllUsers()
-            } else {
-                compareRfid(MyTcpMsg(key, value))
+            } else if(key== HFCard){
+                if (inAccountPage) {
+                    compareRfid(MyTcpMsg(key, value))
+                }
             }
         }
     }

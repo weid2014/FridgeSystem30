@@ -151,9 +151,9 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
         viewModel.loadDataLocal()
 
-        val intent = Intent(this, MyService::class.java)
-        bindService(intent, conn, Context.BIND_AUTO_CREATE)
-        doRegisterReceiver();
+        /*val intent = Intent(this, MyService::class.java)
+        bindService(intent, conn, Context.BIND_AUTO_CREATE)*/
+
 //        MyTcpServerListener.getInstance().getAntPower()
     }
 
@@ -259,9 +259,19 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        doRegisterReceiver();
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(mReceiver == null)
+            doRegisterReceiver()
+    }
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(conn);
+//        unbindService(conn);
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
@@ -276,7 +286,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             popupWindow = null
         }
         startActivity(Intent(this, LoginActivity::class.java))
-//        finish()
+        finish()
     }
 
     private var isContinue = true;
@@ -440,6 +450,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             }
         }
     }
+
 
     /**
      * 注册广播接收者
