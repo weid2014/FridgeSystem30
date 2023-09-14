@@ -115,7 +115,7 @@ public class LockManage {
         int time = 0xFFFF;
         SendData(handler.dataOfUnlock(relay, time, 1));
         //wait wait wait
-//        mSendThread.setResume();
+        mSendThread.setResume();
     }
 
     public void getVersion(){
