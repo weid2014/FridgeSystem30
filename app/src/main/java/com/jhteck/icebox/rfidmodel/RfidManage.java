@@ -5,7 +5,6 @@ import android.util.Log;
 import com.jhteck.icebox.api.AntPowerDao;
 import com.jhteck.icebox.myinterface.MyCallback;
 import com.naz.serial.port.ModuleManager;
-import com.naz.serial.port.SerialPortFinder;
 import com.payne.connect.port.SerialPortHandle;
 import com.payne.reader.Reader;
 import com.payne.reader.base.Consumer;
@@ -17,6 +16,7 @@ import com.payne.reader.bean.receive.InventoryTag;
 import com.payne.reader.bean.receive.InventoryTagEnd;
 import com.payne.reader.bean.receive.OutputPower;
 import com.payne.reader.bean.receive.Success;
+import com.payne.reader.bean.receive.Version;
 import com.payne.reader.bean.receive.WorkAntenna;
 import com.payne.reader.bean.send.FastSwitchEightAntennaInventory;
 import com.payne.reader.bean.send.InventoryConfig;
@@ -25,14 +25,10 @@ import com.payne.reader.bean.send.PowerEightAntenna;
 import com.payne.reader.process.ReaderImpl;
 import com.payne.reader.util.ArrayUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
 
 /**
  * @author wade
@@ -42,14 +38,15 @@ import java.util.stream.Collectors;
 public class RfidManage {
     private String TAG = "RfidManage";
     private static RfidManage instance;
-
     private boolean mLoopInventory;
     private Set<String> rfidArrays;
-    private Lock lock = new ReentrantLock();
     private Reader mReader;
-    private String[] mDevicesPath;
-    private boolean mKeyF4Pressing = false;
     private MyCallback<String> antPowerArrayCallback;
+    private MyCallback<String> versionCallback;
+
+    public void setVersionCallback(MyCallback<String> versionCallback) {
+        this.versionCallback = versionCallback;
+    }
 
     public void setAntPowerArrayCallback(MyCallback<String> antPowerArrayCallback) {
         this.antPowerArrayCallback = antPowerArrayCallback;
@@ -71,9 +68,23 @@ public class RfidManage {
         this.rfidArraysRendEndCallback = null;
     }
 
+    public interface OnInventoryResultTest {
+        void onInventoryResultTest(Set<String> rfids);
+    }
+
+    private OnInventoryResultTest rfidArraysRendEndCallbackTest;
+
+
+    public void setRfidArraysRendEndCallbackTest(OnInventoryResultTest rfidArraysRendEndCallbackTest) {
+        this.rfidArraysRendEndCallbackTest = rfidArraysRendEndCallbackTest;
+    }
+
+    public void setRfidArraysRendEndCallbackTest() {
+        this.rfidArraysRendEndCallbackTest = null;
+    }
+
     private RfidManage() {
         // 私有构造方法，防止外部实例化
-
     }
 
     public static synchronized RfidManage getInstance() {
@@ -83,15 +94,7 @@ public class RfidManage {
         return instance;
     }
 
-    public void initSerialPort() {
-        SerialPortFinder portFinder = new SerialPortFinder();
-        String[] devices = portFinder.getAllDevices();
-        mDevicesPath = portFinder.getAllDevicesPath();
-
-    }
-    private Set<String> epcSet = new HashSet<>();
     public void initReader() {
-        Log.d(TAG, "initReader");
         mReader = ReaderImpl.create(AntennaCount.EIGHT_CHANNELS);
         mReader.setOriginalDataCallback(
                 new Consumer<byte[]>() {
@@ -117,21 +120,11 @@ public class RfidManage {
                     public void accept(final InventoryTag inventoryTag) throws Exception {
                         Log.e("gpenghui", "标签信息: " + inventoryTag.toString());
                         try {
-//                            lock.lock();
-                            rfidArrays.add(inventoryTag.getEpc().replace(" ",""));
+                            rfidArrays.add(inventoryTag.getEpc().replace(" ", ""));
                         } catch (Exception ex) {
                             Log.e(TAG, ex.getMessage());
-                        } finally {
-//                            lock.unlock();
                         }
                         //盘存成功回调
-
-                        /*runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mArrayAdapter.add(inventoryTag.getEpc());
-                            }
-                        });*/
                     }
                 })
                 .setOnInventoryTagEndSuccess(new Consumer<InventoryTagEnd>() {
@@ -140,19 +133,6 @@ public class RfidManage {
                         //一次盘存结束回调
                         Log.e("gpenghui", "一次盘存结束: " + inventoryTagEnd.toString());
 
-                        try {
-//                            if (rfidArraysRendEndCallback != null) {
-//                                lock.lock();
-//                                Set<String> copyRfids = rfidArrays.stream().collect(Collectors.toList());
-
-
-//                            }
-
-                        } catch (Exception ex) {
-                            Log.e(TAG, ex.getMessage());
-                        } finally {
-//                            lock.unlock();
-                        }
                     }
                 })
                 .setOnFailure(new Consumer<InventoryFailure>() {
@@ -160,7 +140,6 @@ public class RfidManage {
                     public void accept(InventoryFailure inventoryFailure) throws Exception {
                         //盘存失败回调
                         Log.e("gpenghui", "盘存失败: " + inventoryFailure.toString());
-
                     }
                 })
                 .build();
@@ -174,9 +153,8 @@ public class RfidManage {
      * @param link Connect or disconnect
      *             连接or断开连接
      */
-    public void linkDevice(boolean link) {
-        Log.d(TAG, "linkDevice");
-//        initReader();
+    public void linkDevice(boolean link, String devicePath) {
+        Log.d(TAG, "linkDevice devicePath=" + devicePath);
         ModuleManager.newInstance().setUHFStatus(true);
         try {
             Thread.sleep(50);
@@ -186,17 +164,12 @@ public class RfidManage {
         ModuleManager.newInstance().setUHFStatus(false);
 
         if (link) {
-            //Start to connect the device, the first parameter is the serial port number,
-            // the second parameter is the baud rate, please refer to the api document for details
             //开始连接设备，第一个参数是串口号，第二个参数是波特率，具体可参考api文档
-//            String devicePath = mDevicesPath[spSerialNumber.getSelectedItemPosition()];
-            SerialPortHandle handle = new SerialPortHandle("/dev/ttyS8", 115200);
+            SerialPortHandle handle = new SerialPortHandle(devicePath, 115200);
             boolean linkSuccess = mReader.connect(handle);
             if (linkSuccess) {
-                //UHF module power-on operation (if the module has been powered on, you can remove the power-on operation)
                 //UHF模块上电操作（如果模块已经上电，可以去掉上电操作）
                 if (!ModuleManager.newInstance().setUHFStatus(true)) {
-                    Log.d(TAG, "link_error");
                     return;
                 }
                 Log.d(TAG, "link_success");
@@ -214,41 +187,28 @@ public class RfidManage {
      * Get the reader version number
      * 获取读写器版本号
      */
-    /*private void getVersion() {
+    public void getVersion() {
         if (!mReader.isConnected()) {
-            //Not connected, prompt the user
             //未连接，提示用户
-            Toast.makeText(this, R.string.please_link_device, Toast.LENGTH_SHORT).show();
+            versionCallback.callback("未连接");
             return;
         }
         mReader.getFirmwareVersion(
                 new Consumer<Version>() {
                     @Override
                     public void accept(final Version version) throws Exception {
-                        //Asynchronous threads modify the UI, you need to switch to the main thread first
                         //异步线程修改UI，需要先切换到主线程
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                tvVersion.setText(getString(R.string.str_version) + version.getVersion());
-                            }
-                        });
+                        versionCallback.callback("当前版本号:"+version.getVersion());
                     }
                 },
                 new Consumer<Failure>() {
                     @Override
                     public void accept(Failure failure) throws Exception {
-                        //Asynchronous threads modify the UI, you need to switch to the main thread first
                         //异步线程修改UI，需要先切换到主线程
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this, R.string.get_version_error, Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        versionCallback.callback("获取版本号失败");
                     }
                 });
-    }*/
+    }
 
     /**
      * Start or stop inventory
@@ -256,32 +216,26 @@ public class RfidManage {
      *
      * @param startInventory bool
      */
-    public void startStop(boolean startInventory) {
+    public void startStop(boolean startInventory,boolean isTest) {
         Log.d(TAG, "startStop");
         mLoopInventory = startInventory;
         if (startInventory) {
             if (!mReader.isConnected()) {
-                //Not connected, prompt the user
                 //未连接，提示用户
-//                Toast.makeText(this, R.string.please_link_device, Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "please_link_device");
                 return;
             }
-//            btnInventory.setSelected(true);
-//            btnInventory.setText(R.string.stop_inventory);
-//            mArrayAdapter.clear();
-//            rfidArrays = new ArrayList<>();//先清空
             rfidArrays = new HashSet<String>();
             mReader.startInventory(true);
         } else {
-//            btnInventory.setSelected(false);
-//            btnInventory.setText(R.string.start_inventory);
             mReader.stopInventory();
             //结束扫描后返回结果
-//            rfidArraysRendEndCallback.onInventoryResult(epcSet);
             Log.e("gpenghui", "一次盘存结束: " + rfidArrays.toString());
-            rfidArraysRendEndCallback.onInventoryResult(rfidArrays);
-//            resultArrayCallback.callback(rfidArrays);
+            if(isTest){
+                rfidArraysRendEndCallbackTest.onInventoryResultTest(rfidArrays);
+            }else {
+                rfidArraysRendEndCallback.onInventoryResult(rfidArrays);
+            }
         }
     }
 
@@ -316,12 +270,7 @@ public class RfidManage {
                 Log.d(TAG, "success=" + outputPower.toString());
                 antPowerArrayCallback.callback(Arrays.toString(outputPower.getOutputPower()));
             }
-        }, new Consumer<Failure>() {
-            @Override
-            public void accept(Failure failure) throws Exception {
-
-            }
-        });
+        }, null);
     }
 
     //2.4.3.2	设置每个天线的射频输出功率

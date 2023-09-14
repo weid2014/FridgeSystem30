@@ -9,7 +9,6 @@ import com.jhteck.icebox.myinterface.MyCallback;
 
 import java.util.ArrayList;
 
-import android_serialport_api.SerialHelper;
 import ku.util.KuConvert;
 import ku.util.KuFunction;
 
@@ -22,10 +21,15 @@ public class LockManage {
     private String TAG = "LockManage";
     private static LockManage instance;
     private MyCallback<String> lockCallback;
+    private MyCallback<String> versionCallback;
     private SendThread mSendThread;
 
     public void setLockCallback(MyCallback<String> lockCallback) {
         this.lockCallback = lockCallback;
+    }
+
+    public void setVersionCallback(MyCallback<String> versionCallback) {
+        this.versionCallback = versionCallback;
     }
 
     private LockManage() {
@@ -44,10 +48,11 @@ public class LockManage {
 
     public void initSerialByPort(String port) {
         initSerial();
+        Log.d(TAG,"port="+port);
         mySerial.port(port);
 //        if (AppConstantsKt.NOT_HARD_DEVICE) return;//无硬件模式
         open();
-        mSendThread=new SendThread();
+        mSendThread = new SendThread();
         mSendThread.setSuspendFlag();
         mSendThread.start();
     }
@@ -98,7 +103,7 @@ public class LockManage {
         }
     }
 
-    private void close() {
+    public void close() {
         mySerial.close();
     }
 
@@ -108,12 +113,13 @@ public class LockManage {
         //开锁
         int relay = Integer.parseInt("1");
         int time = 0xFFFF;
-//        int time = 9999999*1000;
-//        if (cboAutoRelease.getSelectedItemPosition() > 0)
-//            time =(int) (Float.parseFloat(cboAutoRelease.getSelectedItem().toString()) * 100);
         SendData(handler.dataOfUnlock(relay, time, 1));
-        mSendThread.setResume();
+        //wait wait wait
+//        mSendThread.setResume();
+    }
 
+    public void getVersion(){
+        SendData(handler.dataOfFirmwareVersion());
     }
 
     private class SendThread extends Thread {
@@ -232,7 +238,8 @@ public class LockManage {
 
             @Override
             public void FirmwareVersionResult(String ver) {
-                Log.e(TAG, "FirmwareVersionResult");
+                Log.e(TAG, "FirmwareVersionResult"+ver);
+                versionCallback.callback(ver);
             }
         });
     }

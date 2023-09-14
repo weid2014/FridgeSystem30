@@ -18,13 +18,11 @@ import com.jhteck.icebox.apiserver.LocalService
 import com.jhteck.icebox.apiserver.RetrofitClient
 import com.jhteck.icebox.bean.AccountOperationEnum
 import com.jhteck.icebox.bean.OperationErrorEnum
-import com.jhteck.icebox.myinterface.MyCallback
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.AccountOperationEntity
 import com.jhteck.icebox.repository.entity.OperationErrorLogEntity
 import com.jhteck.icebox.repository.entity.RfidOperationEntity
 import com.jhteck.icebox.rfidmodel.RfidManage
-import com.jhteck.icebox.tcpServer.MyTcpServerListener
 import com.jhteck.icebox.utils.DateUtils
 import com.jhteck.icebox.utils.DbUtil
 import com.jhteck.icebox.utils.SnowFlake
@@ -115,14 +113,14 @@ class MainViewModel(application: android.app.Application) :
             lastonclickTime = time
             viewModelScope.launch {
                 try {
-                    RfidManage.getInstance().startStop(true)
+                    RfidManage.getInstance().startStop(true, false)
                     showLoading("正在结算中，请稍等...")
                     RfidManage.getInstance().setRfidArraysRendEndCallback {
-                        Log.d(TAG,"正在结算中，请稍等...${it.toString()}")
+                        Log.d(TAG, "正在结算中，请稍等...${it.toString()}")
                         rfidsSync(it.toList())
                     }
                     delay(8000)
-                    RfidManage.getInstance().startStop(false)
+                    RfidManage.getInstance().startStop(false, false)
                 } catch (e: Exception) {
 //                    scanStatus.postValue(false)
                     toast("结算异常")
@@ -219,7 +217,7 @@ class MainViewModel(application: android.app.Application) :
                     closeStatus.postValue(true)
                 }
             } catch (e: Exception) {
-                Log.e(TAG,e.toString())
+                Log.e(TAG, e.toString())
                 toast("查询异常$e")
             } finally {
                 hideLoading()

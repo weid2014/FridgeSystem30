@@ -12,6 +12,7 @@ import com.jhteck.icebox.nfcmodel.NfcManage
 import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.tcpServer.MyTcpServerListener
 import com.jhteck.icebox.utils.BroadcastUtil
+import com.jhteck.icebox.utils.SharedPreferencesUtils
 import java.util.*
 
 /**
@@ -72,9 +73,11 @@ class MyService : Service() {
         NfcManage.getInstance().startNfcPort()
 
         RfidManage.getInstance().initReader()
-        RfidManage.getInstance().linkDevice(true)
+        RfidManage.getInstance().linkDevice(true,SharedPreferencesUtils.getPrefString(this,
+            SERIAL_PORT_RFID, SERIAL_PORT_RFID_DEFAULT))
 
-        LockManage.getInstance().initSerialByPort("/dev/ttyS2")
+        LockManage.getInstance().initSerialByPort(SharedPreferencesUtils.getPrefString(this,
+            SERIAL_PORT_LOCK, SERIAL_PORT_LOCK_DEFAULT))
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
@@ -153,13 +156,6 @@ class MyService : Service() {
     var isClick = true
     fun sendRfid() {
 //        sendContentBroadcast(HFCard, "1698A858A115F60401010004880432E54BD9")
-        Log.d(TAG, "sendRfid")
-//        RfidManage.getInstance().linkDevice(true)
-        if (isClick) {
-            RfidManage.getInstance().linkDevice(true)
-//            RfidManage.getInstance().startStop(true)
-            isClick = !isClick
-        }
     }
 
     fun sendExitMsg() {

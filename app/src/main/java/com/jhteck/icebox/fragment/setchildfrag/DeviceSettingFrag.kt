@@ -1,5 +1,6 @@
 package com.jhteck.icebox.fragment.setchildfrag
 
+import android.R
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -8,20 +9,25 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.gson.Gson
 import com.hele.mrd.app.lib.base.BaseFragment
+import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.adapter.AntListAdapter
 import com.jhteck.icebox.adapter.IAntPowerCallback
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.databinding.AppFragmentSettingDeviceBinding
 import com.jhteck.icebox.fragment.SettingFrag
+import com.jhteck.icebox.myinterface.MyCallback
+import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.utils.BroadcastUtil
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.viewmodel.SettingViewModel
+import com.naz.serial.port.SerialPortFinder
 import org.json.JSONArray
 import org.json.JSONObject
+
 
 /**
  *@Description:(设备和网络设置页面Fragment)
@@ -29,7 +35,9 @@ import org.json.JSONObject
  *@date 2023/6/28 21:59
  */
 class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDeviceBinding>() {
-    private var showActivePage = false
+    private var TAG = "DeviceSettingFrag"
+    private var isLink = false
+    private var isInventory = false
 
     companion object {
         fun newInstance(): DeviceSettingFrag {
@@ -111,6 +119,11 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             binding.llFridgesOperate.visibility = View.GONE
         }
 
+        binding.btnSerialSetting.setOnClickListener {
+            hideAllLayout()
+            binding.llSerialSetting.visibility = View.VISIBLE
+            initSerialPort()
+        }
         binding.btnGetAntPower.setOnClickListener {
             if (DEBUG) {
                 tempList.clear()
@@ -122,8 +135,36 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
                 viewModel.getAntPower()
             }
         }
+        tempList.clear()
+        for (i in 0 until 8) {
+            tempList.add(AntPowerDao("0" + (i + 1), "30"))
+        }
+        initAntRecycleView(tempList)
 
+        binding.btnLink.setOnClickListener {
+            val devicePath = mDevicesPath!![binding.spSerialNumber.getSelectedItemPosition()]
+            isLink = !isLink
+            if (isLink) {
+                RfidManage.getInstance().linkDevice(isLink, devicePath)
+                SharedPreferencesUtils.setPrefString(requireContext(), SERIAL_PORT_RFID, devicePath)
+                binding.btnLink.text = "关闭"
+            } else {
+                binding.btnLink.text = "连接"
+                RfidManage.getInstance().linkDevice(isLink, devicePath)
+            }
+        }
 
+        binding.btnGetVersion.setOnClickListener {
+            RfidManage.getInstance().getVersion()
+        }
+
+        RfidManage.getInstance().setVersionCallback(object : MyCallback<String> {
+            override fun callback(result: String) {
+                requireActivity().runOnUiThread {
+                    binding.tvVersion.text = result
+                }
+            }
+        })
 
         binding.btnUrlSelect.setOnClickListener {
             hideAllLayout()
@@ -158,12 +199,98 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             viewModel.syncAccount()
         }
 
+        mArrayAdapter = ArrayAdapter<String>(requireContext(), R.layout.simple_list_item_1)
+        binding.lvInventory.setAdapter(mArrayAdapter)
+        RfidManage.getInstance().setRfidArraysRendEndCallbackTest {
+            val tempList = it.toList()
+            for (i in tempList.indices) {
+                mArrayAdapter!!.add(tempList[i])
+            }
+            mArrayAdapter!!.notifyDataSetChanged()
+            binding.tvListSize.text = "共${it.size}个"
+        }
+        binding.btnInventory.setOnClickListener {
+            mArrayAdapter!!.clear()
+            isInventory = !isInventory
+            RfidManage.getInstance().startStop(isInventory, true)
+            if (isInventory) {
+                binding.btnInventory.text = "停止盘点"
+                binding.tvListSize.text = "盘点中..."
+            } else {
+                binding.btnInventory.text = "开始盘点"
+            }
+        }
+
+        binding.btnLinkLock.setOnClickListener {
+            val devicePath = mDevicesPath!![binding.spSerialNumberLock.selectedItemPosition]
+            isLink = !isLink
+            if (isLink) {
+                LockManage.getInstance().initSerialByPort(devicePath)
+                SharedPreferencesUtils.setPrefString(requireContext(), SERIAL_PORT_LOCK, devicePath)
+                binding.btnLinkLock.text = "关闭"
+            } else {
+                binding.btnLinkLock.text = "连接"
+                LockManage.getInstance().close()
+            }
+        }
+
+        binding.btnGetVersionLock.setOnClickListener {
+            LockManage.getInstance().getVersion()
+        }
+        LockManage.getInstance().setVersionCallback(object : MyCallback<String> {
+            override fun callback(result: String) {
+                requireActivity().runOnUiThread {
+                    binding.tvVersionLock.text = "版本号:${result}"
+                }
+            }
+        })
+        binding.btnOpenLock.setOnClickListener {
+            viewModel.openLock()
+        }
+        binding.btnCloseLock.setOnClickListener {
+            viewModel.closeLock()
+        }
         doRegisterReceiver()
     }
 
+    private var mArrayAdapter: ArrayAdapter<String>? = null
+    private var mDevicesPath: Array<String>? = null
+    private fun initSerialPort() {
+        val portFinder = SerialPortFinder()
+        val devices: Array<String> = portFinder.allDevices
+        mDevicesPath = portFinder.allDevicesPath
+//        binding.spSerialNumber.adapter=ArrayAdapter(requireContext(), R.layout.simple_list_item_1, devices)
+        binding.spSerialNumber.adapter = ArrayAdapter(
+            requireContext(),
+            com.jhteck.icebox.R.layout.app_item_text,
+            com.jhteck.icebox.R.id.tv_content,
+            devices
+        )
+        binding.spSerialNumberLock.adapter = ArrayAdapter(
+            requireContext(),
+            com.jhteck.icebox.R.layout.app_item_text,
+            com.jhteck.icebox.R.id.tv_content,
+            devices
+        )
+        val normalDevice = "ttyS2"
+        val normalDeviceLock = "ttyS8"
+        for (i in devices.indices) {
+            if (devices[i].startsWith(normalDevice)) {
+                binding.spSerialNumber.setSelection(i)
+                break
+            }
+        }
+        for (i in devices.indices) {
+            if (devices[i].startsWith(normalDeviceLock)) {
+                binding.spSerialNumberLock.setSelection(i)
+                break
+            }
+        }
+    }
+
     var tempList = mutableListOf<AntPowerDao>()
+
     private fun initAntRecycleView(antList: List<AntPowerDao>) {
-        hideAllLayout()
         binding.llAntPower.visibility = View.VISIBLE
         val layoutManager = GridLayoutManager(requireContext(), 4)
         binding.rvAnt.layoutManager = layoutManager
@@ -188,7 +315,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
 
     private fun hideAllLayout() {
         binding.llFridgesOperate.visibility = View.GONE
-        binding.llAntPower.visibility = View.GONE
+        binding.llSerialSetting.visibility = View.GONE
         binding.llUrlSelect.visibility = View.GONE
     }
 
@@ -204,7 +331,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             binding.edTemperature.setText("${(it.temperature)}")
         }
 
-        viewModel.syncAccountSuccess.observe(this){
+        viewModel.syncAccountSuccess.observe(this) {
             BroadcastUtil.sendMyBroadcast(
                 this.requireContext(),
                 SYNC_ACCOUNT_MSG,
@@ -246,17 +373,21 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
                     tempList.add(AntPowerDao("$antid", po))
                 }
                 initAntRecycleView(tempList)
-            }else if(key.equals(REPORT_ANT_POWER_30)){
-                tempList.clear()
-                val jsonArray = JSONArray(value.toString())
-                for (i in 0 until jsonArray.length()) {
-                    val antid = i.toString()
-                    val po = jsonArray[i].toString()
-                    tempList.add(AntPowerDao("$antid", po))
-                }
-                initAntRecycleView(tempList)
+            } else if (key.equals(REPORT_ANT_POWER_30)) {
+                stringToArray(value.toString())
             }
         }
+    }
+
+    private fun stringToArray(string: String) {
+        tempList.clear()
+        val jsonArray = JSONArray(string)
+        for (i in 0 until jsonArray.length()) {
+            val antid = i.toString()
+            val po = jsonArray[i].toString()
+            tempList.add(AntPowerDao("$antid", po))
+        }
+        initAntRecycleView(tempList)
     }
 
 }

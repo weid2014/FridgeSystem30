@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
+import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.api.AntPowerDao
 import com.jhteck.icebox.api.FridgesActiveBo
 import com.jhteck.icebox.api.SNCODE
@@ -37,6 +38,11 @@ class SettingViewModel(application: Application) : BaseViewModel<ILoginApiServic
 
     fun openLock() {
 //        MyTcpServerListener.getInstance().openLock()
+        LockManage.getInstance().openLock()
+    }
+
+    fun closeLock(){
+        LockManage.getInstance().closeLock()
     }
 
     fun openLamp() {

@@ -29,3 +29,8 @@ const val URL_TEST = "https://jh.test.lavandachen.com"
 const val URL_KM = "http://10.128.81.174:8086"
 const val NOT_HARD_DEVICE = false
 
+const val SERIAL_PORT_LOCK = "serial_port_lock"
+const val SERIAL_PORT_LOCK_DEFAULT = "/dev/ttyS8"
+const val SERIAL_PORT_RFID = "serial_port_rfid"
+const val SERIAL_PORT_RFID_DEFAULT = "/dev/ttyS2"
+
