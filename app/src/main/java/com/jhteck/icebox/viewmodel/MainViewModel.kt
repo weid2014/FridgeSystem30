@@ -4,12 +4,10 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
-import com.jhteck.icebox.api.AccountOperationBO
-import com.jhteck.icebox.api.AvailRfid
-import com.jhteck.icebox.api.RfidDao
-import com.jhteck.icebox.api.RfidOperationBO
+import com.jhteck.icebox.api.*
 import com.jhteck.icebox.api.request.RequestRfidsDao
 import com.jhteck.icebox.api.request.RfidSync
 import com.jhteck.icebox.api.request.requestSync
@@ -25,6 +23,7 @@ import com.jhteck.icebox.repository.entity.RfidOperationEntity
 import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.utils.DateUtils
 import com.jhteck.icebox.utils.DbUtil
+import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.utils.SnowFlake
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -119,7 +118,12 @@ class MainViewModel(application: android.app.Application) :
                         Log.d(TAG, "正在结算中，请稍等...${it.toString()}")
                         rfidsSync(it.toList())
                     }
-                    delay(8000)
+                    delay(
+                        SharedPreferencesUtils.getPrefLong(
+                            BaseApp.app, INVENTORY_TIME,
+                            INVENTORY_TIME_DEFAULT
+                        )
+                    )
                     RfidManage.getInstance().startStop(false, false)
                 } catch (e: Exception) {
 //                    scanStatus.postValue(false)
@@ -500,7 +504,6 @@ class MainViewModel(application: android.app.Application) :
     val rfidsSync by lazy {
         SingleLiveEvent<List<String>>()
     }
-
 
     val inventoryData by lazy {
         SingleLiveEvent<List<String>>()

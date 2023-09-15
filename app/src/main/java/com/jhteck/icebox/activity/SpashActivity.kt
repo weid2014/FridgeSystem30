@@ -11,14 +11,18 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.hele.mrd.app.lib.base.BaseActivity
 import com.hele.mrd.app.lib.common.ext.toast
+import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
 import com.jhteck.icebox.adapter.AntListAdapterSpash
 import com.jhteck.icebox.adapter.IAntPowerCallback
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.databinding.AppActivitySpashBinding
+import com.jhteck.icebox.myinterface.MyCallback
+import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.viewmodel.SpashViewModel
+import com.naz.serial.port.SerialPortFinder
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -29,10 +33,13 @@ import org.json.JSONObject
  *@date 2023/7/3 16:25
  */
 class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
-
+    private var isLink = false
+    private var isLinkLock = false
     private var service: MyService? = null
     private var isBind = false
     private var tempList = mutableListOf<AntPowerDao>()
+    private var mArrayAdapter: ArrayAdapter<String>? = null
+    private var mDevicesPath: Array<String>? = null
     private var conn = object : ServiceConnection {
         override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
             isBind = true
@@ -50,15 +57,15 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     }
 
     override fun initView() {
-        binding.llFridgesOperate.visibility=View.GONE
+        binding.llFridgesOperate.visibility = View.GONE
         startService()
         // 检查是否是第一次运行应用程序
         var isFirstRun =
             SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
-//        var isFirstRun = true
+//        val isFirstRun = true
         if (isFirstRun) {
-            binding.llFridgesOperate.visibility=View.VISIBLE
-            binding.rlSpash.visibility=View.GONE
+            binding.llFridgesOperate.visibility = View.VISIBLE
+            binding.rlSpash.visibility = View.GONE
             var steps = mutableListOf<String>()
             steps.add("Step 1")
             steps.add("Step 2")
@@ -95,13 +102,59 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
             binding.btnCloseLock.setOnClickListener {
                 viewModel.closeLock()
             }
-            binding.btnCloseLamb.setOnClickListener {
-                viewModel.closeLamp()
+            binding.btnLinkLock.setOnClickListener {
+                val devicePath = mDevicesPath!![binding.spSerialNumberLock.selectedItemPosition]
+                isLinkLock = !isLinkLock
+                if (isLinkLock) {
+                    LockManage.getInstance().initSerialByPort(devicePath)
+                    SharedPreferencesUtils.setPrefString(this, SERIAL_PORT_LOCK, devicePath)
+                    binding.btnLinkLock.text = "关闭"
+                } else {
+                    binding.btnLinkLock.text = "连接"
+                    LockManage.getInstance().close()
+                }
             }
-            binding.btnOpenLamb.setOnClickListener {
-                viewModel.openLamp()
+            binding.btnLink.setOnClickListener {
+                val devicePath = mDevicesPath!![binding.spSerialNumber.getSelectedItemPosition()]
+                isLink = !isLink
+                if (isLink) {
+                    RfidManage.getInstance().linkDevice(isLink, devicePath)
+                    SharedPreferencesUtils.setPrefString(this, SERIAL_PORT_RFID, devicePath)
+                    binding.btnLink.text = "关闭"
+                } else {
+                    binding.btnLink.text = "连接"
+                    RfidManage.getInstance().linkDevice(isLink, devicePath)
+                }
+            }
+            binding.btnGetAntPower.setOnClickListener {
+                if (DEBUG) {
+                    initTempList()
+                } else {
+                    viewModel.getAntPower()
+                }
             }
 
+            binding.btnGetVersionLock.setOnClickListener {
+                LockManage.getInstance().getVersion()
+            }
+            LockManage.getInstance().setVersionCallback(object : MyCallback<String> {
+                override fun callback(result: String) {
+                    runOnUiThread {
+                        toast("版本号:${result}")
+                    }
+                }
+            })
+            binding.btnGetVersion.setOnClickListener {
+                RfidManage.getInstance().getVersion()
+            }
+
+            RfidManage.getInstance().setVersionCallback(object : MyCallback<String> {
+                override fun callback(result: String) {
+                    runOnUiThread{
+                        toast(result)
+                    }
+                }
+            })
             changeUI(0)
             // 第一次运行应用程序的操作
             // TODO: 在这里执行你的操作，例如显示欢迎页面或引导用户完成设置等
@@ -109,7 +162,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
 
         } else {
             // 不是第一次运行应用程序的操作
-            binding.rlSpash.visibility=View.VISIBLE
+            binding.rlSpash.visibility = View.VISIBLE
             Glide.with(this)
                 .load("file:///android_asset/start.gif")
                 .into(binding.ivGif)
@@ -264,23 +317,29 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 binding.llStep1.visibility = View.GONE
                 binding.llStep2.visibility = View.GONE
                 binding.llStep3.visibility = View.VISIBLE
-
+                initTempList()
                 if (DEBUG) {
-                    tempList.clear()
-                    for (i in 0 until 8) {
-                        tempList.add(AntPowerDao("0" + (i + 1), "30"))
-                    }
-                    initAntRecycleView(tempList)
+                    initTempList()
                 } else {
+                    initSerialPort()
                     viewModel.getAntPower()
                 }
             }
         }
     }
 
+    private fun initTempList() {
+        tempList.clear()
+        for (i in 0 until 8) {
+            tempList.add(AntPowerDao("0" + (i + 1), "30"))
+        }
+        initAntRecycleView(tempList)
+    }
+
     override fun createViewModel(): SpashViewModel {
         return viewModels<SpashViewModel>().value
     }
+
 
     override fun initObservables() {
         super.initObservables()
@@ -344,7 +403,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 initAntRecycleView(tempList)
             } else if (key.equals(HFCard)) {
                 binding.tvNfcId.text = value
-            }else if(key.equals(REPORT_ANT_POWER_30)){
+            } else if (key.equals(REPORT_ANT_POWER_30)) {
                 tempList.clear()
                 val jsonArray = JSONArray(value.toString())
                 for (i in 0 until jsonArray.length()) {
@@ -376,6 +435,30 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         binding.btnSaveAnt.setOnClickListener {
             viewModel.setAntPower(tempList)
         }*/
+    }
+
+    private fun initSerialPort() {
+        val portFinder = SerialPortFinder()
+        val devices: Array<String> = portFinder.allDevices
+        mDevicesPath = portFinder.allDevicesPath
+        binding.spSerialNumber.adapter =
+            ArrayAdapter(this, R.layout.app_item_text, R.id.tv_content, devices)
+        binding.spSerialNumberLock.adapter =
+            ArrayAdapter(this, R.layout.app_item_text, R.id.tv_content, devices)
+        val normalDevice = "ttyS2"
+        val normalDeviceLock = "ttyS8"
+        for (i in devices.indices) {
+            if (devices[i].startsWith(normalDevice)) {
+                binding.spSerialNumber.setSelection(i)
+                break
+            }
+        }
+        for (i in devices.indices) {
+            if (devices[i].startsWith(normalDeviceLock)) {
+                binding.spSerialNumberLock.setSelection(i)
+                break
+            }
+        }
     }
 
     private fun stopService() {

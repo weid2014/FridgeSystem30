@@ -415,7 +415,7 @@
 
     <LinearLayout
         android:id="@+id/ll_serial_setting"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="120dp"
@@ -503,6 +503,22 @@
                 android:text="获取天线功率"
                 android:textSize="15sp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="扫描时长:"
+                android:textSize="16sp"
+                android:textColor="@color/app_black" />
+
+            <EditText
+                android:id="@+id/ed_inventory_time"
+                android:layout_width="36dp"
+                android:textSize="16sp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:text="10" />
+
             <Button
                 android:id="@+id/btn_inventory"
                 android:layout_width="wrap_content"
@@ -571,10 +587,10 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_marginTop="72dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="72dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -626,11 +642,13 @@
                 android:textSize="16sp" />
 
         </LinearLayout>
+
         <LinearLayout
-            android:gravity="center"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
             <Button
                 android:id="@+id/btn_open_lock"
                 android:layout_width="wrap_content"

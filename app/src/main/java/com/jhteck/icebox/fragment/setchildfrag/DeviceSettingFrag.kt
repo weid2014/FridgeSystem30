@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseFragment
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.adapter.AntListAdapter
@@ -37,7 +38,7 @@ import org.json.JSONObject
 class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDeviceBinding>() {
     private var TAG = "DeviceSettingFrag"
     private var isLink = false
-    private var isInventory = false
+    private var isLinkLock = false
 
     companion object {
         fun newInstance(): DeviceSettingFrag {
@@ -201,30 +202,22 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
 
         mArrayAdapter = ArrayAdapter<String>(requireContext(), R.layout.simple_list_item_1)
         binding.lvInventory.setAdapter(mArrayAdapter)
-        RfidManage.getInstance().setRfidArraysRendEndCallbackTest {
-            val tempList = it.toList()
-            for (i in tempList.indices) {
-                mArrayAdapter!!.add(tempList[i])
-            }
-            mArrayAdapter!!.notifyDataSetChanged()
-            binding.tvListSize.text = "共${it.size}个"
-        }
+
         binding.btnInventory.setOnClickListener {
             mArrayAdapter!!.clear()
-            isInventory = !isInventory
-            RfidManage.getInstance().startStop(isInventory, true)
-            if (isInventory) {
-                binding.btnInventory.text = "停止盘点"
-                binding.tvListSize.text = "盘点中..."
-            } else {
-                binding.btnInventory.text = "开始盘点"
-            }
+            val inventoryTime = binding.edInventoryTime.getText().toString().toInt() * 1000L
+            SharedPreferencesUtils.setSettingLong(
+                BaseApp.app, INVENTORY_TIME,
+                inventoryTime
+            )
+            binding.tvListSize.text = "盘点中..."
+            viewModel.startFCLInventory30()
         }
 
         binding.btnLinkLock.setOnClickListener {
             val devicePath = mDevicesPath!![binding.spSerialNumberLock.selectedItemPosition]
-            isLink = !isLink
-            if (isLink) {
+            isLinkLock = !isLinkLock
+            if (isLinkLock) {
                 LockManage.getInstance().initSerialByPort(devicePath)
                 SharedPreferencesUtils.setPrefString(requireContext(), SERIAL_PORT_LOCK, devicePath)
                 binding.btnLinkLock.text = "关闭"
@@ -337,6 +330,14 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
                 SYNC_ACCOUNT_MSG,
                 ""
             )
+        }
+
+        viewModel.rfidsList.observe(this) {
+            for (i in it.indices) {
+                mArrayAdapter!!.add(it[i])
+            }
+            mArrayAdapter!!.notifyDataSetChanged()
+            binding.tvListSize.text = "共${it.size}个"
         }
     }
 

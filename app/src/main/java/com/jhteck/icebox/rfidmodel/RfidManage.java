@@ -216,7 +216,7 @@ public class RfidManage {
      *
      * @param startInventory bool
      */
-    public void startStop(boolean startInventory,boolean isTest) {
+    public void  startStop(boolean startInventory,boolean isTest) {
         Log.d(TAG, "startStop");
         mLoopInventory = startInventory;
         if (startInventory) {

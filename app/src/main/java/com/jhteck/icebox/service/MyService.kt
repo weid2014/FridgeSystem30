@@ -68,7 +68,7 @@ class MyService : Service() {
         super.onCreate()
 //        MyTcpServerListener.getInstance().startServer();
         Log.d(TAG, "MyService onCreate")
-//        LogUpLoadManager.startUploadAsync();
+        LogUpLoadManager.startUploadAsync();
 
         NfcManage.getInstance().startNfcPort()
 

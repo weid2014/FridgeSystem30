@@ -33,4 +33,6 @@ const val SERIAL_PORT_LOCK = "serial_port_lock"
 const val SERIAL_PORT_LOCK_DEFAULT = "/dev/ttyS8"
 const val SERIAL_PORT_RFID = "serial_port_rfid"
 const val SERIAL_PORT_RFID_DEFAULT = "/dev/ttyS2"
+const val INVENTORY_TIME = "inventory_time"
+const val INVENTORY_TIME_DEFAULT = 10*1000L
 

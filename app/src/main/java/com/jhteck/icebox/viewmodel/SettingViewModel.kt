@@ -4,17 +4,15 @@ import android.app.Application
 import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
 import com.jhteck.icebox.Lockmodel.LockManage
-import com.jhteck.icebox.api.AntPowerDao
-import com.jhteck.icebox.api.FridgesActiveBo
-import com.jhteck.icebox.api.SNCODE
+import com.jhteck.icebox.api.*
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.RetrofitClient
 import com.jhteck.icebox.repository.entity.FridgesInfoEntity
 import com.jhteck.icebox.rfidmodel.RfidManage
-import com.jhteck.icebox.tcpServer.MyTcpServerListener
 import com.jhteck.icebox.utils.ContextUtils
 import com.jhteck.icebox.utils.DbUtil
 import com.jhteck.icebox.utils.NetworkUtil
@@ -41,7 +39,7 @@ class SettingViewModel(application: Application) : BaseViewModel<ILoginApiServic
         LockManage.getInstance().openLock()
     }
 
-    fun closeLock(){
+    fun closeLock() {
         LockManage.getInstance().closeLock()
     }
 
@@ -168,6 +166,7 @@ class SettingViewModel(application: Application) : BaseViewModel<ILoginApiServic
             }
         }
     }
+
     //同步账号
     fun syncAccount() {
         var time = SystemClock.uptimeMillis();//局部变量
@@ -222,72 +221,105 @@ class SettingViewModel(application: Application) : BaseViewModel<ILoginApiServic
     private fun synchronizedAccount() {
         val accountDao = DbUtil.getDb().accountDao()
 //        if (isNetAvailable()) {
-            val users = accountDao.getAll();
-            val uploadUsers = users.filter { user -> user.hasUpload == false }
-            GlobalScope.launch(context = Dispatchers.IO) {
-                var accountService = RetrofitClient.getService();
-                //同步远端到本地账户
-                for (user in uploadUsers) {
-                    if (user.status != 0) {
-                        var response =
-                            accountService.deleteAccount(user.user_id.toString())
-                        if (response.code() == 200) {
-                            Log.i(Target, user.nick_name + "---delete")
-                            accountDao.delete(user)
-                        }
-                    } else {
-                        var response = accountService.addAccount(user)
-                        if (response.code() == 200) {
-                            //                                        Log.i("Application",user.nick_name+"---delete")
-                            user.hasUpload = true
-                            accountDao.update(user)
-                        }
+        val users = accountDao.getAll();
+        val uploadUsers = users.filter { user -> user.hasUpload == false }
+        GlobalScope.launch(context = Dispatchers.IO) {
+            var accountService = RetrofitClient.getService();
+            //同步远端到本地账户
+            for (user in uploadUsers) {
+                if (user.status != 0) {
+                    var response =
+                        accountService.deleteAccount(user.user_id.toString())
+                    if (response.code() == 200) {
+                        Log.i(Target, user.nick_name + "---delete")
+                        accountDao.delete(user)
+                    }
+                } else {
+                    var response = accountService.addAccount(user)
+                    if (response.code() == 200) {
+                        //                                        Log.i("Application",user.nick_name+"---delete")
+                        user.hasUpload = true
+                        accountDao.update(user)
                     }
                 }
-                var localUsers = accountDao.getAll();
-
-               try {
-                   var accountResponse = accountService.getAccounts()
-                   Log.d("synchronizedAccount","accountResponse=${accountResponse.body().toString()}")
-                   if (accountResponse.code() == 200) {
-                       var remoteAccounts = accountResponse.body()?.results
-                       if (remoteAccounts?.accounts != null) {
-                           for (u in localUsers) {
-                               if ("10".equals(u.role_id)) continue//系统管理员不做任何修改
-                               var userLists =
-                                   remoteAccounts.accounts.filter { obj -> obj.user_id == u.user_id }
-                               if (userLists == null && u.hasUpload) {
-                                   Log.i(Target, u.nick_name + "---delete")
-                                   accountDao.delete(u)//用户在远端被删除
-                               } else {
-                                   for (ru in userLists) {
-                                       ru.id = u.id;
-                                       ru.status = u.status;
-                                       ru.hasUpload = u.hasUpload;
-                                   }
-                               }
-                           }
-                           //更新本地账户
-                           localUsers = accountDao.getAll();
-                           for (u in remoteAccounts.accounts) {
-                               if (u.role_id=="10")continue;
-                               val users = localUsers.filter { user -> user.user_id == u.user_id }
-                               if (users != null && users.isNotEmpty()) continue;//存在的账户已经更新过
-                               u.status = 0
-                               u.hasUpload = true
-                               accountDao.insertAll(u)
-                               Log.i(Target, u.nick_name + "---sync")
-                           }
-                           syncAccountSuccess.postValue(true)
-                       }
-
-                   }
-               }catch (e:Exception){
-                   Log.e("synchronizedAccount","${e}")
-               }
             }
+            var localUsers = accountDao.getAll();
+
+            try {
+                var accountResponse = accountService.getAccounts()
+                Log.d("synchronizedAccount", "accountResponse=${accountResponse.body().toString()}")
+                if (accountResponse.code() == 200) {
+                    var remoteAccounts = accountResponse.body()?.results
+                    if (remoteAccounts?.accounts != null) {
+                        for (u in localUsers) {
+                            if ("10".equals(u.role_id)) continue//系统管理员不做任何修改
+                            var userLists =
+                                remoteAccounts.accounts.filter { obj -> obj.user_id == u.user_id }
+                            if (userLists == null && u.hasUpload) {
+                                Log.i(Target, u.nick_name + "---delete")
+                                accountDao.delete(u)//用户在远端被删除
+                            } else {
+                                for (ru in userLists) {
+                                    ru.id = u.id;
+                                    ru.status = u.status;
+                                    ru.hasUpload = u.hasUpload;
+                                }
+                            }
+                        }
+                        //更新本地账户
+                        localUsers = accountDao.getAll();
+                        for (u in remoteAccounts.accounts) {
+                            if (u.role_id == "10") continue;
+                            val users = localUsers.filter { user -> user.user_id == u.user_id }
+                            if (users != null && users.isNotEmpty()) continue;//存在的账户已经更新过
+                            u.status = 0
+                            u.hasUpload = true
+                            accountDao.insertAll(u)
+                            Log.i(Target, u.nick_name + "---sync")
+                        }
+                        syncAccountSuccess.postValue(true)
+                    }
+
+                }
+            } catch (e: Exception) {
+                Log.e("synchronizedAccount", "${e}")
+            }
+        }
 
 //        }
+    }
+
+    fun startFCLInventory30() {
+        //防止响应过于频繁
+        var time = SystemClock.uptimeMillis();//局部变量
+        if (time - lastonclickTime <= 10000) {
+
+        } else {
+            lastonclickTime = time
+            viewModelScope.launch {
+                try {
+                    RfidManage.getInstance().startStop(true, true)
+                    showLoading("正在盘点中，请稍等...")
+                    RfidManage.getInstance().setRfidArraysRendEndCallbackTest() {
+                        Log.d(Target, "盘点结束，返回数据${it.toString()}")
+                        rfidsList.postValue(it.toList())
+                    }
+                    delay(
+                        SharedPreferencesUtils.getPrefLong(
+                            BaseApp.app, INVENTORY_TIME,
+                            INVENTORY_TIME_DEFAULT
+                        )
+                    )
+                    RfidManage.getInstance().startStop(false, true)
+                } catch (e: Exception) {
+//                    scanStatus.postValue(false)
+                    toast("盘点异常")
+                } finally {
+                    RfidManage.getInstance().setRfidArraysRendEndCallbackTest();//清空掉
+                    hideLoading()
+                }
+            }
+        }
     }
 
     private fun isNetAvailable(): Boolean {
@@ -300,6 +332,10 @@ class SettingViewModel(application: Application) : BaseViewModel<ILoginApiServic
 
     val syncAccountSuccess by lazy {
         SingleLiveEvent<Boolean>()
+    }
+
+    val rfidsList by lazy {
+        SingleLiveEvent<List<String>>()
     }
 
 }

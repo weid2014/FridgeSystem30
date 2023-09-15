@@ -48,7 +48,7 @@ public class LockManage {
 
     public void initSerialByPort(String port) {
         initSerial();
-        Log.d(TAG,"port="+port);
+        Log.d(TAG, "port=" + port);
         mySerial.port(port);
 //        if (AppConstantsKt.NOT_HARD_DEVICE) return;//无硬件模式
         open();
@@ -118,7 +118,7 @@ public class LockManage {
         mSendThread.setResume();
     }
 
-    public void getVersion(){
+    public void getVersion() {
         SendData(handler.dataOfFirmwareVersion());
     }
 
@@ -139,7 +139,7 @@ public class LockManage {
                     }
                 }
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
                     getLockStutas();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -238,7 +238,7 @@ public class LockManage {
 
             @Override
             public void FirmwareVersionResult(String ver) {
-                Log.e(TAG, "FirmwareVersionResult"+ver);
+                Log.e(TAG, "FirmwareVersionResult" + ver);
                 versionCallback.callback(ver);
             }
         });
