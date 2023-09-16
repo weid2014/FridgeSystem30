@@ -84,35 +84,36 @@
         android:textColor="@color/app_color_646464"
         android:textSize="16dp" />
 
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
         android:layout_weight="1.5">
 
         <Button
             android:id="@+id/btn_edit"
-            android:layout_width="96px"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="42px"
             android:background="@drawable/btn_shape_radius_5"
+            android:layout_gravity="center"
             android:text="编辑"
-            android:layout_marginLeft="24px"
-            android:layout_centerVertical="true"
             android:textColor="@color/app_white"
             android:textSize="14px" />
 
         <Button
             android:id="@+id/btn_delete"
-            android:layout_width="96px"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_marginStart="4dp"
             android:layout_height="42px"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginEnd="54px"
             android:background="@drawable/btn_shape_red_radius_5"
-            android:gravity="center"
             android:text="删除"
             android:textColor="@color/app_white"
             android:textSize="14px" />
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </LinearLayout>

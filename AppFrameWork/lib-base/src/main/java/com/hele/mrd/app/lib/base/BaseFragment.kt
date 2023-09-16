@@ -1,14 +1,16 @@
 package com.hele.mrd.app.lib.base
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.hele.mrd.app.lib.base.view.ILoading
 import com.hele.mrd.app.lib.common.ext.showDialogCompat
 import com.hele.mrd.app.lib.common.ext.toast
 
-abstract class BaseFragment<VM: BaseViewModel<*>,VB: ViewBinding>: Fragment() {
+abstract class BaseFragment<VM : BaseViewModel<*>, VB : ViewBinding> : Fragment() {
 
     protected lateinit var viewModel: VM
 
@@ -22,7 +24,7 @@ abstract class BaseFragment<VM: BaseViewModel<*>,VB: ViewBinding>: Fragment() {
 
     abstract fun createViewModel(): VM
 
-    open fun tryLoadData(){}
+    open fun tryLoadData() {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +48,7 @@ abstract class BaseFragment<VM: BaseViewModel<*>,VB: ViewBinding>: Fragment() {
         viewModel.baseUI.loading.observe(this) {
             val app = viewModel.getApplication<BaseApp>()
             loading?.dismissAllowingStateLoss()
-            if(it.first){
+            if (it.first) {
                 loading = app.appComponent.createLoading(it.second)
                 showDialogCompat(loading ?: return@observe)
             }
@@ -62,11 +64,11 @@ abstract class BaseFragment<VM: BaseViewModel<*>,VB: ViewBinding>: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if(!dataLoaded) {
+        if (!dataLoaded) {
             tryLoadData()
             dataLoaded = true
         }
     }
 
-    fun bindingInitialzed()=::binding.isInitialized
+    fun bindingInitialzed() = ::binding.isInitialized
 }

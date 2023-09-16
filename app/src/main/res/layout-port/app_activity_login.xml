@@ -370,7 +370,7 @@
                 android:layout_width="507dp"
                 android:layout_height="315dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="90dp"
+                android:layout_marginTop="110dp"
                 android:src="@mipmap/ic_card_lock" />
 
             <LinearLayout

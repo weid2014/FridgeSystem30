@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="1160dp"
+    android:layout_width="860dp"
     android:layout_height="960dp"
     android:layout_marginStart="120dp"
     android:layout_marginEnd="120dp"
@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="1160dp"
+        android:layout_width="860dp"
         android:layout_height="100dp">
 
         <TextView
@@ -22,7 +22,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="1160dp"
+        android:layout_width="860dp"
         android:layout_height="540dp"
         android:orientation="horizontal">
 
@@ -369,7 +369,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="1160dp"
+        android:layout_width="860dp"
         android:layout_height="202dp"
         android:layout_marginTop="12dp"
         android:orientation="vertical">
@@ -398,7 +398,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="860dp"
             android:layout_height="80dp"
             android:orientation="horizontal">
 
@@ -460,7 +460,7 @@
 
         <TextView
             android:id="@+id/tv_select_layer"
-            android:layout_width="match_parent"
+            android:layout_width="760dp"
             android:layout_height="36dp"
             android:layout_marginStart="54dp"
             android:layout_marginTop="12dp"
@@ -471,16 +471,8 @@
             android:textSize="18sp" />
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:scaleType="center"
-        android:src="@mipmap/ic_cell_number_location"
-        android:visibility="gone" />
-
     <LinearLayout
-        android:layout_width="1160dp"
+        android:layout_width="860dp"
         android:layout_height="120dp"
         android:orientation="horizontal">
 
