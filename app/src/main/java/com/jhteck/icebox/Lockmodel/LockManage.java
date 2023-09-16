@@ -8,6 +8,8 @@ import com.headleader.MrbBoard.MrbBoardHandler;
 import com.jhteck.icebox.myinterface.MyCallback;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import ku.util.KuConvert;
 import ku.util.KuFunction;
@@ -107,6 +109,60 @@ public class LockManage {
         mySerial.close();
     }
 
+    private Thread openLockThread = null;
+
+    private int sendTime = 10;
+
+    private Set<Integer> sensor1Status = new HashSet<>();
+    private Set<Integer> sensor2Status = new HashSet<>();
+
+    /**
+     * 传感器是否变动
+     *
+     * @return
+     */
+    private boolean sensorChanged() {
+        return sensor1Status.stream().count() == 2 || sensor2Status.stream().count() == 2;
+    }
+
+    /**
+     * 尝试主动发启动时开锁
+     */
+    public void tryOpenLock() {
+        sendTime = 10;
+        if (openLockThread == null) {
+            synchronized (this) {
+                if (openLockThread == null) {
+                    Log.i(TAG, "开启定时开锁模式");
+                    openLockThread = new Thread(() -> {
+                        while (sendTime > 0) {
+                            try {
+                                Log.i(TAG, "openLockThread: 定时开锁");
+
+                                if (sensorChanged()) {
+                                    Log.i(TAG, "tryOpenLock: 计入结算环节");
+                                    break;
+                                }
+                                openLock();
+                                sendTime--;
+                                Thread.sleep(6000);
+                            } catch (Exception e) {
+                                Log.e(TAG, "定时开锁: " + e.getMessage());
+                            }
+                        }
+                        openLockThread = null;
+                        Log.i(TAG, "60秒内无操作，停止定时开锁");
+                    });
+                    openLockThread.start();
+                }
+            }
+        }
+    }
+
+    public void resetSensorStatus() {
+        sensor1Status = new HashSet<>();
+        sensor2Status = new HashSet<>();
+    }
 
     public void openLock() {
         //开锁
@@ -120,7 +176,7 @@ public class LockManage {
         } catch (Exception e) {
 
         }
-//        mSendThread.setResume();
+        mSendThread.setResume();
     }
 
     public void getVersion() {
@@ -177,7 +233,7 @@ public class LockManage {
             Thread.sleep(600);
             SendData(handler.dataOfUnlock(relay2, time, 0));
         } catch (Exception e) {
-            Log.e(TAG, "closeLock: "+e.getMessage() );
+            Log.e(TAG, "closeLock: " + e.getMessage());
         }
         clearThread();
 
@@ -260,7 +316,10 @@ public class LockManage {
                 Log.e(TAG, "LockStatus=" + info.lock + "--sensor=" + info.sensor);
                 Log.e(TAG, "lockInfo1 LockStatus=" + lockInfo1.lock + "--sensor=" + lockInfo1.sensor);
                 Log.e(TAG, "lockInfo2 LockStatus=" + lockInfo2.lock + "--sensor=" + lockInfo2.sensor);
-                if (lockInfo1.lock == 1 && lockInfo2.lock == 1 && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
+
+                sensor1Status.add(lockInfo1.sensor);
+                sensor2Status.add(lockInfo2.sensor);
+                if (lockInfo1.lock == 1 && lockInfo2.lock == 1 && sensorChanged()) {
                     clearThread();
                     lockCallback.callback(info.lock + "");
                 }

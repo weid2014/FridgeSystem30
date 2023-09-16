@@ -458,35 +458,8 @@ class MainViewModel(application: android.app.Application) :
         }
     }
 
-    private var openLockThread: Thread? = null;
-
-    @Volatile
-    private var sendTime = 10;
     fun tryOpenLock() {
-        sendTime = 10;
-        if (openLockThread == null) {
-            synchronized(this) {
-                if (openLockThread == null) {
-                    Log.i(TAG, "开启定时开锁模式")
-                    openLockThread = Thread(kotlinx.coroutines.Runnable {
-                        while (sendTime > 0) {
-                            try {
-                                Log.i(TAG, "openLockThread: 定时开锁")
-                                LockManage.getInstance().openLock();
-                                sendTime--;
-                                Thread.sleep(6000);
-                            } catch (e: Exception) {
-                                Log.e(TAG, "定时开锁: " + e.message)
-                            }
-                        }
-                        openLockThread = null;
-                        Log.i(TAG, "60秒内无操作，停止定时开锁")
-                    });
-                    openLockThread!!.start();
-                }
-            }
-
-        }
+       LockManage.getInstance().tryOpenLock();
     }
 
     private fun createAccountOperationEntity(

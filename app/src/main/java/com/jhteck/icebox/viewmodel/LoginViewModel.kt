@@ -53,6 +53,7 @@ class LoginViewModel(application: android.app.Application) :
                     //wait wait wait
                     if (!DEBUG) {
 //                        MyTcpServerListener.getInstance().openLock()
+                        LockManage.getInstance().resetSensorStatus();
                         LockManage.getInstance().openLock()
                     }
                     loginUserInfo.postValue(userInfo)
