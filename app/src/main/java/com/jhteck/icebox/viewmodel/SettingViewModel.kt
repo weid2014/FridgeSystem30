@@ -42,6 +42,9 @@ class SettingViewModel(application: Application) : BaseViewModel<ILoginApiServic
     fun closeLock() {
         LockManage.getInstance().closeLock()
     }
+    fun getLockStatus() {
+        LockManage.getInstance().getLockStutas()
+    }
 
     fun openLamp() {
         //开灯

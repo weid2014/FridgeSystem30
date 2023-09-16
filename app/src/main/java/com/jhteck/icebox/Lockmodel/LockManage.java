@@ -107,15 +107,20 @@ public class LockManage {
         mySerial.close();
     }
 
-    private Thread lockStatusThread;
 
     public void openLock() {
         //开锁
         int relay = Integer.parseInt("1");
+        int relay2 = Integer.parseInt("2");
         int time = 0xFFFF;
-        SendData(handler.dataOfUnlock(relay, time, 1));
-        //wait wait wait
-        mSendThread.setResume();
+        try {
+            SendData(handler.dataOfUnlock(relay, time, 1));
+            Thread.sleep(600);
+            SendData(handler.dataOfUnlock(relay2, time, 1));
+        } catch (Exception e) {
+
+        }
+//        mSendThread.setResume();
     }
 
     public void getVersion() {
@@ -162,19 +167,50 @@ public class LockManage {
     public void closeLock() {
         //关锁
         int relay = Integer.parseInt("1");
+        int relay2 = Integer.parseInt("2");
         int time = 0xFFFF;
-        SendData(handler.dataOfUnlock(relay, time, 0));
+//        SendData(handler.dataOfUnlock(relay, time, 0));
+//        SendData(handler.dataOfUnlock(relay2, time, 0));
+
+        try {
+            SendData(handler.dataOfUnlock(relay, time, 0));
+            Thread.sleep(600);
+            SendData(handler.dataOfUnlock(relay2, time, 0));
+        } catch (Exception e) {
+            Log.e(TAG, "closeLock: "+e.getMessage() );
+        }
         clearThread();
+
     }
 
     public void clearThread() {
         mSendThread.setSuspendFlag();
     }
 
+    private boolean isRelay1 = true;
+    private boolean isRelay2 = true;
+    private LockInfo lockInfo1 = new LockInfo();
+    private LockInfo lockInfo2 = new LockInfo();
+
     public void getLockStutas() {
         int relay = Integer.parseInt("1");
+        int relay2 = Integer.parseInt("2");
         Log.d(TAG, "获取锁状态");
-        SendData(handler.dataOfLockStatus(relay));
+        try {
+            isRelay1 = true;
+            isRelay2 = false;
+            lockInfo1 = new LockInfo();
+            SendData(handler.dataOfLockStatus(relay));
+            Thread.sleep(600);
+            isRelay1 = false;
+            isRelay2 = true;
+            lockInfo2 = new LockInfo();
+            SendData(handler.dataOfLockStatus(relay2));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     private void SendData(byte[] datas) {
@@ -195,6 +231,7 @@ public class LockManage {
         handler = new MrbBoardHandler(new ICallBack() {
             @Override
             public void NormalHandle(String devID) {
+                Log.e(TAG, "devID: " + devID);
                 if (!devID.isEmpty())
                     SendData(handler.dataOfHeartBreak(devID));
             }
@@ -214,8 +251,16 @@ public class LockManage {
                    /* String strTemp = String.format(getString(R.string.lockstatetemplate),
                             info.lock, info.sensor);
                     runOnUiThread(() -> txtLockStatus.setText(strTemp));*/
-                Log.e(TAG, "LockStatusResult=" + info.lock);
-                if (info.lock == 1) {
+
+                if (isRelay1) {
+                    lockInfo1 = info;
+                } else if (isRelay2) {
+                    lockInfo2 = info;
+                }
+                Log.e(TAG, "LockStatus=" + info.lock + "--sensor=" + info.sensor);
+                Log.e(TAG, "lockInfo1 LockStatus=" + lockInfo1.lock + "--sensor=" + lockInfo1.sensor);
+                Log.e(TAG, "lockInfo2 LockStatus=" + lockInfo2.lock + "--sensor=" + lockInfo2.sensor);
+                if (lockInfo1.lock == 1 && lockInfo2.lock == 1 && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
                     clearThread();
                     lockCallback.callback(info.lock + "");
                 }

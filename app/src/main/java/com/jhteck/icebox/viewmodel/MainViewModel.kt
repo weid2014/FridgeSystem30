@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
+import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.api.request.RequestRfidsDao
 import com.jhteck.icebox.api.request.RfidSync
@@ -454,6 +455,37 @@ class MainViewModel(application: android.app.Application) :
                 toast("更新失败${e.message}")
                 Log.d(TAG, "保存失败2${e.message}")
             }
+        }
+    }
+
+    private var openLockThread: Thread? = null;
+
+    @Volatile
+    private var sendTime = 10;
+    fun tryOpenLock() {
+        sendTime = 10;
+        if (openLockThread == null) {
+            synchronized(this) {
+                if (openLockThread == null) {
+                    Log.i(TAG, "开启定时开锁模式")
+                    openLockThread = Thread(kotlinx.coroutines.Runnable {
+                        while (sendTime > 0) {
+                            try {
+                                Log.i(TAG, "openLockThread: 定时开锁")
+                                LockManage.getInstance().openLock();
+                                sendTime--;
+                                Thread.sleep(6000);
+                            } catch (e: Exception) {
+                                Log.e(TAG, "定时开锁: " + e.message)
+                            }
+                        }
+                        openLockThread = null;
+                        Log.i(TAG, "60秒内无操作，停止定时开锁")
+                    });
+                    openLockThread!!.start();
+                }
+            }
+
         }
     }
 

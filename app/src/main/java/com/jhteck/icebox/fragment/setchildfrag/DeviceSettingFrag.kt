@@ -75,6 +75,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             val temperature = binding.edTemperature.text.toString().trim()
             val style = binding.edStyle.text.toString().trim()
             val cells = binding.edCells.text.toString().trim()
+
             val fridgesActiveBo = FridgesActiveBo(
                 adminName,
                 adminPassword,
@@ -242,6 +243,9 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         }
         binding.btnCloseLock.setOnClickListener {
             viewModel.closeLock()
+        }
+        binding.btnLockStatus.setOnClickListener {
+            viewModel.getLockStatus()
         }
         doRegisterReceiver()
     }

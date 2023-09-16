@@ -62,6 +62,8 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
         parentFragment as InventoryListFrag
     }
 
+
+
     override fun initView() {
         //监听搜索栏里面的变化
         binding.svInventoryList.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -126,6 +128,9 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
         }
         return filterList
     }
+
+
+
 
     private fun AvailRfidsListSortBy(index: Int, tv: TextView) {
         var sortByList: List<AvailRfid>? = null

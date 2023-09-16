@@ -4,13 +4,9 @@ import android.content.*
 import android.graphics.drawable.BitmapDrawable
 import android.os.IBinder
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.activity.viewModels
-import androidx.core.view.marginEnd
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -28,9 +24,7 @@ import com.jhteck.icebox.fragment.InventoryListFrag
 import com.jhteck.icebox.fragment.OperationLogFrag
 import com.jhteck.icebox.fragment.SettingFrag
 import com.jhteck.icebox.repository.entity.AccountEntity
-import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.service.MyService
-import com.jhteck.icebox.tcpServer.MyTcpServerListener
 import com.jhteck.icebox.utils.DensityUtil
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.viewmodel.MainViewModel
@@ -178,6 +172,10 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
     }
 
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        viewModel.tryOpenLock()
+        return super.dispatchTouchEvent(ev)
+    }
 
     override fun initObservables() {
         super.initObservables()
@@ -266,9 +264,10 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
     override fun onResume() {
         super.onResume()
-        if(mReceiver == null)
+        if (mReceiver == null)
             doRegisterReceiver()
     }
+
     override fun onDestroy() {
         super.onDestroy()
 //        unbindService(conn);
@@ -312,7 +311,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
      * 现场人员存入  显示暂存
      */
     private var showTitle = "存入列表"
-    private var operatortype=0;
+    private var operatortype = 0;
     private fun showPopWindow(outList: List<AvailRfid>, inList: List<AvailRfid>) {
         //获取用户角色ID
         val roleID = SharedPreferencesUtils.getPrefInt(this, ROLE_ID, 10)
@@ -320,15 +319,15 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         when (roleID) {
             10, 20 -> {
                 showTitle = "存入列表"
-                if (outList.size>0 && inList.size>0) {
-                    operatortype=3
+                if (outList.size > 0 && inList.size > 0) {
+                    operatortype = 3
                     operationEntity =
                         (AccountOperationEnum.STORE_CONSUME)//存入取出
-                } else if (outList.size>0) {
-                    operatortype=2
+                } else if (outList.size > 0) {
+                    operatortype = 2
                     operationEntity = (AccountOperationEnum.CONSUME)//取出
-                } else if (inList.size>0) {
-                    operatortype=1
+                } else if (inList.size > 0) {
+                    operatortype = 1
                     operationEntity =
                         (AccountOperationEnum.STORE)//存入
                 } else {
@@ -338,15 +337,15 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             }
             else -> {
                 showTitle = "暂存列表"
-                if (outList.size>0 && inList.size>0) {
-                    operatortype=3
+                if (outList.size > 0 && inList.size > 0) {
+                    operatortype = 3
                     operationEntity =
                         (AccountOperationEnum.DESPOSIT_CONSUME)//存入取出
-                } else if (outList.size>0) {
-                    operatortype=2
+                } else if (outList.size > 0) {
+                    operatortype = 2
                     operationEntity = (AccountOperationEnum.CONSUME)//取出
-                } else if (inList.size>0) {
-                    operatortype=1
+                } else if (inList.size > 0) {
+                    operatortype = 1
                     operationEntity =
                         (AccountOperationEnum.DEPOSIT)//存入
                 } else {
@@ -433,12 +432,12 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                     3 -> {
                     }//存入取出
                     2 -> {
-                        tvCountIn.visibility=View.GONE
-                        rvInventoryResultIN.visibility=View.GONE
+                        tvCountIn.visibility = View.GONE
+                        rvInventoryResultIN.visibility = View.GONE
                     }//取出
                     1 -> {
-                        tvCountOut.visibility=View.GONE
-                        rvInventoryResultOUT.visibility=View.GONE
+                        tvCountOut.visibility = View.GONE
+                        rvInventoryResultOUT.visibility = View.GONE
                     }//存入
                     0 -> {
 

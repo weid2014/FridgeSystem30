@@ -87,7 +87,7 @@ class AccoutListItemAdapter(
             //单位
             binding.tvNFC.text = item.nfc_id
             //数量
-            binding.tvInNumber.text =item.store_count.toString()
+            binding.tvInNumber.text = item.store_count.toString()
             //试剂余量
             binding.tvOutNumber.text = item.consume_count.toString()
             //暂存
