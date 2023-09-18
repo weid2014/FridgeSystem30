@@ -6,7 +6,6 @@ package com.jhteck.icebox.adapter
  *@date 2023/7/1 23:19
  */
 import android.graphics.drawable.BitmapDrawable
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -81,7 +80,8 @@ class InventoryListItemAdapterScener(
                 binding.tvValidityStatus.text = "未过期"
                 binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_color_00d88e))
             }
-
+            //位置
+            binding.tvCellNumber.text = CellNumberUtil.getCellNumberText(item.cell_number)
 
             binding.btnItemCode.setOnClickListener {
                 PopupWindow().apply {
@@ -172,7 +172,7 @@ class InventoryListItemAdapterScener(
                     }
 
                     when (item.cell_number) {
-                        0, 1, 2 -> {
+                        2 -> {
                             contentView.findViewById<RadioButton>(R.id.rb_layer1).isChecked =
                                 true
                             contentView.findViewById<RadioButton>(R.id.rb_left).isChecked = true
@@ -282,7 +282,6 @@ class InventoryListItemAdapterScener(
                         val leftRightText = checkRadioButtonLeftRight.text.toString()
                         item.cell_number =
                             CellNumberUtil.getCellNumberTextByStr(layerText, leftRightText)
-                        Log.d("lalala", "cell_number===${item.cell_number}")
                         operator?.onEdit(item, position)
                         DensityUtil.backgroundAlpha(frag.activity, 1f)
                         dismiss()

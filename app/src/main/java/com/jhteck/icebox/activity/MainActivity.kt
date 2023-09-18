@@ -195,6 +195,10 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             viewModel.addByRfid(it[1])
             showPopWindow(it[0], it[1])
         }
+        viewModel.noData.observe(this) {
+            showPopWindow(mutableListOf<AvailRfid>(), mutableListOf<AvailRfid>())
+        }
+
         viewModel.rfidData.observe(this) { it1 ->
             localData = it1
             inventoryListFrag?.let {

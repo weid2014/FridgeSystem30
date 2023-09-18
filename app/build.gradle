@@ -18,7 +18,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0.20230916"
+        versionName "1.0.20230918"
         ndk {
 //            abiFilters   'x86', 'armeabi-v7a','arm64-v8a',"arm64-v8a","x86"
             abiFilters "armeabi", "armeabi-v7a", "x86"

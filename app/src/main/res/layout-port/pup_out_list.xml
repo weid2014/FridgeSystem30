@@ -1,94 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="880dp"
-    android:layout_height="900dp"
-    android:background="@drawable/radius_border"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:background="@drawable/radius_border">
 
-    <RelativeLayout
-        android:layout_width="880dp"
-        android:layout_height="80dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tvCountIn"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="存入列表"
-                android:textColor="@color/app_black"
-                android:textSize="30sp" />
-
-            <TextView
-                android:id="@+id/tvCountOut"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="领出列表"
-                android:textColor="@color/app_black"
-                android:textSize="30sp" />
-
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/btnClose"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentRight="true"
-            android:layout_margin="8dp"
-            android:background="@mipmap/ic_close" />
-    </RelativeLayout>
+    <ImageButton
+        android:id="@+id/btnClose"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="right"
+        android:layout_margin="18dp"
+        android:background="@mipmap/ic_close" />
 
     <LinearLayout
-        android:layout_width="880dp"
-        android:layout_height="60dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
 
         <TextView
-            android:id="@+id/tvRemainTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="500dp"
-            android:gravity="center_vertical"
-            android:text="剩余："
-            android:textColor="@color/app_blue"
-            android:textSize="16sp" />
-    </LinearLayout>
+            android:id="@+id/tvCountIn"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="存入列表"
+            android:textColor="@color/app_black"
+            android:textSize="30sp" />
 
-    <LinearLayout
-        android:layout_width="880dp"
-        android:layout_height="520dp"
-        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="880dp"
+            android:layout_height="60dp">
+
+            <TextView
+                android:id="@+id/tvRemainTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="500dp"
+                android:gravity="center_vertical"
+                android:text="剩余："
+                android:textColor="@color/app_blue"
+                android:textSize="16sp" />
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvInventoryResultIN"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_width="match_parent"
+            android:layout_height="400dp" />
+
+        <TextView
+            android:id="@+id/tvCountOut"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:gravity="center"
+            android:text="领出列表"
+            android:textColor="@color/app_black"
+            android:textSize="30sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvInventoryResultOUT"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_width="match_parent"
+            android:layout_height="400dp" />
+
+
+        <Button
+            android:id="@+id/btnCountDownTime"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="12dp"
+            android:background="@color/app_white"
+            android:gravity="center"
+            android:text="30秒后将自动关闭"
+            android:textColor="@color/app_color_8e8e8e"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnCountDownTime"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="12dp"
-        android:background="@color/app_white"
-        android:gravity="center"
-        android:text="30秒后将自动关闭"
-        android:textColor="@color/app_color_8e8e8e"
-        android:textSize="16sp" />
 
-</LinearLayout>
+</FrameLayout>

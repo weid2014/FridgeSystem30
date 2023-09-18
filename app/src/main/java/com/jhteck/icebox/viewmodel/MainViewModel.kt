@@ -218,8 +218,9 @@ class MainViewModel(application: android.app.Application) :
                 } else if (inList.size > 0) {//领入
                     addRfidData.postValue(inList)
                 } else {
+                    noData.postValue(true)
                     toast("没有存取")
-                    closeStatus.postValue(true)
+//                    closeStatus.postValue(true)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, e.toString())
@@ -496,6 +497,10 @@ class MainViewModel(application: android.app.Application) :
 
     val outAndInRfidData by lazy {
         SingleLiveEvent<List<List<AvailRfid>>>()
+    }
+
+    val noData by lazy {
+        SingleLiveEvent<Boolean>()
     }
 
 
