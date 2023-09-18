@@ -112,7 +112,10 @@ public class LockManage {
     private Thread openLockThread = null;
 
     private int sendTime = 10;
-
+    /**
+     * 结算
+     */
+    private volatile boolean isCalculating = false;
     private Set<Integer> sensor1Status = new HashSet<>();
     private Set<Integer> sensor2Status = new HashSet<>();
 
@@ -139,7 +142,7 @@ public class LockManage {
                             try {
                                 Log.i(TAG, "openLockThread: 定时开锁");
 
-                                if (sensorChanged()) {
+                                if (sensorChanged() && isCalculating) {
                                     Log.i(TAG, "tryOpenLock: 计入结算环节");
                                     break;
                                 }
@@ -159,7 +162,12 @@ public class LockManage {
         }
     }
 
-    public void resetSensorStatus() {
+    public synchronized void updateCalculatingStatus(boolean flag) {
+        isCalculating = flag;
+    }
+    
+    public  void preOpenLock() {
+        updateCalculatingStatus(false);
         sensor1Status = new HashSet<>();
         sensor2Status = new HashSet<>();
     }
@@ -200,7 +208,7 @@ public class LockManage {
                     }
                 }
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(2000);
                     getLockStutas();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -319,8 +327,9 @@ public class LockManage {
 
                 sensor1Status.add(lockInfo1.sensor);
                 sensor2Status.add(lockInfo2.sensor);
-                if (lockInfo1.lock == 1 && lockInfo2.lock == 1 && sensorChanged()) {
+                if (lockInfo1.lock == 1 && lockInfo2.lock == 1 && sensorChanged() && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
                     clearThread();
+                    updateCalculatingStatus(true);//进入结算页面
                     lockCallback.callback(info.lock + "");
                 }
             }
