@@ -36,3 +36,17 @@ const val SERIAL_PORT_RFID_DEFAULT = "/dev/ttyS2"
 const val INVENTORY_TIME = "inventory_time"
 const val INVENTORY_TIME_DEFAULT = 10*1000L
 
+
+const val APP_ID = "3Xpdq6N7xzday4bVTdFxSzLVWhRLEgm5Pgei8HmNrWzZ"
+const val SDK_KEY = "GK9tmQ23mNFZSgyQnnYYqKnCsW5iqBiKTnfmz1igFpJN"
+
+/**
+ * IR预览数据相对于RGB预览数据的横向偏移量，注意：是预览数据，一般的摄像头的预览数据都是 width > height
+ */
+const val HORIZONTAL_OFFSET = 0
+
+/**
+ * IR预览数据相对于RGB预览数据的纵向偏移量，注意：是预览数据，一般的摄像头的预览数据都是 width > height
+ */
+const val VERTICAL_OFFSET = 0
+

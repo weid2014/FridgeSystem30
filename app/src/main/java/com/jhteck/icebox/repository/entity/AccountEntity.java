@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "t_account", indices ={@Index(value = {"nfc_id","nick_name"})})
+@Entity(tableName = "t_account", indices = {@Index(value = {"nfc_id", "nick_name"})})
 public class AccountEntity {
     @PrimaryKey(autoGenerate = true)
     private Long id;
@@ -24,6 +24,7 @@ public class AccountEntity {
     private String updated_by;
     private String updated_time;
     private Boolean hasUpload;
+    private String faceUrl;
     private int status;
 
     public Boolean getHasUpload() {
@@ -169,4 +170,13 @@ public class AccountEntity {
     public void setUpdated_time(String updated_time) {
         this.updated_time = updated_time;
     }
+
+    public String getFaceUrl() {
+        return faceUrl;
+    }
+
+    public void setFaceUrl(String faceUrl) {
+        this.faceUrl = faceUrl;
+    }
+
 }
