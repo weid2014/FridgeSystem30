@@ -165,6 +165,8 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
                 LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
             rvNormalArray[i]?.adapter = inventoryDaoArray[i]?.let { LoginPageShowItemAdapter(it) }
         }
+        binding.rvPauseContent?.layoutManager= LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        binding.rvPauseContent?.adapter = LoginPageShowItemAdapter(tempList10)
     }
 
     override fun initObservables() {
@@ -246,6 +248,9 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
                 rvItem?.adapter?.notifyDataSetChanged()
             }
             binding.tvNormalNum.text = "共${tempListNormal.size}个"
+
+            binding.rvPauseContent?.adapter?.notifyDataSetChanged()
+            binding.tvPauseNum?.text= "共${it.avail_rfids.size-tempListNormal.size}个"
         }
     }
 

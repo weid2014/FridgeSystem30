@@ -86,8 +86,10 @@ class OperationLogFrag : BaseFragment<OperationLogViewModel, AppFragmentOperatio
         tabs[position].isSelected = true
         for (tab in tabs) {
             tab.background = resources.getDrawable(R.drawable.radius_border_tab_unselect)
+            tab.setTextColor(resources.getColor(R.color.app_white))
         }
         tabs[position].background = resources.getDrawable(R.drawable.radius_border_tab)
+        tabs[position].setTextColor(resources.getColor(R.color.app_black))
         currentSelectItem = position
         binding.vpContentOperation.setCurrentItem(position, false)
 

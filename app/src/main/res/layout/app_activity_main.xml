@@ -78,6 +78,7 @@
 
                     <TextView
                         android:id="@+id/tv_inventory"
+                        android:textColor="@color/app_white"
                         android:layout_width="130px"
                         android:layout_height="33px"
                         android:layout_gravity="center"

@@ -241,13 +241,17 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         tabs[position].background = getDrawable(R.drawable.radius_border_tab_select)
         currentSelectItem = position
         binding.vpContentMain.setCurrentItem(position, false)
+        binding.tvInventory.setTextColor(getColor(R.color.app_black))
+        binding.tvOperation.setTextColor(getColor(R.color.app_black))
         when (position) {
             0 -> {
+                binding.tvInventory.setTextColor(getColor(R.color.app_white))
                 binding.imInventory.setImageResource(R.mipmap.ic_inventory_select)
                 binding.imOperation.setImageResource(R.mipmap.ic_operater)
                 binding.imSetting.setImageResource(R.mipmap.ic_setting)
             }
             1 -> {
+                binding.tvOperation.setTextColor(getColor(R.color.app_white))
                 binding.imInventory.setImageResource(R.mipmap.ic_inventory)
                 binding.imOperation.setImageResource(R.mipmap.ic_operater_select)
                 binding.imSetting.setImageResource(R.mipmap.ic_setting)

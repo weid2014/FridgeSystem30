@@ -55,7 +55,7 @@ class InventoryListItemAdapterScener(
             val tempName = PatternUtil.removeDigitalAndLetter(item.material?.eas_material_name)
             binding.tvDrugName.text = tempName
             //商品名称
-            binding.tvDrugNumber.text = item.material?.eas_material_id
+            binding.tvDrugNumber.text = item.material?.eas_material_number
             //商品规格
             binding.tvDrugSpec.text = "${item.remain}试剂/盒"
             //生产厂家

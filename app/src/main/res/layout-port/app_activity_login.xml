@@ -7,7 +7,7 @@
 
     <!--标题栏-->
     <FrameLayout
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="36dp"
         android:layout_width="match_parent"
         android:layout_height="116dp"
         android:orientation="horizontal">
@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="54dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="54dp"
         android:orientation="vertical">
 
@@ -287,8 +287,6 @@
                 android:layout_height="12dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/app_shape_bottom_green_radius_5" />
-
-
         </LinearLayout>
 
     </LinearLayout>
@@ -302,9 +300,8 @@
 
         <!--暂存区-->
         <LinearLayout
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="278dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
@@ -320,7 +317,7 @@
                     android:layout_marginTop="9dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="暂存存储区"
+                    android:text="未分配区域"
                     android:textColor="@color/app_white"
                     android:textSize="36px" />
 
@@ -340,7 +337,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_pauseContent"
                 android:layout_width="match_parent"
-                android:layout_height="192dp"
+                android:layout_height="148dp"
                 android:background="@color/app_color_login_bg_contain" />
 
             <View
