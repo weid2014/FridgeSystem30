@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "t_account", indices = {@Index(value = {"nfc_id", "nick_name"})})
+@Entity(tableName = "t_account", indices = {@Index(value = {"nfc_id", "nick_name","faceUrl"})})
 public class AccountEntity {
     @PrimaryKey(autoGenerate = true)
     private Long id;

@@ -93,9 +93,55 @@ class LoginViewModel(application: android.app.Application) :
                     //wait wait wait
                     if (!DEBUG) {
 //                        MyTcpServerListener.getInstance().openLock()
+                        LockManage.getInstance().preOpenLock();
                         LockManage.getInstance().openLock()
                     }
 //                    delay(1000)
+                    loginUserInfo.postValue(userInfo)
+                    SharedPreferencesUtils.setPrefString(
+                        ContextUtils.getApplicationContext(),
+                        "loginUserInfo",
+                        Gson().toJson(userInfo)
+                    )
+//                    cardStatus.postValue(true)
+                } catch (e: Exception) {
+                    Log.e(TAG,e.toString())
+                    toast(BaseApp.app.getString(R.string.login_tip_hfc_fail))
+                } finally {
+                    hideLoading()
+                }
+            }
+        }
+    }
+
+    /**
+     * 人脸登录接口
+     */
+    fun loginByFace(faceUrl:String){
+        //防止刷卡响应过于频繁
+        var time = SystemClock.uptimeMillis();//局部变量
+        if (time - lastonclickTime <= 8000) {
+
+        } else {
+            lastonclickTime = time
+            viewModelScope.launch(Dispatchers.Default) {
+                try {
+                    showLoading(BaseApp.app.getString(R.string.login_tip))
+                    var userInfo = userDao.findByFaceUrl(faceUrl);
+                    Log.d(TAG,userInfo.nfc_id)
+                    if (userInfo == null) {
+                        toast("用户未注册")
+                        return@launch;
+                    }
+
+                    //wait wait wait
+                    if (!DEBUG) {
+//                        MyTcpServerListener.getInstance().openLock()
+                        LockManage.getInstance().preOpenLock();
+                        LockManage.getInstance().openLock()
+                    }
+//                    delay(1000)
+                    toast("人脸登录成功")
                     loginUserInfo.postValue(userInfo)
                     SharedPreferencesUtils.setPrefString(
                         ContextUtils.getApplicationContext(),
