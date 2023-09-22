@@ -36,3 +36,6 @@ const val SERIAL_PORT_RFID_DEFAULT = "/dev/ttyS2"
 const val INVENTORY_TIME = "inventory_time"
 const val INVENTORY_TIME_DEFAULT = 10*1000L
 
+const val APP_ID = "3Xpdq6N7xzday4bVTdFxSzLVWhRLEgm5Pgei8HmNrWzZ"
+const val SDK_KEY = "GK9tmQ23mNFZSgyQnnYYqKnCsW5iqBiKTnfmz1igFpJN"
+

@@ -22,6 +22,8 @@ import com.jhteck.cameratest.FileUtils
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.adapter.LoginPageShowItemAdapter
 import com.jhteck.icebox.api.*
+import com.jhteck.icebox.arcface.FaceManageActivity
+import com.jhteck.icebox.arcface.RegisterAndRecognizeActivity
 import com.jhteck.icebox.bean.InventoryDao
 import com.jhteck.icebox.databinding.AppActivityLoginBinding
 import com.jhteck.icebox.rfidmodel.RfidManage
@@ -116,10 +118,13 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
         }
         viewModel.loadRfidsFromLocal();
         //测试入口
+//        viewModel.activeEngine()
         binding.imTestLogin.setOnClickListener {
             if (DEBUG){
-                viewModel.login("admin", "Jinghe233")
+//                viewModel.login("admin", "Jinghe233")
 //                service?.sendRfid()
+//                startActivity(Intent(this, FaceManageActivity::class.java))
+//                startActivity(Intent(this, RegisterAndRecognizeActivity::class.java))
             }
         }
 //        initPermission()

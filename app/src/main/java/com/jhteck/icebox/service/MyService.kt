@@ -57,6 +57,7 @@ class MyService : Service() {
         })
         LockManage.getInstance().setLockCallback(object : MyCallback<String>{
             override fun callback(result: String) {
+                Log.d(TAG, "lock result is $result")
                 sendContentBroadcast(LOCKED_SUCCESS, "lock")
             }
         })
@@ -70,6 +71,7 @@ class MyService : Service() {
         Log.d(TAG, "MyService onCreate")
         LogUpLoadManager.startUploadAsync();
 
+        //wait wait wait
         NfcManage.getInstance().startNfcPort()
 
         RfidManage.getInstance().initReader()

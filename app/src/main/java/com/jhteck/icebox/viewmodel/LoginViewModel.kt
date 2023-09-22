@@ -1,22 +1,31 @@
 package com.jhteck.icebox.viewmodel
 
-import android.content.Context
 import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.arcsoft.face.ActiveFileInfo
+import com.arcsoft.face.ErrorInfo
+import com.arcsoft.face.FaceEngine
 import com.google.gson.Gson
 import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
+import com.jhteck.icebox.api.APP_ID
 import com.jhteck.icebox.api.DEBUG
 import com.jhteck.icebox.api.RfidResults
+import com.jhteck.icebox.api.SDK_KEY
 import com.jhteck.icebox.api.request.RequestRfidsDao
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.LocalService
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.utils.*
+import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -28,7 +37,7 @@ import kotlinx.coroutines.launch
  */
 class LoginViewModel(application: android.app.Application) :
     BaseViewModel<ILoginApiService>(application) {
-    private val TAG="LoginViewModel"
+    private val TAG = "LoginViewModel"
     private val userDao = DbUtil.getDb().accountDao();
     fun login(username: String?, password: String?) {
         viewModelScope.launch(Dispatchers.Default) {
@@ -84,7 +93,7 @@ class LoginViewModel(application: android.app.Application) :
                 try {
                     showLoading(BaseApp.app.getString(R.string.login_tip))
                     var userInfo = userDao.findByNfcId(myTcpMsg);
-                    Log.d(TAG,userInfo.nfc_id)
+                    Log.d(TAG, userInfo.nfc_id)
                     if (userInfo == null) {
                         toast("${myTcpMsg} 未注册")
                         return@launch;
@@ -93,6 +102,7 @@ class LoginViewModel(application: android.app.Application) :
                     //wait wait wait
                     if (!DEBUG) {
 //                        MyTcpServerListener.getInstance().openLock()
+                        LockManage.getInstance().preOpenLock();
                         LockManage.getInstance().openLock()
                     }
 //                    delay(1000)
@@ -104,7 +114,7 @@ class LoginViewModel(application: android.app.Application) :
                     )
 //                    cardStatus.postValue(true)
                 } catch (e: Exception) {
-                    Log.e(TAG,e.toString())
+                    Log.e(TAG, e.toString())
                     toast(BaseApp.app.getString(R.string.login_tip_hfc_fail))
                 } finally {
                     hideLoading()
@@ -208,6 +218,60 @@ class LoginViewModel(application: android.app.Application) :
         }
     }
 
+    /**
+     * 激活引擎
+     *
+     * @param view
+     */
+    fun activeEngine() {
+
+        Observable.create<Int> { emitter ->
+            val runtimeABI = FaceEngine.getRuntimeABI()
+
+            val start = System.currentTimeMillis()
+            val activeCode = FaceEngine.activeOnline(
+                BaseApp.app,
+                APP_ID,
+                SDK_KEY
+            )
+            emitter.onNext(activeCode)
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<Int> {
+                override fun onSubscribe(d: Disposable) {}
+                override fun onNext(activeCode: Int) {
+                    if (activeCode == ErrorInfo.MOK) {
+//                            showToast(getString(R.string.active_success))
+                        Log.d("activeEngine", "active success")
+                    } else if (activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
+//                            showToast(getString(R.string.already_activated))
+                        Log.d("activeEngine", "already activated")
+                    } else {
+//                            showToast(getString(R.string.active_failed, activeCode))
+                        Log.d("activeEngine", "active failed")
+                    }
+                    val activeFileInfo = ActiveFileInfo()
+                    val res = FaceEngine.getActiveFileInfo(
+                        BaseApp.app,
+                        activeFileInfo
+                    )
+                    if (res == ErrorInfo.MOK) {
+                        /*Log.i(
+                            com.arcsoft.arcfacedemo.activity.ChooseFunctionActivity.TAG,
+                            activeFileInfo.toString()
+                        )*/
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.d("activeEngine", e.message.toString())
+
+                }
+
+                override fun onComplete() {}
+            })
+    }
 
 
     val loginUserInfo by lazy {

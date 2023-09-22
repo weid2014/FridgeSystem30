@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import ku.util.KuConvert;
 import ku.util.KuFunction;
 
 /**
@@ -25,6 +24,15 @@ public class LockManage {
     private MyCallback<String> lockCallback;
     private MyCallback<String> versionCallback;
     private SendThread mSendThread;
+    private int relay1 = 1;//继电器1
+    private int relay2 = 2;//继电器2
+    private int sideOpen = 1;//开锁
+    private int sideRelesea = 0;//释放
+    private int LockStatusOpen = 0;//开锁状态
+    private int LockStatusClose = 1;//关锁状态
+    private int sensorStatusClose = 0;//有物
+    private int sensorStatusOpen = 1;//无物
+    private int time = 0xFFFF;
 
     public void setLockCallback(MyCallback<String> lockCallback) {
         this.lockCallback = lockCallback;
@@ -68,18 +76,16 @@ public class LockManage {
             mySerial.listener = new MySerial.Listener() {
                 @Override
                 public void onReceived(byte[] datas) {
-                    String strTemp = KuConvert.toHex(datas, " ");
+//                    String strTemp = KuConvert.toHex(datas, " ");
 //                    Instances.fragLog.AddLog(String.format("Serial Received: %s", strTemp));
 //                    fragTest.handle(datas);
                     handler.handle(datas);
-//                    Log.e(TAG,strTemp);
                 }
 
                 @Override
                 public void onSent(byte[] datas) {
-                    String strTemp = KuConvert.toHex(datas, " ");
+//                    String strTemp = KuConvert.toHex(datas, " ");
 //                    Instances.fragLog.AddLog(String.format("Serial Sent: %s", strTemp));
-                    Log.e(TAG, strTemp);
                 }
             };
             initHandler();
@@ -128,6 +134,14 @@ public class LockManage {
         return sensor1Status.stream().count() == 2 || sensor2Status.stream().count() == 2;
     }
 
+    private void stopAll() {
+        Log.e(TAG, "stopAll: ");
+        closeLock();
+        updateCalculatingStatus(true);//进入结算页面
+        clearThread();
+        lockCallback.callback(1 + "");
+    }
+
     /**
      * 尝试主动发启动时开锁
      */
@@ -136,25 +150,29 @@ public class LockManage {
         if (openLockThread == null) {
             synchronized (this) {
                 if (openLockThread == null) {
-                    Log.i(TAG, "开启定时开锁模式");
+                    Log.i(TAG, "openLockThread:开启定时开锁模式");
                     openLockThread = new Thread(() -> {
                         while (sendTime > 0) {
                             try {
-                                Log.i(TAG, "openLockThread: 定时开锁");
-
-                                if (sensorChanged() && isCalculating) {
-                                    Log.i(TAG, "tryOpenLock: 计入结算环节");
+                                Log.i(TAG, "openLockThread: 定时开锁 +sendTime=" + sendTime);
+                                if (sensorChanged() && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
+                                    Log.i(TAG, "openLockThread:tryOpenLock: 计入结算环节1");
                                     break;
                                 }
-                                openLock();
+                                if (sensorChanged() && isCalculating) {
+                                    Log.i(TAG, "openLockThread:tryOpenLock: 计入结算环节");
+                                    break;
+                                }
+//                                openLock();
                                 sendTime--;
                                 Thread.sleep(6000);
                             } catch (Exception e) {
-                                Log.e(TAG, "定时开锁: " + e.getMessage());
+                                Log.e(TAG, "openLockThread:定时开锁: " + e.getMessage());
                             }
                         }
                         openLockThread = null;
-                        Log.i(TAG, "60秒内无操作，停止定时开锁");
+                        stopAll();
+                        Log.i(TAG, "openLockThread:60秒内无操作，停止定时开锁");
                     });
                     openLockThread.start();
                 }
@@ -165,22 +183,22 @@ public class LockManage {
     public synchronized void updateCalculatingStatus(boolean flag) {
         isCalculating = flag;
     }
-    
-    public  void preOpenLock() {
+
+    public void preOpenLock() {
         updateCalculatingStatus(false);
         sensor1Status = new HashSet<>();
         sensor2Status = new HashSet<>();
     }
 
     public void openLock() {
+        Log.d(TAG, "openLock sensor1=" + lockInfo1.sensor + "lockInfo2.sensor==" + lockInfo2.sensor
+                + "lockInfo1.lock==0" + lockInfo1.lock + "lockInfo2.lock==" + lockInfo2.lock);
         //开锁
-        int relay = Integer.parseInt("1");
-        int relay2 = Integer.parseInt("2");
-        int time = 0xFFFF;
         try {
-            SendData(handler.dataOfUnlock(relay, time, 1));
-            Thread.sleep(600);
-            SendData(handler.dataOfUnlock(relay2, time, 1));
+            Thread.sleep(100);
+            SendData(handler.dataOfUnlock(relay1, time, sideOpen));
+            Thread.sleep(100);
+            SendData(handler.dataOfUnlock(relay2, time, sideOpen));
         } catch (Exception e) {
 
         }
@@ -208,7 +226,7 @@ public class LockManage {
                     }
                 }
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(3000);
                     getLockStutas();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -230,47 +248,30 @@ public class LockManage {
 
     public void closeLock() {
         //关锁
-        int relay = Integer.parseInt("1");
-        int relay2 = Integer.parseInt("2");
-        int time = 0xFFFF;
-//        SendData(handler.dataOfUnlock(relay, time, 0));
-//        SendData(handler.dataOfUnlock(relay2, time, 0));
-
         try {
-            SendData(handler.dataOfUnlock(relay, time, 0));
-            Thread.sleep(600);
-            SendData(handler.dataOfUnlock(relay2, time, 0));
+            Thread.sleep(100);
+            SendData(handler.dataOfUnlock(relay1, time, sideRelesea));
+            Thread.sleep(100);
+            SendData(handler.dataOfUnlock(relay2, time, sideRelesea));
         } catch (Exception e) {
             Log.e(TAG, "closeLock: " + e.getMessage());
         }
-        clearThread();
-
     }
 
     public void clearThread() {
         mSendThread.setSuspendFlag();
     }
 
-    private boolean isRelay1 = true;
-    private boolean isRelay2 = true;
     private LockInfo lockInfo1 = new LockInfo();
     private LockInfo lockInfo2 = new LockInfo();
 
     public void getLockStutas() {
-        int relay = Integer.parseInt("1");
-        int relay2 = Integer.parseInt("2");
         Log.d(TAG, "获取锁状态");
         try {
-            isRelay1 = true;
-            isRelay2 = false;
-            lockInfo1 = new LockInfo();
-            SendData(handler.dataOfLockStatus(relay));
-            Thread.sleep(600);
-            isRelay1 = false;
-            isRelay2 = true;
-            lockInfo2 = new LockInfo();
+            Thread.sleep(100);
+            SendData(handler.dataOfLockStatus(relay1));
+            Thread.sleep(100);
             SendData(handler.dataOfLockStatus(relay2));
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -301,36 +302,27 @@ public class LockManage {
             }
 
             @Override
-            public void ErrorHandle(Exception ex) {
-                Log.e(TAG, KuFunction.getError(ex));
-            }
-
-            @Override
             public void UnlockResult(boolean ret) {
                 Log.e(TAG, ret ? "操作完成" : "操作失败");
             }
 
             @Override
             public void LockStatusResult(LockInfo info) {
-                   /* String strTemp = String.format(getString(R.string.lockstatetemplate),
-                            info.lock, info.sensor);
-                    runOnUiThread(() -> txtLockStatus.setText(strTemp));*/
-
-                if (isRelay1) {
+                if (info.relay == 1) {
                     lockInfo1 = info;
-                } else if (isRelay2) {
+                } else if (info.relay == 2) {
                     lockInfo2 = info;
                 }
-                Log.e(TAG, "LockStatus=" + info.lock + "--sensor=" + info.sensor);
-                Log.e(TAG, "lockInfo1 LockStatus=" + lockInfo1.lock + "--sensor=" + lockInfo1.sensor);
-                Log.e(TAG, "lockInfo2 LockStatus=" + lockInfo2.lock + "--sensor=" + lockInfo2.sensor);
+                Log.d(TAG, "lockInfo1 LockStatus=" + lockInfo1.lock + "--sensor=" + lockInfo1.sensor + "--relay=" + lockInfo1.relay);
+                Log.d(TAG, "lockInfo2 LockStatus=" + lockInfo2.lock + "--sensor=" + lockInfo2.sensor + "--relay=" + lockInfo2.relay);
 
                 sensor1Status.add(lockInfo1.sensor);
                 sensor2Status.add(lockInfo2.sensor);
-                if (lockInfo1.lock == 1 && lockInfo2.lock == 1 && sensorChanged() && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
-                    clearThread();
-                    updateCalculatingStatus(true);//进入结算页面
-                    lockCallback.callback(info.lock + "");
+                if (lockInfo1.lock == 0 && lockInfo2.lock == 0 && sensorChanged() && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
+                    stopAll();
+                } else if (sensorChanged() || lockInfo1.sensor == 1 || lockInfo2.sensor == 1) {
+                    //假如有一个传感器有变化，重新几时
+                    sendTime = 10;
                 }
             }
 
@@ -345,6 +337,26 @@ public class LockManage {
             }
 
             @Override
+            public void LockStatusExAllResult(int i) {
+                Log.e(TAG, "LockStatusExAllResult=" + i);
+            }
+
+            @Override
+            public void OnBoardUpdatedEx(int i) {
+                Log.e(TAG, "OnBoardUpdatedEx=" + i);
+            }
+
+            @Override
+            public void OnRelayExUpdated(int i) {
+                Log.e(TAG, "OnRelayExUpdated=" + i);
+            }
+
+            @Override
+            public void OnError(Exception e) {
+                Log.e(TAG, "OnError" + e);
+            }
+
+            @Override
             public void SetIDResult(boolean ret) {
                 Log.e(TAG, ret ? "操作完成" : "操作失败");
             }
@@ -353,6 +365,16 @@ public class LockManage {
             public void FirmwareVersionResult(String ver) {
                 Log.e(TAG, "FirmwareVersionResult" + ver);
                 versionCallback.callback(ver);
+            }
+
+            @Override
+            public void GetNetParamsResult() {
+                Log.e(TAG, "GetNetParamsResult");
+            }
+
+            @Override
+            public void SetNetParamsResult() {
+                Log.e(TAG, "SetNetParamsResult");
             }
         });
     }

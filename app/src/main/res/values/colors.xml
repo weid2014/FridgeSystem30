@@ -53,6 +53,6 @@
     <color name="app_tab_unselect_bg">#4DC5D3</color>
     <color name="app_tab_cells_bg1">#31A7B5</color>
     <color name="app_tab_cells_bg2">#74C7D1</color>
-
+    <color name="color_bg_name">#80000000</color>
 
 </resources>

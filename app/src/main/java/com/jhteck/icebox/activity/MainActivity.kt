@@ -267,6 +267,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
     override fun onStart() {
         super.onStart()
+        viewModel.tryOpenLock()
         doRegisterReceiver();
     }
 
