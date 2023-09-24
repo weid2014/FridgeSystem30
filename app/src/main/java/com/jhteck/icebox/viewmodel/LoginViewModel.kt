@@ -16,6 +16,7 @@ import com.jhteck.icebox.api.request.RequestRfidsDao
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.LocalService
 import com.jhteck.icebox.repository.entity.AccountEntity
+import com.jhteck.icebox.repository.entity.FaceAccountEntity
 import com.jhteck.icebox.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
  */
 class LoginViewModel(application: android.app.Application) :
     BaseViewModel<ILoginApiService>(application) {
-    private val TAG="LoginViewModel"
+    private val TAG = "LoginViewModel"
     private val userDao = DbUtil.getDb().accountDao();
     fun login(username: String?, password: String?) {
         viewModelScope.launch(Dispatchers.Default) {
@@ -84,7 +85,7 @@ class LoginViewModel(application: android.app.Application) :
                 try {
                     showLoading(BaseApp.app.getString(R.string.login_tip))
                     var userInfo = userDao.findByNfcId(myTcpMsg);
-                    Log.d(TAG,userInfo.nfc_id)
+                    Log.d(TAG, userInfo.nfc_id)
                     if (userInfo == null) {
                         toast("${myTcpMsg} 未注册")
                         return@launch;
@@ -105,7 +106,7 @@ class LoginViewModel(application: android.app.Application) :
                     )
 //                    cardStatus.postValue(true)
                 } catch (e: Exception) {
-                    Log.e(TAG,e.toString())
+                    Log.e(TAG, e.toString())
                     toast(BaseApp.app.getString(R.string.login_tip_hfc_fail))
                 } finally {
                     hideLoading()
@@ -117,7 +118,7 @@ class LoginViewModel(application: android.app.Application) :
     /**
      * 人脸登录接口
      */
-    fun loginByFace(faceUrl:String){
+    fun loginByFace(faceUrl: String) {
         //防止刷卡响应过于频繁
         var time = SystemClock.uptimeMillis();//局部变量
         if (time - lastonclickTime <= 8000) {
@@ -127,8 +128,13 @@ class LoginViewModel(application: android.app.Application) :
             viewModelScope.launch(Dispatchers.Default) {
                 try {
                     showLoading(BaseApp.app.getString(R.string.login_tip))
-                    var userInfo = userDao.findByFaceUrl(faceUrl);
-                    Log.d(TAG,userInfo.nfc_id)
+                    var faceAccountEntity = DbUtil.getDb().faceAccountDao().getByFaceUrl(faceUrl)
+                    if (faceAccountEntity == null) {
+                        toast("人脸未注册")
+                        return@launch
+                    }
+                    var userInfo = userDao.findById(faceAccountEntity.user_id);
+                    Log.d(TAG, userInfo.nfc_id)
                     if (userInfo == null) {
                         toast("用户未注册")
                         return@launch;
@@ -150,7 +156,7 @@ class LoginViewModel(application: android.app.Application) :
                     )
 //                    cardStatus.postValue(true)
                 } catch (e: Exception) {
-                    Log.e(TAG,e.toString())
+                    Log.e(TAG, e.toString())
                     toast(BaseApp.app.getString(R.string.login_tip_hfc_fail))
                 } finally {
                     hideLoading()
@@ -253,7 +259,6 @@ class LoginViewModel(application: android.app.Application) :
 
         }
     }
-
 
 
     val loginUserInfo by lazy {

@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase;
 
 import com.jhteck.icebox.repository.dao.AccountDao;
 import com.jhteck.icebox.repository.dao.AccountOperationDao;
+import com.jhteck.icebox.repository.dao.FaceAccountDao;
 import com.jhteck.icebox.repository.dao.FridgesInfoDao;
 import com.jhteck.icebox.repository.dao.OperationErrorLogDao;
 import com.jhteck.icebox.repository.dao.RfidOperationDao;
@@ -21,6 +22,7 @@ import com.jhteck.icebox.repository.dao.diule.RfidDao;
 import com.jhteck.icebox.repository.dao.UserDao;
 import com.jhteck.icebox.repository.entity.AccountEntity;
 import com.jhteck.icebox.repository.entity.AccountOperationEntity;
+import com.jhteck.icebox.repository.entity.FaceAccountEntity;
 import com.jhteck.icebox.repository.entity.FridgesInfoEntity;
 import com.jhteck.icebox.repository.entity.OperationErrorLogEntity;
 import com.jhteck.icebox.repository.entity.RfidOperationEntity;
@@ -44,8 +46,9 @@ import com.jhteck.icebox.repository.entity.diule.User;
         RfidOperationEntity.class,
         FridgesInfoEntity.class,
         SysOperationErrorEntity.class,
-        OperationErrorLogEntity.class
-}, version = 29, exportSchema = false)
+        OperationErrorLogEntity.class,
+        FaceAccountEntity.class,
+}, version = 30, exportSchema = false)
 public abstract class AppDataBase extends RoomDatabase {
 
     public abstract UserDao userDao();
@@ -64,6 +67,12 @@ public abstract class AppDataBase extends RoomDatabase {
      * @return
      */
     public abstract AccountDao accountDao();
+
+    /**
+     * 人脸图片路径和账户对应
+     * @return
+     */
+    public abstract FaceAccountDao faceAccountDao();
 
     /**
      * 用户操作日志

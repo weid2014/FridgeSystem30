@@ -10,6 +10,7 @@ import com.jhteck.icebox.apiserver.RetrofitClient
 import com.jhteck.icebox.bean.ExceptionRecordBean
 import com.jhteck.icebox.bean.OperationErrorEnum
 import com.jhteck.icebox.repository.entity.AccountEntity
+import com.jhteck.icebox.repository.entity.FaceAccountEntity
 import com.jhteck.icebox.repository.entity.RfidOperationEntity
 import com.jhteck.icebox.repository.entity.SysOperationErrorEntity
 import com.jhteck.icebox.utils.ContextUtils
@@ -27,7 +28,7 @@ class AccountViewModel(application: android.app.Application) :
     /**
      * 新增用户
      */
-    fun add(user: AccountEntity) {
+    fun add(user: AccountEntity, faceUrl: String?=null) {
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 showLoading("正在新增账户，请稍等...")
@@ -46,6 +47,11 @@ class AccountViewModel(application: android.app.Application) :
                 user.status = 0
                 userDao.insertAll(user)
                 userEntity = userDao.findByName(user.nick_name)
+                //人脸信息
+                if (faceUrl != null) {
+                    var faceAccountEntity = FaceAccountEntity(null, userEntity.user_id, faceUrl)
+                    DbUtil.getDb().faceAccountDao().insert(faceAccountEntity)
+                }
                 getAllUsers();
                 //更新用户到平台
                 val response = RetrofitClient.getService().addAccount(userEntity);
