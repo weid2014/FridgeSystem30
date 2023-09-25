@@ -33,4 +33,8 @@ public interface AccountDao extends BaseJavaDao<AccountEntity> {
 
     @Query("SELECT * from t_account WHERE role_id=(:roleId)")
     AccountEntity findByRoleId(String roleId);
+
+    @Query("SELECT * FROM t_account WHERE faceUrl=(:faceUrl) LIMIT 1")
+    AccountEntity findByFaceUrl(String faceUrl);
+
 }

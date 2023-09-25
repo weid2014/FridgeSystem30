@@ -120,7 +120,7 @@ dependencies {
     implementation files('libs\\SerialPort.jar')
     implementation files('libs\\KuFrame.jar')
     implementation files('libs\\arcsoft_face.jar')
-    implementation files('libs\\MrbBoardLib.jar')
+    implementation files('libs\\arcsoft_image_util.jar')
 
     def room_version = "2.3.0"
     implementation 'androidx.room:room-common:2.3.0'

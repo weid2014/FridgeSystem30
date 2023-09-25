@@ -230,6 +230,8 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                     item.login_time = createDate
                     item.updated_by =
                         SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10).toString()
+                    //todo 删除旧的人脸数据，更新最新的人脸数据
+
                     viewModel.update(item);//更新
                 }
             }
