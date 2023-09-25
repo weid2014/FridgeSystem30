@@ -28,7 +28,7 @@ class AccountViewModel(application: android.app.Application) :
     /**
      * 新增用户
      */
-    fun add(user: AccountEntity, faceUrl: String?=null) {
+    fun add(user: AccountEntity, faceUrl: String? = null) {
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 showLoading("正在新增账户，请稍等...")
@@ -76,12 +76,24 @@ class AccountViewModel(application: android.app.Application) :
     /**
      * 更新用户
      */
-    fun update(user: AccountEntity) {
+    fun update(user: AccountEntity, faceUrl: String? = null) {
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 showLoading("正在更新账户，请稍等...")
                 user.hasUpload = false
                 userDao.update(user)
+                if (faceUrl != null) {
+                    if (user.faceAccount == null || user.faceAccount.size == 0) {
+                        var faceAccountEntity = FaceAccountEntity(null, user.user_id, faceUrl)
+                        DbUtil.getDb().faceAccountDao().insert(faceAccountEntity)
+                    } else {
+
+                        var faceAcount = user.faceAccount.get(0)
+                        faceAcount.faceUrl = faceUrl
+                        faceAcount.createTime = System.currentTimeMillis()
+                        DbUtil.getDb().faceAccountDao().update(faceAcount)
+                    }
+                }
                 getAllUsers();
                 val response = RetrofitClient.getService().updateAccount(user);
                 if (response.code() == 200) {
@@ -113,6 +125,13 @@ class AccountViewModel(application: android.app.Application) :
                 user.hasUpload = false
                 user.status = -1//删除状态
                 userDao.update(user)
+                if (user.faceAccount != null && user.faceAccount.size > 0) {
+                    for (faceAccount in user.faceAccount) {
+                        faceAccount.status = -1;
+                        DbUtil.getDb().faceAccountDao().update(faceAccount)
+                    }
+                }
+
                 getAllUsers();
                 val response =
                     RetrofitClient.getService().deleteAccount(user.user_id);//上传 ->需要考虑上传失败的
@@ -136,7 +155,16 @@ class AccountViewModel(application: android.app.Application) :
     fun getAllUsers() {
         viewModelScope.launch(Dispatchers.Default) {
             var userResults = userDao.getAll().filter { usr -> usr.status == 0 };
-
+            for (user in userResults) {
+                var faceAcountEntites =
+                    DbUtil.getDb().faceAccountDao().getByFaceByUserId(user.user_id)
+                if (faceAcountEntites != null && faceAcountEntites.size > 1) {
+                    faceAcountEntites = faceAcountEntites.stream()
+                        .sorted(Comparator.comparing(FaceAccountEntity::createTime).reversed())
+                        .collect(Collectors.toList());
+                }
+                user.faceAccount = faceAcountEntites;
+            }
             onUsersLoaded.postValue(userResults)
         }
     }

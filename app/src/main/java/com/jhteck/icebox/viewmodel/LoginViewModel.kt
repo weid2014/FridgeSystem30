@@ -148,7 +148,6 @@ class LoginViewModel(application: android.app.Application) :
                         toast("用户未注册")
                         return@launch;
                     }
-
                     //wait wait wait
                     if (!DEBUG) {
 //                        MyTcpServerListener.getInstance().openLock()

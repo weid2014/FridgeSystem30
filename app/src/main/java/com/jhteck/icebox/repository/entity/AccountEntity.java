@@ -3,8 +3,11 @@ package com.jhteck.icebox.repository.entity;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+import androidx.room.Relation;
 
-@Entity(tableName = "t_account", indices = {@Index(value = {"nfc_id", "nick_name","faceUrl"})})
+import java.util.List;
+
+@Entity(tableName = "t_account", indices = {@Index(value = {"nfc_id", "nick_name", "faceUrl"})})
 public class AccountEntity {
     @PrimaryKey(autoGenerate = true)
     private Long id;
@@ -26,6 +29,18 @@ public class AccountEntity {
     private Boolean hasUpload;
     private String faceUrl;
     private int status;
+
+    public List<FaceAccountEntity> getFaceAccount() {
+        return faceAccount;
+    }
+
+    public void setFaceAccount(List<FaceAccountEntity> faceAccount) {
+        this.faceAccount = faceAccount;
+    }
+
+    private transient List<FaceAccountEntity> faceAccount;
+
+
 
     public Boolean getHasUpload() {
         return hasUpload;
