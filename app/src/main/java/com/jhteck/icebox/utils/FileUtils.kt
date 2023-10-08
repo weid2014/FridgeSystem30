@@ -19,7 +19,7 @@ object FileUtils {
     /**
      * 获取视频文件路径
      */
-    private val imagePath = Environment.getExternalStorageDirectory().toString() + "/images_km"
+    private val imagePath = Environment.getExternalStorageDirectory().toString() + "/images_km/register"
     fun getVideoName(): String {
         val videoPath = Environment.getExternalStorageDirectory().toString() + "/CameraX"
         val dir = File(videoPath)
@@ -33,7 +33,6 @@ object FileUtils {
      * 获取图片文件路径
      */
     fun getImageFileName(): String {
-//        val imagePath = Environment.getExternalStorageDirectory().toString() + "/images_km"
         val dir = File(imagePath)
         if (!dir.exists() && !dir.mkdirs()) {
             ToastUtils.shortToast("Trip")

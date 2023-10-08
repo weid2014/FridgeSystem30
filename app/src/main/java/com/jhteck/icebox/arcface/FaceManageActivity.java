@@ -31,7 +31,7 @@ import java.util.concurrent.Executors;
  */
 public class FaceManageActivity extends FaceBaseActivity {
     //注册图所在的目录
-    private static final String ROOT_DIR = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "arcfacedemo";
+    private static final String ROOT_DIR = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "images_km";
     private static final String REGISTER_DIR = ROOT_DIR + File.separator + "register";
     private static final String REGISTER_FAILED_DIR = ROOT_DIR + File.separator + "failed";
     private ExecutorService executorService;

@@ -62,7 +62,9 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         // 检查是否是第一次运行应用程序
         var isFirstRun =
             SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
-//        val isFirstRun = true
+        if(DEBUG) {
+         isFirstRun = false
+        }
         if (isFirstRun) {
             binding.llFridgesOperate.visibility = View.VISIBLE
             binding.rlSpash.visibility = View.GONE
@@ -364,9 +366,12 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     }
 
     private fun startService() {
-        val intent = Intent(this, MyService::class.java)
-        intent.putExtra("from", "LoginActivity")
-        bindService(intent, conn, Context.BIND_AUTO_CREATE)
+        //测试模式就不启动服务了
+        if(!DEBUG) {
+            val intent = Intent(this, MyService::class.java)
+            intent.putExtra("from", "LoginActivity")
+            bindService(intent, conn, Context.BIND_AUTO_CREATE)
+        }
     }
 
     /**

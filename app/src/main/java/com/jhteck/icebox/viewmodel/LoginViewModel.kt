@@ -20,7 +20,6 @@ import com.jhteck.icebox.api.request.RequestRfidsDao
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.LocalService
 import com.jhteck.icebox.repository.entity.AccountEntity
-import com.jhteck.icebox.repository.entity.FaceAccountEntity
 import com.jhteck.icebox.utils.*
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -274,7 +273,8 @@ class LoginViewModel(application: android.app.Application) :
      * @param view
      */
     fun activeEngine() {
-
+        val cpuArchitecture = System.getProperty("os.arch")
+        Log.d("activeEngine", "CPU Architecture: $cpuArchitecture")
         Observable.create<Int> { emitter ->
             val runtimeABI = FaceEngine.getRuntimeABI()
 
@@ -294,12 +294,15 @@ class LoginViewModel(application: android.app.Application) :
                     if (activeCode == ErrorInfo.MOK) {
 //                            showToast(getString(R.string.active_success))
                         Log.d("activeEngine", "active success")
+                        toast("active success")
                     } else if (activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
 //                            showToast(getString(R.string.already_activated))
                         Log.d("activeEngine", "already activated")
+                        toast("already activated")
                     } else {
 //                            showToast(getString(R.string.active_failed, activeCode))
                         Log.d("activeEngine", "active failed")
+                        toast("active failed")
                     }
                     val activeFileInfo = ActiveFileInfo()
                     val res = FaceEngine.getActiveFileInfo(

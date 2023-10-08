@@ -69,6 +69,15 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     }
 
     override fun createViewBinding(): AppActivityMainBinding {
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN
+        window.decorView.setOnSystemUiVisibilityChangeListener(
+            View.OnSystemUiVisibilityChangeListener() {
+                fun onSystemUiVisibilityChange(visibility: Int) {
+                    window.decorView.systemUiVisibility =
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN
+                }
+            })
         return AppActivityMainBinding.inflate(layoutInflater)
     }
 

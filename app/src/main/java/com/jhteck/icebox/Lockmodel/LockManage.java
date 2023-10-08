@@ -226,7 +226,7 @@ public class LockManage {
                     }
                 }
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
                     getLockStutas();
                 } catch (InterruptedException e) {
                     e.printStackTrace();

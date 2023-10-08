@@ -19,20 +19,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.hele.mrd.app.lib.base.BaseActivity
 import com.jhteck.cameratest.FileUtils
-import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.adapter.LoginPageShowItemAdapter
 import com.jhteck.icebox.api.*
-import com.jhteck.icebox.arcface.FaceManageActivity
-import com.jhteck.icebox.arcface.RegisterAndRecognizeActivity
 import com.jhteck.icebox.bean.InventoryDao
 import com.jhteck.icebox.databinding.AppActivityLoginBinding
-import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.utils.ToastUtils
 import com.jhteck.icebox.viewmodel.LoginViewModel
-import com.tencent.bugly.crashreport.CrashReport
-import es.dmoral.toasty.Toasty
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -94,6 +88,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
         //开启service，初始化TCP服务
 //        CrashReport.testJavaCrash();
 //        startService()
+
         binding.btnLogin.setOnClickListener {
             //登录按键点击事件
             viewModel.login(binding.edUserName.text.toString(), binding.edPassword.text.toString())
@@ -118,16 +113,18 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
         }
         viewModel.loadRfidsFromLocal();
         //测试入口
-//        viewModel.activeEngine()
+
         binding.imTestLogin.setOnClickListener {
-            if (DEBUG){
+            if (DEBUG) {
+//                takePhoto()
 //                viewModel.login("admin", "Jinghe233")
 //                service?.sendRfid()
+                viewModel.activeEngine()
 //                startActivity(Intent(this, FaceManageActivity::class.java))
 //                startActivity(Intent(this, RegisterAndRecognizeActivity::class.java))
             }
         }
-//        initPermission()
+        initPermission()
 //        doRegisterReceiver();
     }
 
@@ -147,6 +144,8 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
     }
 
     fun initRecyclerView() {
+        //区分暂存区域展示
+
         clearList()
         rvNormalArray = arrayOf(
             binding.rvNormalContent11, binding.rvNormalContent12, binding.rvNormalContent13,
@@ -170,8 +169,13 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
                 LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
             rvNormalArray[i]?.adapter = inventoryDaoArray[i]?.let { LoginPageShowItemAdapter(it) }
         }
-        binding.rvPauseContent?.layoutManager= LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        binding.rvPauseContent?.layoutManager =
+            LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         binding.rvPauseContent?.adapter = LoginPageShowItemAdapter(tempList10)
+
+        binding.rvPauseContent1?.layoutManager =
+            LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        binding.rvPauseContent1?.adapter = LoginPageShowItemAdapter(tempList30)
     }
 
     override fun initObservables() {
@@ -195,19 +199,20 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
     var rvNormalArray = arrayOfNulls<RecyclerView>(15)
     var inventoryDaoArray = arrayOfNulls<ArrayList<InventoryDao>>(15)
     var tempList10 = mutableListOf<InventoryDao>()//未编辑位置
+    var tempList30 = mutableListOf<InventoryDao>()//未编辑位置
     var tempList = mutableListOf<InventoryDao>()
     var tempListNormal = mutableListOf<AvailRfid>()
     private fun clearList() {
         tempList.clear()
         tempListNormal.clear()
         tempList10.clear()
+        tempList30.clear()
         for (item in inventoryDaoArray) {
             item?.clear()
         }
     }
 
     private fun loadRridsData() {
-
         viewModel.rfidDatas.observe(this) {
             clearList()
             var map = it.avail_rfids.stream()
@@ -255,7 +260,23 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
             binding.tvNormalNum.text = "共${tempListNormal.size}个"
 
             binding.rvPauseContent?.adapter?.notifyDataSetChanged()
-            binding.tvPauseNum?.text= "共${it.avail_rfids.size-tempListNormal.size}个"
+            binding.tvPauseNum?.text = "共${it.avail_rfids.size - tempListNormal.size}个"
+
+            //显示暂存区域
+            for (i in it.avail_rfids) {
+                if (i.remain < 100) {
+                    tempList30.add(
+                        InventoryDao(
+                            "${i.material_batch.eas_lot}",
+                            "${i.material?.eas_material_name}",
+                            1,
+                            i.cell_number
+                        )
+                    )
+                }
+            }
+            binding.rvPauseContent1?.adapter?.notifyDataSetChanged()
+            binding.tvPauseNum1?.text = "共${tempList30.size}个"
         }
     }
 
@@ -276,7 +297,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                     ToastUtils.shortToast(" 拍照失败 ${exc.message}")
 //                    Toasty.info(this@LoginActivity, " 拍照失败 ${exc.message}", Toast.LENGTH_SHORT, true).show()
-                    toMainPage()
+//                    toMainPage()
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
@@ -285,7 +306,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
                     ToastUtils.shortToast(" 拍照成功 $savedUri")
 //                    Toasty.info(this@LoginActivity, " 拍照成功 $savedUri", Toast.LENGTH_SHORT, true).show()
                     Log.d(TAG, msg)
-                    toMainPage()
+//                    toMainPage()
                 }
             })
     }
@@ -294,7 +315,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
         //跳转到主页面
         binding.edPassword.setText("")
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("loginUserInfo", Gson().toJson(viewModel.loginUserInfo.value));
+        intent.putExtra("loginUserInfo", Gson().toJson(viewModel.loginUserInfo.value))
         startActivity(intent)
         finish()
     }

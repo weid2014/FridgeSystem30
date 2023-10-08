@@ -40,10 +40,10 @@ class AccoutListItemAdapter(
     class ViewHolder(private val binding: RvAccoutContentItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindData(item: AccountEntity, operator: ItemOperatorAdapter<AccountEntity>) {
-            //商品编号
-            binding.tvNickName.text = item.nick_name
-            //商品名称
-            binding.tvUserName.text = item.real_name
+            //姓名
+            binding.tvNickName.text = item.real_name
+            //用户名
+            binding.tvUserName.text = item.nick_name
             //商品规格
             binding.tvUserID.text = item.km_user_id
 
