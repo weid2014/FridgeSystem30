@@ -62,8 +62,9 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         // 检查是否是第一次运行应用程序
         var isFirstRun =
             SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
-        if(DEBUG) {
-         isFirstRun = false
+        if (DEBUG) {
+            viewModel.registAdmin("Jinghe233")
+            isFirstRun = false
         }
         if (isFirstRun) {
             binding.llFridgesOperate.visibility = View.VISIBLE
@@ -152,7 +153,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
 
             RfidManage.getInstance().setVersionCallback(object : MyCallback<String> {
                 override fun callback(result: String) {
-                    runOnUiThread{
+                    runOnUiThread {
                         toast(result)
                     }
                 }
@@ -367,7 +368,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
 
     private fun startService() {
         //测试模式就不启动服务了
-        if(!DEBUG) {
+        if (!DEBUG) {
             val intent = Intent(this, MyService::class.java)
             intent.putExtra("from", "LoginActivity")
             bindService(intent, conn, Context.BIND_AUTO_CREATE)

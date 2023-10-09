@@ -8,7 +8,8 @@
     <!--标题栏-->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="116dp"
+        android:layout_marginTop="40dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -45,6 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="54dp"
         android:layout_marginEnd="54dp"
+        android:layout_marginTop="20dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -54,15 +56,14 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="68dp"
                 android:background="@mipmap/sbanner1"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="108dp"
-                    android:layout_height="50dp"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="9dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="常规存储区"
@@ -72,7 +73,7 @@
                 <TextView
                     android:id="@+id/tv_normalNum"
                     android:layout_width="130dp"
-                    android:layout_height="50dp"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="9dp"
                     android:layout_marginEnd="72dp"
                     android:layout_weight="1"
@@ -296,118 +297,126 @@
         android:layout_margin="54dp"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="313dp">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/login_cell_pause_height"
+                    android:background="@mipmap/stbanner2"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="108dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="9dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="暂存区域"
+                        android:textColor="@color/app_white"
+                        android:textSize="32px" />
+
+                    <TextView
+                        android:id="@+id/tv_pauseNum1"
+                        android:layout_width="130dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="9dp"
+                        android:layout_marginEnd="72dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical|right"
+                        android:text="共6盒"
+                        android:textColor="@color/app_white"
+                        android:textSize="36px" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_pauseContent1"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/login_cell_height1"
+                    android:background="@color/app_color_login_bg_contain" />
+
+                <View
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="9dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="#FFAF33" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/app_shape_bottom_no_radius_5" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginStart="12dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/login_cell_pause_height"
+                    android:background="@mipmap/stbanner1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="108dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="9dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="未分配区域"
+                        android:textColor="@color/app_white"
+                        android:textSize="32px" />
+
+                    <TextView
+                        android:id="@+id/tv_pauseNum"
+                        android:layout_width="130dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="9dp"
+                        android:layout_marginEnd="72dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical|right"
+                        android:text="共6盒"
+                        android:textColor="@color/app_white"
+                        android:textSize="36px" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_pauseContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/login_cell_height1"
+                    android:background="@color/app_color_login_bg_contain" />
+
+                <View
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="9dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="#0B68BE " />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/app_shape_bottom_no1_radius_5" />
+
+            </LinearLayout>
+        </LinearLayout>
         <!--暂存区-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:background="@mipmap/stbanner2"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="108dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="9dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="暂存区域"
-                    android:textColor="@color/app_white"
-                    android:textSize="32px" />
-
-                <TextView
-                    android:id="@+id/tv_pauseNum1"
-                    android:layout_width="130dp"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="9dp"
-                    android:layout_marginEnd="72dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical|right"
-                    android:text="共6盒"
-                    android:textColor="@color/app_white"
-                    android:textSize="36px" />
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_pauseContent1"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/login_cell_height"
-                android:background="@color/app_color_login_bg_contain" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="6dp"
-                android:layout_gravity="center_horizontal"
-                android:background="#FFAF33" />
-
-            <View
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="12dp"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/app_shape_bottom_red_radius_5" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_marginTop="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:background="@mipmap/stbanner2"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="108dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="9dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="未分配区域"
-                    android:textColor="@color/app_white"
-                    android:textSize="32px" />
-
-                <TextView
-                    android:id="@+id/tv_pauseNum"
-                    android:layout_width="130dp"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="9dp"
-                    android:layout_marginEnd="72dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical|right"
-                    android:text="共6盒"
-                    android:textColor="@color/app_white"
-                    android:textSize="36px" />
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_pauseContent"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/login_cell_height"
-                android:background="@color/app_color_login_bg_contain" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="4dp"
-                android:layout_gravity="center_horizontal"
-                android:background="#FFAF33" />
-
-            <View
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="12dp"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/app_shape_bottom_red_radius_5" />
-
-        </LinearLayout>
 
         <!--刷卡界面-->
         <LinearLayout
@@ -422,7 +431,7 @@
                 android:layout_width="507dp"
                 android:layout_height="315dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="80dp"
                 android:src="@mipmap/ic_card_lock" />
 
             <LinearLayout

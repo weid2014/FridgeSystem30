@@ -14,6 +14,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -117,9 +118,9 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
         binding.imTestLogin.setOnClickListener {
             if (DEBUG) {
 //                takePhoto()
-//                viewModel.login("admin", "Jinghe233")
+                viewModel.login("admin", "Jinghe233")
 //                service?.sendRfid()
-                viewModel.activeEngine()
+//                viewModel.activeEngine()
 //                startActivity(Intent(this, FaceManageActivity::class.java))
 //                startActivity(Intent(this, RegisterAndRecognizeActivity::class.java))
             }
@@ -166,15 +167,15 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
         }
         for (i in 0 until 15) {
             rvNormalArray[i]?.layoutManager =
-                LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+                GridLayoutManager(this, 2)
             rvNormalArray[i]?.adapter = inventoryDaoArray[i]?.let { LoginPageShowItemAdapter(it) }
         }
         binding.rvPauseContent?.layoutManager =
-            LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+            GridLayoutManager(this, 4)
         binding.rvPauseContent?.adapter = LoginPageShowItemAdapter(tempList10)
 
         binding.rvPauseContent1?.layoutManager =
-            LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+            GridLayoutManager(this, 4)
         binding.rvPauseContent1?.adapter = LoginPageShowItemAdapter(tempList30)
     }
 
