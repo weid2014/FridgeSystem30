@@ -398,6 +398,15 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                 tvCountOut.text = "领出列表(x${outList.size})"
                 tvCountIn.text = "${showTitle}(x${inList.size})"
                 val btnCountDownTime = contentView.findViewById<Button>(R.id.btnCountDownTime)
+                when (roleID) {
+                    10, 20 -> {
+                        tvCountIn.setCompoundDrawablesRelativeWithIntrinsicBounds(getDrawable(R.mipmap.ic_put_in), null, null, null)
+//                        tvCountIn.setBackgroundResource(R.mipmap.ic_put_in_pause)
+                    }
+                    else -> {
+                        tvCountIn.setCompoundDrawablesRelativeWithIntrinsicBounds(getDrawable(R.mipmap.ic_put_in_pause), null, null, null)
+                    }
+                }
 
                 useCoroutines(btnCountDownTime)
                 btnClosePop.setOnClickListener {
@@ -421,7 +430,9 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                         rvInventoryResultIN.adapter = InventoryListAdapter(tempInList)
                     }
                     else -> {
-                        tvRemainTitle.visibility = View.VISIBLE
+                        if(inList.isNotEmpty()) {
+                            tvRemainTitle.visibility = View.VISIBLE
+                        }
                         rvInventoryResultIN.adapter =
                             InventoryListAdapterScener(inList, object : ISettlement {
                                 override fun settlement(availRfid: AvailRfid) {
@@ -458,7 +469,10 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                         rvInventoryResultOUT.visibility = View.GONE
                     }//存入
                     0 -> {
-
+                        tvCountIn.visibility = View.INVISIBLE
+                        rvInventoryResultIN.visibility = View.INVISIBLE
+                        tvCountOut.visibility = View.INVISIBLE
+                        rvInventoryResultOUT.visibility = View.INVISIBLE
                     }//无操作
                 }
 
@@ -494,6 +508,10 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                             localData!!.results.avail_rfids,
                             localData!!.results.avail_rfids,
                         )
+                       /* showPopWindow(
+                            mutableListOf(),
+                            mutableListOf(),
+                        )*/
                     } else {
                         try {
                             retryScanNum = 0

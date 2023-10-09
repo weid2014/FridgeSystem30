@@ -21,10 +21,13 @@
 
         <TextView
             android:id="@+id/tvCountIn"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="80dp"
+            android:drawablePadding="12dp"
             android:layout_weight="1"
+            android:layout_gravity="center"
             android:gravity="center"
+            android:drawableLeft="@mipmap/ic_put_in"
             android:text="存入列表"
             android:textColor="@color/app_black"
             android:textSize="30sp" />
@@ -52,8 +55,11 @@
 
         <TextView
             android:id="@+id/tvCountOut"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:drawablePadding="12dp"
+            android:drawableStart="@mipmap/ic_take_out"
             android:layout_height="80dp"
+            android:layout_gravity="center"
             android:gravity="center"
             android:text="领出列表"
             android:textColor="@color/app_black"

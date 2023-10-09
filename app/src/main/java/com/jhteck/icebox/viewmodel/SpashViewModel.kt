@@ -372,7 +372,7 @@ class SpashViewModel(application: android.app.Application) :
             }
         } catch (e: Exception) {
             Log.e(Target, e.message.toString());
-            toast("同步系统异常信息发生错误${e.message}")
+//            toast("同步系统异常信息发生错误${e.message}")
         }
     }
 
@@ -406,7 +406,7 @@ class SpashViewModel(application: android.app.Application) :
             }
         } catch (e: Exception) {
             Log.e(Target, e.message.toString());
-            toast("同步操作信息异常${e.message}")
+//            toast("同步操作信息异常${e.message}")
         }
     }
 
