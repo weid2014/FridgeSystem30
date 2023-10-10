@@ -27,6 +27,7 @@ import com.jhteck.icebox.utils.DbUtil
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.utils.SnowFlake
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -184,6 +185,35 @@ class MainViewModel(application: android.app.Application) :
                 val inList = mutableListOf<AvailRfid>()//存入列表
                 val localAvailRfid = localRfidData!!.results.avail_rfids
                 val getAvailRfid = rep.body()!!.results.avail_rfids
+
+                if (getAvailRfid != null && getAvailRfid.isNotEmpty()) {
+                    GlobalScope.launch {
+                        try {
+                            var localDatas = DbUtil.getDb().availRfidDao().getAll()
+                            val sncode = SharedPreferencesUtils.getPrefString(
+                                BaseApp.app, SNCODE,
+                                SNCODE_TEST
+                            )
+                            for (rfid in getAvailRfid) {
+                                if (rfid.cell_number > 1) {
+                                    if (rfid.fridge_id != null && rfid.fridge_id != sncode) {
+                                        continue// 跳过
+                                    }
+                                    var res =
+                                        localDatas.stream().filter { obj -> obj.rfid == rfid.rfid }
+                                            .findFirst().orElse(null);
+                                    if (res != null && res.cell_number != rfid.cell_number) {
+                                        res.cell_number = rfid.cell_number
+                                        DbUtil.getDb().availRfidDao().update(res)//更新宫格
+                                    }
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.e(TAG, e.toString())
+                        }
+                    }
+                }
+
 
                 val aAvailRfid = mutableListOf<String>()
                 for (availrfis in getAvailRfid) {
@@ -463,7 +493,7 @@ class MainViewModel(application: android.app.Application) :
     }
 
     fun tryOpenLock() {
-       LockManage.getInstance().tryOpenLock();
+        LockManage.getInstance().tryOpenLock();
     }
 
     private fun createAccountOperationEntity(

@@ -41,7 +41,8 @@ data class AvailRfid(
     var material: Material,
     var material_batch: MaterialBatch,
     var remain: Int,
-    var rfid: String
+    var rfid: String,
+    var fridge_id: String,
 )
 
 data class AntPowerDao(
