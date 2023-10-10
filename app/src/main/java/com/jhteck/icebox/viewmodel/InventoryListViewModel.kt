@@ -1,12 +1,17 @@
 package com.jhteck.icebox.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
 import com.jhteck.icebox.api.AvailRfid
+import com.jhteck.icebox.api.request.RfidSync
+import com.jhteck.icebox.api.request.requestSync
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.LocalService
+import com.jhteck.icebox.apiserver.RetrofitClient
+import com.jhteck.icebox.utils.DbUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -30,13 +35,20 @@ class InventoryListViewModel(application: Application) :
                 LocalService.updateAvailRfidOnly(availRfid)
                 toast("保存位置成功")
                 onAvailRfidLoaded.postValue(position)
-                /*val response =
-                    RetrofitClient.getService().deleteAccount(user.user_id);//上传 ->需要考虑上传失败的
-                if (response.code() == 200) {
-                    toast("删除账户成功")
-                } else {
-                    toast("删除账户异常${response.message()}")
-                }*/
+
+                val rfidList = mutableListOf<RfidSync>()
+
+                rfidList.add(RfidSync(position, availRfid.remain, availRfid.rfid))
+
+                val bodySync = genBody(requestSync(rfidList))
+//                apiService.syncRfids()
+                val repSync = RetrofitClient.getService().syncRfids(bodySync)
+                if (repSync.isSuccessful) {
+                    Log.d(TAG, "全量上报成功")
+                }else{
+                    Log.d(TAG, "全量上报失敗")
+                }
+
             } catch (e: Exception) {
                 toast("保存位置异常${e.message}")
             } finally {

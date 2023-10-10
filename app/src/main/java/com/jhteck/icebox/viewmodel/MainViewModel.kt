@@ -146,8 +146,19 @@ class MainViewModel(application: android.app.Application) :
                 showLoading("全量上报，请稍等...")
                 //全量上报
                 val rfidList = mutableListOf<RfidSync>()
+
                 for (rfid in rfids) {
-                    rfidList.add(RfidSync(1, 100, rfid))
+                    var rfidEntity = DbUtil.getDb().availRfidDao().getByRfid(rfid);
+                    rfidEntity.cell_number
+                    var cellNumber = 1
+                    if (rfidEntity.cell_number != null) {
+                        cellNumber = rfidEntity.cell_number!!;
+                    }
+                    var remain = 100
+                    if (rfidEntity.remain != null) {
+                        remain = rfidEntity.remain!!;
+                    }
+                    rfidList.add(RfidSync(cellNumber, remain, rfid))
                 }
                 val bodySync = genBody(requestSync(rfidList))
 //                apiService.syncRfids()

@@ -48,7 +48,7 @@ import com.jhteck.icebox.repository.entity.diule.User;
         SysOperationErrorEntity.class,
         OperationErrorLogEntity.class,
         FaceAccountEntity.class,
-}, version = 31, exportSchema = false)
+}, version = 32, exportSchema = false)
 public abstract class AppDataBase extends RoomDatabase {
 
     public abstract UserDao userDao();
