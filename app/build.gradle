@@ -18,7 +18,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
-        versionName "3.0.20230922"
+        versionName "3.0.20231010"
         ndk {
 //            abiFilters   'x86', 'armeabi-v7a','arm64-v8a',"arm64-v8a","x86"
             abiFilters "armeabi", "armeabi-v7a", "x86"
@@ -120,7 +120,6 @@ dependencies {
     implementation files('libs\\SerialPort.jar')
     implementation files('libs\\KuFrame.jar')
     implementation files('libs\\arcsoft_face.jar')
-    implementation files('libs\\arcsoft_image_util.jar')
     implementation files('libs\\arcsoft_image_util.jar')
 
     def room_version = "2.3.0"

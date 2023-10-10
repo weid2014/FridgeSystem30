@@ -151,11 +151,13 @@ class MainViewModel(application: android.app.Application) :
                 val bodySync = genBody(requestSync(rfidList))
 //                apiService.syncRfids()
                 val repSync = RetrofitClient.getService().syncRfids(bodySync)
-                rfidsSync.postValue(rfids)
+                if (repSync.isSuccessful) {
+                    Log.d(TAG, "全量上报成功")
+                }
             } catch (e: Exception) {
-                rfidsSync.postValue(mutableListOf())
-                toast("上报异常$e")
+                Log.e(TAG, "全量上报异常$e")
             } finally {
+                rfidsSync.postValue(rfids)
                 hideLoading()
             }
         }

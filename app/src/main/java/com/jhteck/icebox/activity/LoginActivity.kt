@@ -167,19 +167,8 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
             rvItem?.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         }
         for (i in 0 until 15) {
-            val layoutManager = GridLayoutManager(this, 3)
-            layoutManager.spanSizeLookup = object : SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    // 返回每个Item的跨度大小，可以根据需要进行调整
-                    return 1
-                }
-            }
-            rvNormalArray[i]?.setLayoutManager(layoutManager)
-            rvNormalArray[i]?.setHasFixedSize(true)
-            /*rvNormalArray[i]?.setAdapter(adapter)
-
             rvNormalArray[i]?.layoutManager =
-                GridLayoutManager(this, 2)*/
+                GridLayoutManager(this, 3)
             rvNormalArray[i]?.adapter = inventoryDaoArray[i]?.let { LoginPageShowItemAdapter(it) }
         }
         binding.rvPauseContent?.layoutManager =

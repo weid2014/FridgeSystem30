@@ -36,6 +36,7 @@ class LoginPageShowItemAdapter(private val data: List<InventoryDao>) :
         fun bindData(item: InventoryDao) {
             val tempName=PatternUtil.removeDigitalAndLetter(item.drugName)
             binding.tvDrugName.text = tempName
+            binding.tvDrugName.isSelected = true;
             binding.tvDrugNo.text=item.drugNO
             binding.tvDrugNumber.text = "${item.drugNumber}盒"
         }

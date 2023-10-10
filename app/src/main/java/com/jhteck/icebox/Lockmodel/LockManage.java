@@ -191,8 +191,8 @@ public class LockManage {
     }
 
     public void openLock() {
-        Log.d(TAG, "openLock sensor1=" + lockInfo1.sensor + "lockInfo2.sensor==" + lockInfo2.sensor
-                + "lockInfo1.lock==0" + lockInfo1.lock + "lockInfo2.lock==" + lockInfo2.lock);
+//        Log.d(TAG, "openLock sensor1=" + lockInfo1.sensor + "lockInfo2.sensor==" + lockInfo2.sensor
+//                + "lockInfo1.lock==0" + lockInfo1.lock + "lockInfo2.lock==" + lockInfo2.lock);
         //开锁
         try {
             Thread.sleep(100);
@@ -226,7 +226,7 @@ public class LockManage {
                     }
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                     getLockStutas();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -313,8 +313,8 @@ public class LockManage {
                 } else if (info.relay == 2) {
                     lockInfo2 = info;
                 }
-                Log.d(TAG, "lockInfo1 LockStatus=" + lockInfo1.lock + "--sensor=" + lockInfo1.sensor + "--relay=" + lockInfo1.relay);
-                Log.d(TAG, "lockInfo2 LockStatus=" + lockInfo2.lock + "--sensor=" + lockInfo2.sensor + "--relay=" + lockInfo2.relay);
+//                Log.d(TAG, "lockInfo1 LockStatus=" + lockInfo1.lock + "--sensor=" + lockInfo1.sensor + "--relay=" + lockInfo1.relay);
+//                Log.d(TAG, "lockInfo2 LockStatus=" + lockInfo2.lock + "--sensor=" + lockInfo2.sensor + "--relay=" + lockInfo2.relay);
 
                 sensor1Status.add(lockInfo1.sensor);
                 sensor2Status.add(lockInfo2.sensor);
