@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg"
+    android:orientation="vertical">
+
+    <!--标题栏-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal">
+
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.camera.view.PreviewView
+                android:id="@+id/viewFinder"
+                android:layout_width="0.1dp"
+                android:layout_height="0.1dp" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="384dp"
+            android:layout_height="67dp"
+            android:layout_marginStart="54dp"
+            android:layout_marginTop="49dp"
+            android:text="智能库存监管系统"
+            android:textColor="@color/app_white"
+            android:textSize="32sp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/im_testLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/logo" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="50dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:background="@mipmap/sbanner1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="108dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="24dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="常规存储区"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+
+                <TextView
+                    android:id="@+id/tv_normalNum"
+                    android:layout_width="130dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="9dp"
+                    android:layout_marginEnd="72dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|right"
+                    android:text="共18盒"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_NormalContent"
+                android:layout_width="match_parent"
+                android:layout_height="800dp"
+                android:background="@color/app_color_login_bg_contain" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_gravity="center_horizontal"
+                android:background="#00FFB0" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/app_shape_bottom_green_radius_5" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="50dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="313dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/login_cell_pause_height"
+                    android:background="@mipmap/stbanner2"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="108dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="9dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="暂存区域"
+                        android:textColor="@color/app_white"
+                        android:textSize="32px" />
+
+                    <TextView
+                        android:id="@+id/tv_pauseNum1"
+                        android:layout_width="130dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="9dp"
+                        android:layout_marginEnd="72dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical|right"
+                        android:text="共6盒"
+                        android:textColor="@color/app_white"
+                        android:textSize="36px" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_pauseContent1"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/login_cell_height1"
+                    android:background="@color/app_color_login_bg_contain" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="9dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="#FFAF33"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/app_shape_bottom_no_radius_5" />
+            </LinearLayout>
+
+        </LinearLayout>
+        <!--暂存区-->
+
+
+        <!--刷卡界面-->
+        <LinearLayout
+            android:id="@+id/ll_HFCard"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageHFCard"
+                android:layout_width="507dp"
+                android:layout_height="315dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="80dp"
+                android:src="@mipmap/ic_card_lock" />
+
+            <LinearLayout
+                android:id="@+id/ll_LoginByAccount"
+                android:layout_width="580dp"
+                android:layout_height="54dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="276dp"
+                    android:layout_height="match_parent"
+                    android:text="请在下方刷卡或"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+
+                <TextView
+                    android:layout_width="160dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/login_by_account"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:text="解锁"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+            </LinearLayout>
+        </LinearLayout>
+        <!--账号密码界面-->
+        <LinearLayout
+            android:id="@+id/ll_Account"
+            android:layout_width="504dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="54dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/edUserName"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_gravity="center"
+                android:background="@color/app_white"
+                android:hint="请输入账户"
+                android:paddingStart="26dp"
+                android:textSize="18px" />
+
+            <EditText
+                android:id="@+id/edPassword"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@color/app_white"
+                android:hint="请输入密码"
+                android:inputType="textPassword"
+                android:paddingStart="26dp"
+                android:textSize="18px" />
+
+
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@color/app_color_btn"
+                android:text="登录"
+                android:textColor="@color/app_white"
+                android:textSize="24px" />
+
+            <LinearLayout
+                android:id="@+id/ll_LoginByCard"
+                android:layout_width="580dp"
+                android:layout_height="54dp"
+                android:layout_marginStart="49dp"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:text="请"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+
+                <TextView
+                    android:layout_width="88dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/login_by_card"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+
+                <TextView
+                    android:layout_width="300dp"
+                    android:layout_height="match_parent"
+                    android:text="或密码登录解锁"
+                    android:textColor="@color/app_white"
+                    android:textSize="36px" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

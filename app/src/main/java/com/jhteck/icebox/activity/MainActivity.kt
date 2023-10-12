@@ -92,7 +92,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             if (loginUserStr != null) {
                 loginUserInfo = Gson().fromJson(loginUserStr, AccountEntity::class.java);
                 binding.tvUserName.text = loginUserInfo.nick_name;
-                binding.tvUserID.text = "${loginUserInfo.km_user_id}"
+                binding.tvUserID.text = "User ID:${loginUserInfo.km_user_id}"
             }
         } catch (e: Exception) {
 
@@ -154,8 +154,8 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
         viewModel.loadDataLocal()
 
-        val intent = Intent(this, MyService::class.java)
-        bindService(intent, conn, Context.BIND_AUTO_CREATE)
+        /*val intent = Intent(this, MyService::class.java)
+        bindService(intent, conn, Context.BIND_AUTO_CREATE)*/
 
 //        MyTcpServerListener.getInstance().getAntPower()
     }
@@ -302,7 +302,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             popupWindow!!.dismiss()
             popupWindow = null
         }
-        startActivity(Intent(this, LoginActivity::class.java))
+        startActivity(Intent(this, LoginOldActivity::class.java))
         finish()
     }
 

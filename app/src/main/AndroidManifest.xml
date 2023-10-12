@@ -56,6 +56,10 @@
             android:name=".activity.LoginActivity"
             android:exported="true"
             android:launchMode="singleTask" />
+        <activity
+            android:name=".activity.LoginOldActivity"
+            android:exported="true"
+            android:launchMode="singleTask" />
         <activity android:name=".tcpServer.TestActivity" />
         <activity android:name=".arcface.FaceManageActivity"/>
         <activity android:name=".arcface.RegisterAndRecognizeActivity"/>

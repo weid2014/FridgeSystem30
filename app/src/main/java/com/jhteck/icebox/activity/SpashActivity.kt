@@ -62,10 +62,10 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         // 检查是否是第一次运行应用程序
         var isFirstRun =
             SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
-        if (DEBUG) {
+        /*if (DEBUG) {
             viewModel.registAdmin("Jinghe233")
             isFirstRun = false
-        }
+        }*/
         if (isFirstRun) {
             binding.llFridgesOperate.visibility = View.VISIBLE
             binding.rlSpash.visibility = View.GONE
@@ -175,7 +175,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     }
 
     private fun activyFinish() {
-        val url = binding.edHttpUrl.toString()
+        val url = binding.edHttpUrl.text.toString().trim()
         if (url.isNotEmpty()) {
             SharedPreferencesUtils.setPrefString(this, URL_REQUEST, url)
             viewModel.setAntPower(tempList)
@@ -261,37 +261,30 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         val adminName = "admin"
         val adminPassword = binding.edAdminPassword.text.toString().trim()
         val location = binding.edLocation.text.toString().trim()
-        val style = 1
-        val cells = 1
+        val style = 0//类型（ 0 - 普通冰箱； 1 - 常温冰箱），默认为 0，不传则不更新
+        val cells = 17
         val fridgesActiveBo = FridgesActiveBo(
             adminName,
             adminPassword,
-            cells.toInt(),
+            cells,
             deviceAlias,
             location,
             sncode,
-            style.toInt(),
+            style,
             1000
         )
 //        viewModel.activeFridges(fridgesActiveBo)
         if (isGetOldInfo) {
             //同步旧账号信息
-            val url = binding.edHttpUrl.text.toString()
-            if (url.isNotEmpty()) {
-                Log.d("RetrofitClient", "正在同步冰箱账号信息==${url}")
-                SharedPreferencesUtils.setPrefString(this, URL_REQUEST, url)
-                viewModel.getOldInfo(url)
-            } else {
-                toast("url不能为空")
-            }
+            viewModel.getOldInfo()
         }
         if (isSyncOtherSystem) {
             //wait wait wait
             //同步其他冰箱信息，操作记录，库存记录等
             val oldSncoede = binding.edOldSncode.text.toString().trim()
+
             if (oldSncoede.isNotEmpty()) {
                 viewModel.syncOtherSystem(oldSncoede)
-
             } else {
                 toast("旧序列号不能为空")
             }
@@ -347,7 +340,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     override fun initObservables() {
         super.initObservables()
         viewModel.loginStatus.observe(this) {
-            startActivity(Intent(this, LoginActivity::class.java))
+            startActivity(Intent(this, LoginOldActivity::class.java))
             finish()
             // 将标志位设置为 false，表示应用程序已经被安装过
             SharedPreferencesUtils.setPrefBoolean(this@SpashActivity, IS_FIRST_RUN, false)

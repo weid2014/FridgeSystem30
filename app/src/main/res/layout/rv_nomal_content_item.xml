@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="102dp"
-    android:layout_height="68dp"
+    android:layout_width="120dp"
+    android:layout_height="144dp"
     android:layout_gravity="center"
-    android:layout_margin="2dp"
+    android:layout_marginStart="24dp"
+    android:layout_marginTop="24dp"
     android:background="@drawable/app_shape_white_radius_10"
     android:orientation="vertical">
 
@@ -23,16 +24,11 @@
     <TextView
         android:id="@+id/tv_DrugName"
         android:layout_width="match_parent"
-        android:layout_height="34dp"
+        android:layout_height="88dp"
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
-        android:ellipsize="marquee"
-        android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:scrollHorizontally="true"
-        android:singleLine="true"
         android:text="物料号"
         android:textColor="@color/app_color_646464"
         android:textSize="12sp" />

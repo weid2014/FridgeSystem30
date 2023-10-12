@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.camera.core.impl.utils.ContextUtil.getBaseContext
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hele.mrd.app.lib.base.BaseApp
@@ -23,6 +24,7 @@ import com.jhteck.icebox.fragment.SettingFrag
 import com.jhteck.icebox.myinterface.MyCallback
 import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.utils.BroadcastUtil
+import com.jhteck.icebox.utils.CustomDialog
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.viewmodel.SettingViewModel
 import com.naz.serial.port.SerialPortFinder
@@ -183,15 +185,26 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         }
 
         binding.btnSaveUrl.setOnClickListener {
-            //保存url
-            var urlText = URL_TEST
-            if (binding.rbUrl1.isChecked) {
-                urlText = URL_TEST
-            } else if (binding.rbUrl2.isChecked) {
-                urlText = URL_KM
-            }
-            SharedPreferencesUtils.setPrefString(requireContext(), URL_REQUEST, urlText)
-            binding.llUrlSelect.visibility = View.GONE
+
+            val customDialog = CustomDialog(requireActivity())
+            customDialog.setsTitle("温馨提示").setsMessage("是否修改网络连接地址并重启App？")
+                .setsCancel("取消", View.OnClickListener {
+                    customDialog.dismiss()
+                }).setsConfirm("确定", View.OnClickListener {
+                    //保存url
+                    var urlText = URL_TEST
+                    if (binding.rbUrl1.isChecked) {
+                        urlText = URL_TEST
+                    } else if (binding.rbUrl2.isChecked) {
+                        urlText = URL_KM
+                    }
+                    SharedPreferencesUtils.setPrefString(requireContext(), URL_REQUEST, urlText)
+                    binding.llUrlSelect.visibility = View.GONE
+
+                    restartApp()
+                    customDialog.dismiss()
+                }).show()
+
         }
         binding.btnCancleUrl.setOnClickListener {
             binding.llUrlSelect.visibility = View.GONE
@@ -297,6 +310,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
                     tempList[position].power = powerDao.power
                 }
             })
+        binding.rvAnt?.adapter?.notifyDataSetChanged()
         binding.btnCancleAnt.setOnClickListener {
             binding.llAntPower.visibility = View.GONE
         }
@@ -393,6 +407,14 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             tempList.add(AntPowerDao("$antid", po))
         }
         initAntRecycleView(tempList)
+    }
+    //重启app
+    private fun restartApp() {
+        val intent =
+            BaseApp.app.packageManager.getLaunchIntentForPackage(BaseApp.app.packageName)
+        intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+        requireActivity().finish()
     }
 
 }

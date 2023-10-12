@@ -5,6 +5,7 @@ import android.util.Log;
 import com.headleader.MrbBoard.ICallBack;
 import com.headleader.MrbBoard.LockInfo;
 import com.headleader.MrbBoard.MrbBoardHandler;
+import com.jhteck.icebox.api.AppConstantsKt;
 import com.jhteck.icebox.myinterface.MyCallback;
 
 import java.util.ArrayList;
@@ -135,6 +136,9 @@ public class LockManage {
     }
 
     private void stopAll() {
+        if(AppConstantsKt.DEBUG){
+            return;
+        }
         Log.e(TAG, "stopAll: ");
         closeLock();
         updateCalculatingStatus(true);//进入结算页面
@@ -195,15 +199,20 @@ public class LockManage {
 //                + "lockInfo1.lock==0" + lockInfo1.lock + "lockInfo2.lock==" + lockInfo2.lock);
         //开锁
         try {
-            Thread.sleep(100);
-            SendData(handler.dataOfUnlock(relay1, time, sideOpen));
-            Thread.sleep(100);
-            SendData(handler.dataOfUnlock(relay2, time, sideOpen));
+            //有时候只开一次会失败
+            for (int i = 0; i < 3; i++) {
+                Thread.sleep(50);
+                SendData(handler.dataOfUnlock(relay1, time, sideOpen));
+                Thread.sleep(50);
+                SendData(handler.dataOfUnlock(relay2, time, sideOpen));
+            }
         } catch (Exception e) {
 
+        }finally {
+            mSendThread.setResume();
         }
-        mSendThread.setResume();
     }
+
 
     public void getVersion() {
         SendData(handler.dataOfFirmwareVersion());
@@ -259,6 +268,7 @@ public class LockManage {
     }
 
     public void clearThread() {
+        if(mSendThread!=null)
         mSendThread.setSuspendFlag();
     }
 

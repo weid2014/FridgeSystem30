@@ -1,28 +1,15 @@
 package com.jhteck.icebox.adapter
 
-import android.graphics.drawable.BitmapDrawable
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.PopupWindow
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.hele.mrd.app.lib.base.BaseApp
-import com.jhteck.icebox.R
 import com.jhteck.icebox.bean.OperationErrorEnum
 import com.jhteck.icebox.databinding.AppFragmentOperaErrorBinding
-import com.jhteck.icebox.databinding.RvOperaRecordItemBinding
-import com.jhteck.icebox.databinding.RvRfidItemBinding
 import com.jhteck.icebox.fragment.OperationLogFrag
-import com.jhteck.icebox.fragment.operatechildfrag.ErrorRecordFrag
-import com.jhteck.icebox.repository.entity.RfidOperationEntity
 import com.jhteck.icebox.repository.entity.SysOperationErrorEntity
-import com.jhteck.icebox.utils.DensityUtil
-import com.jhteck.icebox.utils.PatternUtil
 
 class SystemOperationRecordListAdapter(
-    private val frag: ErrorRecordFrag,
+    private val frag: OperationLogFrag,
     private val data: List<SysOperationErrorEntity>
 ) :
     RecyclerView.Adapter<SystemOperationRecordListAdapter.ViewHolder>() {
@@ -45,7 +32,7 @@ class SystemOperationRecordListAdapter(
     }
 
     class ViewHolder(
-        private val frag: ErrorRecordFrag,
+        private val frag: OperationLogFrag,
         private val binding: AppFragmentOperaErrorBinding
     ) :
         RecyclerView.ViewHolder(binding.root) {
@@ -54,7 +41,7 @@ class SystemOperationRecordListAdapter(
             binding.tvDrugName.text = item.system_info//操作時間
             binding.tvDrugSpec.text = item.app_version//操作時間
             binding.tvOperationType.text = OperationErrorEnum.getDesc(item.error_code)//操作時間
-            binding.tvUnit.text=item.nick_name
+            binding.tvUnit.text = item.nick_name
         }
 
     }

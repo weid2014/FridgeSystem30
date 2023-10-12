@@ -69,6 +69,8 @@ class MyService : Service() {
         super.onCreate()
 //        MyTcpServerListener.getInstance().startServer();
         Log.d(TAG, "MyService onCreate")
+        if(DEBUG)
+            return
         LogUpLoadManager.startUploadAsync();
 
         //wait wait wait

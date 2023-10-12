@@ -4,6 +4,6 @@
     <dimen name="btn_close_margin_size">6dp</dimen>
     <dimen name="common_bottom_margin">20dp</dimen>
     <dimen name="login_cell_height">150dp</dimen>
-    <dimen name="login_cell_height1">233dp</dimen>
+    <dimen name="login_cell_height1">192dp</dimen>
     <dimen name="login_cell_pause_height">68dp</dimen>
 </resources>

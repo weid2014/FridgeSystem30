@@ -7,6 +7,7 @@ import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.api.AntPowerDao
+import com.jhteck.icebox.api.DEBUG
 import com.jhteck.icebox.api.FridgesActiveBo
 import com.jhteck.icebox.api.SNCODE
 import com.jhteck.icebox.apiserver.ILoginApiService
@@ -53,7 +54,7 @@ class SpashViewModel(application: android.app.Application) :
             viewModelScope.launch(Dispatchers.Default) {
                 try {
                     showLoading("正在激活冰箱，请稍等...")
-                    val response = RetrofitClient.getService().fridgesActive(fridgesActiveBo);
+                    val response = RetrofitClient.getService(sncode =fridgesActiveBo.sncode).fridgesActive(fridgesActiveBo);
                     if (response.code() == 200) {
                         toast("激活冰箱成功")
                         var res = response.body()?.results;
@@ -78,10 +79,10 @@ class SpashViewModel(application: android.app.Application) :
                         //wait wait wait
 //                        synchronizedAccount()//同步账户
                     } else {
-                        toast("激活冰箱异常${response.message()}")
+                        toast("激活冰箱异常1${response.message()}")
                     }
                 } catch (e: Exception) {
-                    toast("激活冰箱异常${e.message}")
+                    toast("激活冰箱异常2${e.message}")
                 } finally {
                     hideLoading()
                 }
@@ -181,7 +182,9 @@ class SpashViewModel(application: android.app.Application) :
             try {
                 showLoading("正在获取天线功率，请稍等...")
 //                MyTcpServerListener.getInstance().getAntPower()
-                RfidManage.getInstance().getOutputPower()
+                if(!DEBUG) {
+                    RfidManage.getInstance().getOutputPower()
+                }
             } catch (e: Exception) {
                 toast("获取天线功率异常${e.message}")
             } finally {
@@ -195,7 +198,9 @@ class SpashViewModel(application: android.app.Application) :
             try {
                 showLoading("正在设置天线功率，请稍等...")
 //                MyTcpServerListener.getInstance().setAntPower(antPowerDaoList)
-                RfidManage.getInstance().setOutputPower(antPowerDaoList)
+                if(!DEBUG) {
+                    RfidManage.getInstance().setOutputPower(antPowerDaoList)
+                }
                 delay(1000)
             } catch (e: Exception) {
                 toast("设置天线功率异常${e.message}")
@@ -225,21 +230,8 @@ class SpashViewModel(application: android.app.Application) :
 //        MyTcpServerListener.getInstance().sendCloseLamp()
     }
 
-    fun getOldInfo(requestUrl: String) {
-        //
-        Log.d("RetrofitClient", "requestUrl==${requestUrl}")
-        synchronizedAccount(requestUrl)
-        /*viewModelScope.launch(Dispatchers.Default) {
-            try {
-                showLoading("正在同步冰箱账号信息，请稍等...")
-                synchronizedAccount(requestUrl)
-                delay(2000)
-            } catch (e: Exception) {
-                toast("同步冰箱账号信息异常${e.message}")
-            } finally {
-                hideLoading()
-            }
-        }*/
+    fun getOldInfo() {
+        synchronizedAccount()
     }
 
     val Target = "SettingViewModel"
@@ -247,13 +239,13 @@ class SpashViewModel(application: android.app.Application) :
     /**
      * 同步账户
      */
-    private fun synchronizedAccount(requestUrl: String) {
+    private fun synchronizedAccount() {
         val accountDao = DbUtil.getDb().accountDao()
 //        if (isNetAvailable()) {
         val users = accountDao.getAll();
         val uploadUsers = users.filter { user -> user.hasUpload == false }
         GlobalScope.launch(context = Dispatchers.IO) {
-            var accountService = RetrofitClient.getService(baseUrl = requestUrl);
+            var accountService = RetrofitClient.getService();
             //同步远端到本地账户
             for (user in uploadUsers) {
                 if (user.status != 0) {
@@ -343,7 +335,7 @@ class SpashViewModel(application: android.app.Application) :
         try {
             val response = service.getSystemErrorLogs()
             if (response.code() == 200) {
-                toast(response.body()?.results.toString())
+//                toast(response.body()?.results.toString())
                 Log.i(Target, " 系统错误日志：${response.body()?.results.toString()}")
                 //系统异常信息
                 var sysOperationErrorDao = DbUtil.getDb().sysOperationErrorDao()
@@ -383,7 +375,7 @@ class SpashViewModel(application: android.app.Application) :
         try {
             val response = service.getOperationErrorLogs()
             if (response.code() == 200) {
-                toast(response.body()?.results.toString())
+//                toast(response.body()?.results.toString())
                 Log.i(Target, " 操作错误日志：${response.body()?.results.toString()}")
                 //操作异常信息
                 var operationErrorDao = DbUtil.getDb().operationErrorLogDao()

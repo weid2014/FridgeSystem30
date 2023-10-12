@@ -11,21 +11,15 @@ import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseFragment
 import com.hele.mrd.app.lib.base.ext.format
 import com.jhteck.icebox.R
-import com.jhteck.icebox.adapter.AppTabPagerAdapter
-import com.jhteck.icebox.adapter.OperaRecordListAdapter
 import com.jhteck.icebox.adapter.SystemOperationRecordListAdapter
 import com.jhteck.icebox.api.ROLE_ID
-import com.jhteck.icebox.bean.ExceptionRecordBean
-import com.jhteck.icebox.bean.OperationErrorEnum
 import com.jhteck.icebox.bean.SystemOperationErrorEnum
-import com.jhteck.icebox.databinding.*
+import com.jhteck.icebox.databinding.AppFragmentOperaErrorBinding
+import com.jhteck.icebox.fragment.OperationLogFrag
 import com.jhteck.icebox.repository.entity.SysOperationErrorEntity
 import com.jhteck.icebox.utils.DateUtils
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.viewmodel.AccountViewModel
-import com.jhteck.icebox.viewmodel.InventoryListViewModel
-import com.jhteck.icebox.viewmodel.OperationLogViewModel
-import com.jhteck.icebox.viewmodel.SettingViewModel
 import java.util.*
 
 /**
@@ -52,7 +46,7 @@ class ErrorRecordFrag : BaseFragment<AccountViewModel, AppFragmentOperaErrorBind
     }
 
     private val frag by lazy {
-        parentFragment as ErrorRecordFrag
+        parentFragment as OperationLogFrag
     }
     private val beginTime = Calendar.getInstance()
     private val endTime = Calendar.getInstance()
