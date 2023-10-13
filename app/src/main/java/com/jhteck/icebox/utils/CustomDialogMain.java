@@ -22,40 +22,40 @@ import com.jhteck.icebox.R;
  * @date 2023/7/12 0:30
  */
 
-public class CustomDialog extends Dialog implements View.OnClickListener {
+public class CustomDialogMain extends Dialog implements View.OnClickListener {
 
     private TextView mTitle, mMessage, mConfirm, mCancel;
     private String sTitle, sMessage, sConfirm, sCancel;
     private View.OnClickListener cancelListener, confirmListener;
 
-    public CustomDialog setsTitle(String sTitle) {
+    public CustomDialogMain setsTitle(String sTitle) {
         this.sTitle = sTitle;
         return this;
     }
 
-    public CustomDialog setsMessage(String sMessage) {
+    public CustomDialogMain setsMessage(String sMessage) {
         this.sMessage = sMessage;
         return this;
     }
 
-    public CustomDialog setsConfirm(String sConfirm, View.OnClickListener listener) {
+    public CustomDialogMain setsConfirm(String sConfirm, View.OnClickListener listener) {
         this.sConfirm = sConfirm;
         this.confirmListener = listener;
         return this;
     }
 
-    public CustomDialog setsCancel(String sCancel, View.OnClickListener listener) {
+    public CustomDialogMain setsCancel(String sCancel, View.OnClickListener listener) {
         this.sCancel = sCancel;
         this.cancelListener = listener;
         return this;
     }
 
 
-    public CustomDialog(@NonNull Context context) {
+    public CustomDialogMain(@NonNull Context context) {
         super(context);
     }
 
-    public CustomDialog(@NonNull Context context, int themeResId) {
+    public CustomDialogMain(@NonNull Context context, int themeResId) {
         super(context, themeResId);
     }
 
@@ -63,7 +63,7 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        setContentView(R.layout.layout_custom_dialog);
+        setContentView(R.layout.layout_custom_dialog_main);
 
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 

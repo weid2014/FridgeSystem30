@@ -363,6 +363,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         //测试模式就不启动服务了
         if (!DEBUG) {
             val intent = Intent(this, MyService::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             intent.putExtra("from", "LoginActivity")
             bindService(intent, conn, Context.BIND_AUTO_CREATE)
         }

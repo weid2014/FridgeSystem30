@@ -6,6 +6,8 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.IBinder
+import android.os.Process.killProcess
+import android.os.Process.myPid
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -86,7 +88,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
     override fun initView() {
         //开启service，初始化TCP服务
 //        CrashReport.testJavaCrash();
-//        startService()
+        startService()
 
         binding.btnLogin.setOnClickListener {
             //登录按键点击事件
@@ -158,14 +160,14 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         super.initObservables()
         viewModel.loginUserInfo.observe(this) {
             SharedPreferencesUtils.setPrefInt(this, ROLE_ID, it.role_id.toInt())
-            toMainPage()
-//            takePhoto()
+//            toMainPage()
+            takePhoto()
         }
         viewModel.loginStatus.observe(this) {
             //如果账户验证成功，跳转到主界面
             if (it)
-                toMainPage()
-//                takePhoto()
+//                toMainPage()
+                takePhoto()
         }
         loadRridsData()
     }
@@ -238,7 +240,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                     ToastUtils.shortToast(" 拍照失败 ${exc.message}")
 //                    Toasty.info(this@LoginActivity, " 拍照失败 ${exc.message}", Toast.LENGTH_SHORT, true).show()
-//                    toMainPage()
+                    toMainPage()
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
@@ -247,7 +249,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
                     ToastUtils.shortToast(" 拍照成功 $savedUri")
 //                    Toasty.info(this@LoginActivity, " 拍照成功 $savedUri", Toast.LENGTH_SHORT, true).show()
                     Log.d(TAG, msg)
-//                    toMainPage()
+                    toMainPage()
                 }
             })
     }
@@ -257,6 +259,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         binding.edPassword.setText("")
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("loginUserInfo", Gson().toJson(viewModel.loginUserInfo.value))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent)
         finish()
     }
@@ -285,7 +288,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
     }
 
     private fun stopService() {
-//        unbindService(conn);
+        unbindService(conn);
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
@@ -321,7 +324,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
 
             when (key) {
                 EXIT_APP_MSG -> {
-                    exitProcess(0)
+                    finish()
                 }
                 HFCard -> {
                     value?.let { viewModel.loginByCark(it) }

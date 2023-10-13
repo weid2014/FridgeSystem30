@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
@@ -70,7 +71,6 @@ abstract class BaseDialog<VM: BaseViewModel<*>,VB: ViewBinding>: DialogFragment(
                 loading = app.appComponent.createLoading(it.second)
                 showDialogCompat(loading ?: return@observe)
             }
-
         }
         viewModel.baseUI.toast.observe(this) {
             val app = viewModel.getApplication<BaseApp>()
@@ -108,6 +108,9 @@ abstract class BaseDialog<VM: BaseViewModel<*>,VB: ViewBinding>: DialogFragment(
             attributes.gravity = dialogGravity()
             attributes = attributes
             setWindowAnimations(dialogAnimations())
+            //全屏显示，不弹出底部导航栏
+            setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//            setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         }
     }
 

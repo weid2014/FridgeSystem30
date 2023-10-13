@@ -115,22 +115,22 @@ class UpgradesFrag : WithoutViewModelFragment<AppFragmentSettingUpgradesBinding>
         //判断网络状态
         CoroutineScope(Dispatchers.Default).launch {
 
-            if (NetworkUtil.isNetSystemUsable(context)) {
-                if (NetworkUtil.isNetOnline()) {
+//            if (NetworkUtil.isNetSystemUsable(context)) {
+//                if (NetworkUtil.isNetOnline()) {
                     //地址过后可能要换成内网地址
-                    Toast.makeText(context,"当前网络状态:可用",Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(context,"当前网络状态:可用",Toast.LENGTH_SHORT).show()
                     try {
                         UpdateAppUtil().checkVision(context)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                } else {
-                    Toast.makeText(context,"ping不通啊啊啊啊啊",Toast.LENGTH_SHORT).show()
-                }
+//                } else {
+//                    Toast.makeText(context,"ping不通啊啊啊啊啊",Toast.LENGTH_SHORT).show()
+//                }
 //            networkStatus.postValue(true)
-            } else {
+//            } else {
                 Toast.makeText(context,"当前网络状态:不可用!!!!",Toast.LENGTH_SHORT).show()
-            }
+//            }
 
 
         }

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseFragment
+import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
 import com.jhteck.icebox.adapter.AccoutListItemAdapter
 import com.jhteck.icebox.adapter.ItemOperatorAdapter
@@ -69,6 +70,10 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
     override fun initView() {
         binding.btnNewAccount.setOnClickListener {
             showNewAccountPopWindow()
+        }
+        binding.fullscreenView.setOnClickListener {
+            Log.d("AccountFrag", "fullscreenView")
+            LockManage.getInstance().tryOpenLock();
         }
         initRecyclerView()
         doRegisterReceiver()
@@ -157,6 +162,14 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
             val rbRole0 = contentView.findViewById<RadioButton>(R.id.rb_role0)
             val rbRole1 = contentView.findViewById<RadioButton>(R.id.rb_role1)
             val rbRole2 = contentView.findViewById<RadioButton>(R.id.rb_role2)
+            val fullscreenView = contentView.findViewById<View>(R.id.fullscreen_view)
+            fullscreenView.setOnClickListener {
+                LockManage.getInstance().tryOpenLock();
+            }
+            fullscreenView.setOnTouchListener { view, motionEvent ->
+                LockManage.getInstance().tryOpenLock();
+                false
+            }
             tv_Title.text = "编辑账号"
             when (roleID) {
                 10 -> {
@@ -266,7 +279,14 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
             update()
             //设置按钮
             val btnClosePop = contentView.findViewById<Button>(R.id.btn_back)
-
+            val fullscreenView = contentView.findViewById<View>(R.id.fullscreen_view)
+            fullscreenView.setOnClickListener {
+                LockManage.getInstance().tryOpenLock();
+            }
+            fullscreenView.setOnTouchListener { view, motionEvent ->
+                LockManage.getInstance().tryOpenLock();
+                false
+            }
 
             btnClosePop.setOnClickListener {
                 hidePopupWindow()

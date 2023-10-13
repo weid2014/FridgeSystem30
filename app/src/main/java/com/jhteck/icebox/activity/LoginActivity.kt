@@ -318,6 +318,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
         binding.edPassword.setText("")
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("loginUserInfo", Gson().toJson(viewModel.loginUserInfo.value))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent)
         finish()
     }

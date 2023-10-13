@@ -50,16 +50,15 @@
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTop"/>
 
         <activity
             android:name=".activity.LoginActivity"
-            android:exported="true"
-            android:launchMode="singleTask" />
+            android:exported="true"/>
         <activity
             android:name=".activity.LoginOldActivity"
             android:exported="true"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTop" />
         <activity android:name=".tcpServer.TestActivity" />
         <activity android:name=".arcface.FaceManageActivity"/>
         <activity android:name=".arcface.RegisterAndRecognizeActivity"/>

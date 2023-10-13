@@ -17,8 +17,7 @@
     <string name="update_apk_address">https://file.lavandachen.com/jhwms/fridge_app/icu.apk</string>
 
     <string name="sncode">FEDCBA01TEST0000</string>
-<!--    <string name="url_test">https://jh.test.lavandachen.com</string>-->
-    <string name="url_test">http://10.128.81.174:8086/</string>
+    <string name="url_test">https://jh.test.lavandachen.com</string>
     <string name="url_km">http://10.128.81.174:8086/</string>
     <string name="admin_password">Jinghe233</string>
 

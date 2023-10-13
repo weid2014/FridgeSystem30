@@ -1,5 +1,6 @@
 package com.jhteck.icebox.activity
 
+import android.app.Dialog
 import android.content.*
 import android.graphics.drawable.BitmapDrawable
 import android.os.IBinder
@@ -25,6 +26,8 @@ import com.jhteck.icebox.fragment.OperationLogFrag
 import com.jhteck.icebox.fragment.SettingFrag
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.service.MyService
+import com.jhteck.icebox.utils.CustomDialog
+import com.jhteck.icebox.utils.CustomDialogMain
 import com.jhteck.icebox.utils.DensityUtil
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.viewmodel.MainViewModel
@@ -71,6 +74,8 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     override fun createViewBinding(): AppActivityMainBinding {
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         window.decorView.setOnSystemUiVisibilityChangeListener(
             View.OnSystemUiVisibilityChangeListener() {
                 fun onSystemUiVisibilityChange(visibility: Int) {
@@ -152,10 +157,15 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             exitAfterMany()
         }
 
+        binding.fullscreenView.setOnClickListener {
+            Log.d("MainActivity", "fullscreenView")
+            viewModel.tryOpenLock()
+        }
+
         viewModel.loadDataLocal()
 
-        /*val intent = Intent(this, MyService::class.java)
-        bindService(intent, conn, Context.BIND_AUTO_CREATE)*/
+        val intent = Intent(this, MyService::class.java)
+        bindService(intent, conn, Context.BIND_AUTO_CREATE)
 
 //        MyTcpServerListener.getInstance().getAntPower()
     }
@@ -173,7 +183,9 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         time = timeNew
         if (count >= 10) {  //点击次数
             finish()
-            service?.sendExitMsg()
+            finishAffinity()
+            System.exit(0)
+//            service?.sendExitMsg()
         }
     }
 
@@ -288,7 +300,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-//        unbindService(conn);
+        unbindService(conn);
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
@@ -302,7 +314,9 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             popupWindow!!.dismiss()
             popupWindow = null
         }
-        startActivity(Intent(this, LoginOldActivity::class.java))
+        var intent = Intent(this, LoginOldActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent)
         finish()
     }
 
@@ -331,6 +345,10 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     private var showTitle = "存入列表"
     private var operatortype = 0;
     private fun showPopWindow(outList: List<AvailRfid>, inList: List<AvailRfid>) {
+        if((customDialog as CustomDialogMain).isShowing) {
+            (customDialog as CustomDialogMain).hide()
+            customDialog=null
+        }
         //获取用户角色ID
         val roleID = SharedPreferencesUtils.getPrefInt(this, ROLE_ID, 10)
         var operationEntity = AccountOperationEnum.NO_OPERATION;
@@ -400,11 +418,21 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                 val btnCountDownTime = contentView.findViewById<Button>(R.id.btnCountDownTime)
                 when (roleID) {
                     10, 20 -> {
-                        tvCountIn.setCompoundDrawablesRelativeWithIntrinsicBounds(getDrawable(R.mipmap.ic_put_in), null, null, null)
+                        tvCountIn.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            getDrawable(R.mipmap.ic_put_in),
+                            null,
+                            null,
+                            null
+                        )
 //                        tvCountIn.setBackgroundResource(R.mipmap.ic_put_in_pause)
                     }
                     else -> {
-                        tvCountIn.setCompoundDrawablesRelativeWithIntrinsicBounds(getDrawable(R.mipmap.ic_put_in_pause), null, null, null)
+                        tvCountIn.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            getDrawable(R.mipmap.ic_put_in_pause),
+                            null,
+                            null,
+                            null
+                        )
                     }
                 }
 
@@ -430,7 +458,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                         rvInventoryResultIN.adapter = InventoryListAdapter(tempInList)
                     }
                     else -> {
-                        if(inList.isNotEmpty()) {
+                        if (inList.isNotEmpty()) {
                             tvRemainTitle.visibility = View.VISIBLE
                         }
                         rvInventoryResultIN.adapter =
@@ -494,6 +522,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         )
         registerReceiver(mReceiver, filter)
     }
+    private var customDialog: Dialog?=null
 
     inner class ContentReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
@@ -508,14 +537,20 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                             localData!!.results.avail_rfids,
                             localData!!.results.avail_rfids,
                         )
-                       /* showPopWindow(
-                            mutableListOf(),
-                            mutableListOf(),
-                        )*/
+                        /* showPopWindow(
+                             mutableListOf(),
+                             mutableListOf(),
+                         )*/
                     } else {
                         try {
                             retryScanNum = 0
                             viewModel.startFCLInventory30()
+
+                            if(customDialog ==null) {
+                                customDialog = CustomDialogMain(this@MainActivity)
+                                (customDialog as CustomDialogMain).setsTitle("温馨提示")
+                                    .setsMessage("正在结算中").show()
+                            }
 //                            viewModel.startFCLInventory()
                         } catch (e: Exception) {
                         }

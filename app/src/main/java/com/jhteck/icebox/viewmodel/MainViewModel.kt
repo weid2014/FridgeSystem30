@@ -50,7 +50,7 @@ class MainViewModel(application: android.app.Application) :
     fun loadDataLocal() {
         viewModelScope.launch(Dispatchers.Default) {//使用Room操作本地数据库 (Dispatchers.Default) 不能省略
             try {
-                showLoading("加载数据，请稍等...")
+//                showLoading("加载数据，请稍等...")
                 val gson = Gson()
 //                LocalService.mockDataToLocal(gson);
                 var result = LocalService.loadRfidsFromLocal(gson)
@@ -64,7 +64,7 @@ class MainViewModel(application: android.app.Application) :
                 LocalService.cleanTable()
                 toast("加载数据异常")
             } finally {
-                hideLoading()
+//                hideLoading()
             }
         }
     }
@@ -84,7 +84,7 @@ class MainViewModel(application: android.app.Application) :
             lastonclickTime = time
             viewModelScope.launch {
                 try {
-                    showLoading("正在结算中，请稍等...")
+//                    showLoading("正在结算中，请稍等...")
 
 //                    MyTcpServerListener.getInstance().getFCLInventory()
 //                    delay(5000)
@@ -99,7 +99,7 @@ class MainViewModel(application: android.app.Application) :
 //                    scanStatus.postValue(false)
                     toast("结算异常")
                 } finally {
-                    hideLoading()
+//                    hideLoading()
                 }
             }
         }
@@ -115,7 +115,7 @@ class MainViewModel(application: android.app.Application) :
             viewModelScope.launch {
                 try {
                     RfidManage.getInstance().startStop(true, false)
-                    showLoading("正在结算中，请稍等...")
+//                    showLoading("正在结算中，请稍等...")
                     RfidManage.getInstance().setRfidArraysRendEndCallback {
                         Log.d(TAG, "正在结算中，请稍等...${it.toString()}")
                         rfidsSync(it.toList())
@@ -132,7 +132,7 @@ class MainViewModel(application: android.app.Application) :
                     toast("结算异常")
                 } finally {
                     RfidManage.getInstance().setRfidArraysRendEndCallback();//清空掉
-                    hideLoading()
+//                    hideLoading()
                 }
             }
         }
@@ -143,7 +143,7 @@ class MainViewModel(application: android.app.Application) :
         Log.d(TAG, "rfidsSync")
         viewModelScope.launch {
             try {
-                showLoading("全量上报，请稍等...")
+//                showLoading("全量上报，请稍等...")
                 //全量上报
                 val rfidList = mutableListOf<RfidSync>()
 
@@ -170,7 +170,7 @@ class MainViewModel(application: android.app.Application) :
                 Log.e(TAG, "全量上报异常$e")
             } finally {
                 rfidsSync.postValue(rfids)
-                hideLoading()
+//                hideLoading()
             }
         }
     }
@@ -186,7 +186,7 @@ class MainViewModel(application: android.app.Application) :
 
         viewModelScope.launch {
             try {
-                showLoading("正在查询RFID，请稍等...")
+//                showLoading("正在查询RFID，请稍等...")
                 val body = genBody(RequestRfidsDao(rfids))
                 val rep = RetrofitClient.getService().getRfids(body)
                 val data = rep.body()
@@ -270,7 +270,7 @@ class MainViewModel(application: android.app.Application) :
                 Log.e(TAG, e.toString())
                 toast("查询异常$e")
             } finally {
-                hideLoading()
+//                hideLoading()
             }
         }
     }
@@ -278,14 +278,14 @@ class MainViewModel(application: android.app.Application) :
     fun deleteByRfid(list: List<AvailRfid>) {
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                showLoading("结果正在保存，请稍等...")
+//                showLoading("结果正在保存，请稍等...")
                 LocalService.deleteDataToLocal(list);
                 Log.d(TAG, "保存到本地成功")
             } catch (e: Exception) {
                 toast("保存失败${e.message}")
                 Log.d(TAG, "保存失败3${e.message}")
             } finally {
-                hideLoading()
+//                hideLoading()
             }
         }
     }
@@ -293,7 +293,7 @@ class MainViewModel(application: android.app.Application) :
     fun addByRfid(list: List<AvailRfid>) {
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                showLoading("结果正在保存，请稍等...")
+//                showLoading("结果正在保存，请稍等...")
                 LocalService.addDataToLocal(list);
 //                LocalService.realDataToLocal(list);
                 Log.d(TAG, "保存到本地成功")
@@ -302,7 +302,7 @@ class MainViewModel(application: android.app.Application) :
                 Log.d(TAG, "保存失败1${e.message}")
                 toast("保存失败${e.message}")
             } finally {
-                hideLoading()
+//                hideLoading()
             }
         }
     }
@@ -311,7 +311,7 @@ class MainViewModel(application: android.app.Application) :
     fun saveToDb(rfidDao: RfidDao) {
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                showLoading("结果正在保存，请稍等...")
+//                showLoading("结果正在保存，请稍等...")
                 LocalService.realDataToLocal(rfidDao);
                 Log.d(TAG, "保存到本地成功")
 
@@ -319,7 +319,7 @@ class MainViewModel(application: android.app.Application) :
                 toast("保存失败${e.message}")
                 Log.d(TAG, "保存失败2${e.message}")
             } finally {
-                hideLoading()
+//                hideLoading()
             }
         }
     }

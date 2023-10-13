@@ -25,9 +25,9 @@ const val SNCODE = "sncode"
 const val SNCODE_TEST = "FEDCBA01TEST0000"
 const val SNCODE_ORIGEN = "FEDCBA01CC000001"
 const val URL_REQUEST = "url_request"
-//const val URL_TEST = "https://jh.test.lavandachen.com"
-const val URL_KM = "http://10.128.81.174:8086"
-const val URL_TEST = "http://10.128.81.174:8086"
+const val URL_TEST = "https://jh.test.lavandachen.com"
+const val URL_KM = "http://10.128.81.174:8086/"
+//const val URL_TEST = "http://10.128.81.174:8086"
 const val NOT_HARD_DEVICE = false
 
 const val SERIAL_PORT_LOCK = "serial_port_lock"

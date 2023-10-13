@@ -1,5 +1,6 @@
 package com.jhteck.icebox.fragment
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseFragment
+import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
 import com.jhteck.icebox.adapter.InventoryListItemAdapter
 import com.jhteck.icebox.adapter.InventoryListItemAdapterScener
@@ -113,6 +115,11 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
         }
         binding.tvCellNumber.setOnClickListener {
             AvailRfidsListSortBy(currentIndex20, binding.tvCellNumber)
+        }
+
+        binding.fullscreenView.setOnClickListener {
+            Log.d("InventoryListFrag", "fullscreenView")
+            LockManage.getInstance().tryOpenLock();
         }
     }
 

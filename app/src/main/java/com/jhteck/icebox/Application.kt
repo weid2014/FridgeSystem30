@@ -76,8 +76,10 @@ class Application : BaseApp() {
 
     override fun onCreate() {
         super.onCreate()
-        //腾讯bugly捕获bug日志
-        CrashReport.initCrashReport(applicationContext, "30a4125338", false);
+        //腾讯bugly捕获bug日志.如果是外网才初始化
+        if(SharedPreferencesUtils.getPrefString(this,URL_REQUEST,URL_TEST).equals(URL_TEST)) {
+            CrashReport.initCrashReport(applicationContext, "30a4125338", false);
+        }
 
         // object 对象表达式,创建一个匿名类，并重写 run() 方法
         /*object : Thread() {
