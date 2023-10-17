@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "t_offline_rfid")
   data  class OfflineRfidEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int,//id
+    @PrimaryKey(autoGenerate = true) val id: Int?,//id
     @ColumnInfo(name="rifid") var rifd:String,//rfid
     @ColumnInfo(name = "created_at") val created_at: String,//创建时间
     //@ColumnInfo(name = "eas_supplier_name") val eas_supplier_name: String,//

@@ -20,6 +20,7 @@ import com.jhteck.icebox.api.request.RequestRfidsDao
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.LocalService
 import com.jhteck.icebox.repository.entity.AccountEntity
+import com.jhteck.icebox.repository.entity.OfflineRfidEntity
 import com.jhteck.icebox.utils.*
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -268,9 +269,8 @@ class LoginViewModel(application: android.app.Application) :
     fun loadOfflineRfidsFromLocal() {
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                var gson = Gson();
-                var datas = LocalService.loadRfidsFromLocal(gson);
-                rfidOfflineDatas.postValue(datas);
+                var offlineDate = DbUtil.getDb().offlineRfidDao().getAll()
+                rfidOfflineDatas.postValue(offlineDate);
             } catch (e: Exception) {
             }
         }
@@ -343,7 +343,7 @@ class LoginViewModel(application: android.app.Application) :
         SingleLiveEvent<RfidResults>()
     }
     val rfidOfflineDatas by lazy {
-        SingleLiveEvent<RfidResults>()
+        SingleLiveEvent<List<OfflineRfidEntity>>()
     }
     val loginStatus by lazy {
         SingleLiveEvent<Boolean>()

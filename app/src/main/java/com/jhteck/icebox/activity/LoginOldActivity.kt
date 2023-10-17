@@ -224,7 +224,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
             binding.tvPauseNum1?.text = "共${tempList30.size}个"
         }
         viewModel.rfidOfflineDatas.observe(this){
-            binding.tvOfflineNum.text = "离线存储:共${it.avail_rfids.size}个"
+            binding.tvOfflineNum.text = "离线存储:共${it?.size}个"
         }
     }
 

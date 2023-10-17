@@ -27,7 +27,7 @@ data class RfidDao(
 
 data class RfidResults(
     var avail_rfids: List<AvailRfid>,
-    var unavail_rfids: List<String>
+    var unavail_rfids: List<String>?
 )
 
 

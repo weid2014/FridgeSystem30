@@ -17,15 +17,9 @@ import com.jhteck.icebox.apiserver.LocalService
 import com.jhteck.icebox.apiserver.RetrofitClient
 import com.jhteck.icebox.bean.AccountOperationEnum
 import com.jhteck.icebox.bean.OperationErrorEnum
-import com.jhteck.icebox.repository.entity.AccountEntity
-import com.jhteck.icebox.repository.entity.AccountOperationEntity
-import com.jhteck.icebox.repository.entity.OperationErrorLogEntity
-import com.jhteck.icebox.repository.entity.RfidOperationEntity
+import com.jhteck.icebox.repository.entity.*
 import com.jhteck.icebox.rfidmodel.RfidManage
-import com.jhteck.icebox.utils.DateUtils
-import com.jhteck.icebox.utils.DbUtil
-import com.jhteck.icebox.utils.SharedPreferencesUtils
-import com.jhteck.icebox.utils.SnowFlake
+import com.jhteck.icebox.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -192,6 +186,8 @@ class MainViewModel(application: android.app.Application) :
                 val tempList = mutableListOf<String>()
                 val outList = mutableListOf<AvailRfid>()//领出列表
                 val inList = mutableListOf<AvailRfid>()//存入列表
+                val inOffline = mutableListOf<OfflineRfidEntity>()//离线存入
+                val outOffline = mutableListOf<OfflineRfidEntity>()//离线取出
 
                 val body = genBody(RequestRfidsDao(rfids))
                 val rep = RetrofitClient.getService().getRfids(body)
@@ -270,6 +266,59 @@ class MainViewModel(application: android.app.Application) :
 
                 } else {
                     //离线存储
+
+                    val localAvailRfid = localRfidData!!.results.avail_rfids
+
+                    for (localRfid in localAvailRfid) {
+                        tempList.add(localRfid.rfid)
+                    }
+                    for (rfid in tempList) {
+                        if (!rfids.contains(rfid)) {
+                            for (localRfid in localAvailRfid) {
+                                if (localRfid.rfid == rfid) {
+                                    outList.add(localRfid)//本地离线取出
+                                }
+                            }
+                        }
+                    }
+                    var offlineRfidDao = DbUtil.getDb().offlineRfidDao()
+                    var offLineDatas = offlineRfidDao.getAll()
+                    var offlineRfids = mutableListOf<String>()
+
+                    if (offLineDatas.isNotEmpty()) {
+                        for (offLineId in offLineDatas) {
+                            offlineRfids.add(offLineId.rifd)
+                        }
+                    }
+
+
+                    val userInfoString = SharedPreferencesUtils.getPrefString(
+                        ContextUtils.getApplicationContext(),
+                        "loginUserInfo",
+                        null
+                    )
+
+                    var accountEntity = Gson().fromJson(userInfoString, AccountEntity::class.java)
+
+                    for (rfid in rfids) {
+                        if (!tempList.contains(rfid) && !offlineRfids.contains(rfid)) {
+
+                           var offlineRfidEntity= OfflineRfidEntity(null,rfid,DateUtils.format_yyyyMMddhhmmssfff,accountEntity.user_id,accountEntity.role_id,accountEntity.nick_name,
+                            1,100);
+                            offlineRfidDao.insert(offlineRfidEntity);
+                         var localOffLineData=   offlineRfidDao.getByRfid(rfid)
+                            inOffline.add(localOffLineData);//离线存入
+                        }
+                    }
+
+
+                    for (offlineId in offLineDatas){
+                        if (!rfids.contains(offlineId.rifd)){
+                            offlineRfidDao.delete(offlineId)
+                            outOffline.add(offlineId)//离线取出的数据
+                        }
+                    }
+
 
                 }
 
