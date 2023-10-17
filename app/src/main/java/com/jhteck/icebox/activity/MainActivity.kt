@@ -25,6 +25,7 @@ import com.jhteck.icebox.fragment.InventoryListFrag
 import com.jhteck.icebox.fragment.OperationLogFrag
 import com.jhteck.icebox.fragment.SettingFrag
 import com.jhteck.icebox.repository.entity.AccountEntity
+import com.jhteck.icebox.repository.entity.OfflineRfidEntity
 import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.utils.CustomDialog
 import com.jhteck.icebox.utils.CustomDialogMain
@@ -74,7 +75,10 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     override fun createViewBinding(): AppActivityMainBinding {
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
 
         window.decorView.setOnSystemUiVisibilityChangeListener(
             View.OnSystemUiVisibilityChangeListener() {
@@ -204,20 +208,31 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         viewModel.deleteRfidData.observe(this) {
             //领出
             viewModel.deleteByRfid(it)
-            showPopWindow(it, mutableListOf<AvailRfid>())
+            showPopWindow(it, mutableListOf())
         }
         viewModel.addRfidData.observe(this) {
             //存入
             viewModel.addByRfid(it)
-            showPopWindow(mutableListOf<AvailRfid>(), it)
+            showPopWindow(mutableListOf(), it)
         }
         viewModel.outAndInRfidData.observe(this) {
             viewModel.deleteByRfid(it[0])
             viewModel.addByRfid(it[1])
             showPopWindow(it[0], it[1])
         }
+        viewModel.deleteOffRfidData.observe(this) {
+            //领出
+            showOffPopWindow(it, mutableListOf())
+        }
+        viewModel.addOffRfidData.observe(this) {
+            //存入
+            showOffPopWindow(mutableListOf(), it)
+        }
+        viewModel.outAndInRfidOffData.observe(this) {
+            showOffPopWindow(it[0], it[1])
+        }
         viewModel.noData.observe(this) {
-            showPopWindow(mutableListOf<AvailRfid>(), mutableListOf<AvailRfid>())
+            showPopWindow(mutableListOf(), mutableListOf())
         }
 
         viewModel.rfidData.observe(this) { it1 ->
@@ -345,9 +360,9 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     private var showTitle = "存入列表"
     private var operatortype = 0;
     private fun showPopWindow(outList: List<AvailRfid>, inList: List<AvailRfid>) {
-        if((customDialog as CustomDialogMain).isShowing) {
+        if ((customDialog as CustomDialogMain).isShowing) {
             (customDialog as CustomDialogMain).hide()
-            customDialog=null
+            customDialog = null
         }
         //获取用户角色ID
         val roleID = SharedPreferencesUtils.getPrefInt(this, ROLE_ID, 10)
@@ -510,6 +525,127 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         }
     }
 
+    private fun showOffPopWindow(
+        outList: List<OfflineRfidEntity>,
+        inList: List<OfflineRfidEntity>
+    ) {
+        if ((customDialog as CustomDialogMain).isShowing) {
+            (customDialog as CustomDialogMain).hide()
+            customDialog = null
+        }
+        //获取用户角色ID
+        val roleID = SharedPreferencesUtils.getPrefInt(this, ROLE_ID, 10)
+        var operationEntity = AccountOperationEnum.NO_OPERATION;
+        when (roleID) {
+            10, 20 -> {
+                showTitle = "存入列表"
+                if (outList.size > 0 && inList.size > 0) {
+                    operatortype = 3
+                    operationEntity =
+                        (AccountOperationEnum.STORE_CONSUME)//存入取出
+                } else if (outList.size > 0) {
+                    operatortype = 2
+                    operationEntity = (AccountOperationEnum.CONSUME)//取出
+                } else if (inList.size > 0) {
+                    operatortype = 1
+                    operationEntity =
+                        (AccountOperationEnum.STORE)//存入
+                } else {
+                    operationEntity =
+                        (AccountOperationEnum.NO_OPERATION)//无操作
+                }
+            }
+            else -> {
+                showTitle = "暂存列表"
+                if (outList.size > 0 && inList.size > 0) {
+                    operatortype = 3
+                    operationEntity =
+                        (AccountOperationEnum.DESPOSIT_CONSUME)//存入取出
+                } else if (outList.size > 0) {
+                    operatortype = 2
+                    operationEntity = (AccountOperationEnum.CONSUME)//取出
+                } else if (inList.size > 0) {
+                    operatortype = 1
+                    operationEntity =
+                        (AccountOperationEnum.DEPOSIT)//存入
+                } else {
+                    operationEntity =
+                        (AccountOperationEnum.NO_OPERATION)//无操作
+                }
+            }
+        }
+        viewModel.accountOperationLog(operationEntity, loginUserInfo)//操作日志
+//        viewModel.rfidOperationLog(loginUserInfo, inList, outList)//操作日志
+
+        //弹出结算界面
+        if (popupWindow == null) {
+            popupWindow = PopupWindow().apply {
+                //入口参数配置
+                val layoutInflater = LayoutInflater.from(this@MainActivity)
+                contentView =
+                    layoutInflater.inflate(R.layout.pup_out_off_list, null)
+                width = ViewGroup.LayoutParams.WRAP_CONTENT
+                height = ViewGroup.LayoutParams.WRAP_CONTENT
+                isTouchable = true
+                isFocusable = false
+                isOutsideTouchable = false
+                setBackgroundDrawable(BitmapDrawable())
+                binding.cover.visibility = View.VISIBLE
+                DensityUtil.backgroundAlpha(this@MainActivity, 0.5f)
+                //设置按钮
+                val btnClosePop = contentView.findViewById<ImageButton>(R.id.btnClose)
+                val tvCountIn = contentView.findViewById<TextView>(R.id.tvCountIn)
+                val tvCountOut = contentView.findViewById<TextView>(R.id.tvCountOut)
+                val tvRemainTitle = contentView.findViewById<TextView>(R.id.tvRemainTitle)
+                tvCountOut.text = "领出列表(x${outList.size})"
+                tvCountIn.text = "${showTitle}(x${inList.size})"
+                val btnCountDownTime = contentView.findViewById<Button>(R.id.btnCountDownTime)
+                when (roleID) {
+                    10, 20 -> {
+                        tvCountIn.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            getDrawable(R.mipmap.ic_put_in),
+                            null,
+                            null,
+                            null
+                        )
+//                        tvCountIn.setBackgroundResource(R.mipmap.ic_put_in_pause)
+                    }
+                    else -> {
+                        tvCountIn.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            getDrawable(R.mipmap.ic_put_in_pause),
+                            null,
+                            null,
+                            null
+                        )
+                    }
+                }
+
+                useCoroutines(btnCountDownTime)
+                btnClosePop.setOnClickListener {
+                    isContinue = false
+                }
+
+                //判断存入，领出，控制显隐
+                when (operatortype) {
+                    3 -> {
+                    }//存入取出
+                    2 -> {
+                        tvCountIn.visibility = View.GONE
+                    }//取出
+                    1 -> {
+                        tvCountOut.visibility = View.GONE
+                    }//存入
+                    0 -> {
+                        tvCountIn.visibility = View.INVISIBLE
+                        tvCountOut.visibility = View.INVISIBLE
+                    }//无操作
+                }
+
+
+                showAtLocation(binding.root, Gravity.CENTER, 0, 0);
+            }
+        }
+    }
 
     /**
      * 注册广播接收者
@@ -522,7 +658,8 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         )
         registerReceiver(mReceiver, filter)
     }
-    private var customDialog: Dialog?=null
+
+    private var customDialog: Dialog? = null
 
     inner class ContentReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
@@ -546,7 +683,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                             retryScanNum = 0
                             viewModel.startFCLInventory30()
 
-                            if(customDialog ==null) {
+                            if (customDialog == null) {
                                 customDialog = CustomDialogMain(this@MainActivity)
                                 (customDialog as CustomDialogMain).setsTitle("温馨提示")
                                     .setsMessage("正在结算中").show()
