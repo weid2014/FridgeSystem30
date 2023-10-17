@@ -113,6 +113,8 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
             viewModel.mockDataToLocal()
         }
         viewModel.loadRfidsFromLocal();
+        //本地离线数据
+        viewModel.loadOfflineRfidsFromLocal();
         //测试入口
 
         binding.imTestLogin.setOnClickListener {
@@ -220,6 +222,9 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
             }
             binding.rvPauseContent1?.adapter?.notifyDataSetChanged()
             binding.tvPauseNum1?.text = "共${tempList30.size}个"
+        }
+        viewModel.rfidOfflineDatas.observe(this){
+            binding.tvOfflineNum.text = "离线存储:共${it.avail_rfids.size}个"
         }
     }
 

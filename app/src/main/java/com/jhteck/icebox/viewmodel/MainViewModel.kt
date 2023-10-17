@@ -187,88 +187,98 @@ class MainViewModel(application: android.app.Application) :
         viewModelScope.launch {
             try {
 //                showLoading("正在查询RFID，请稍等...")
-                val body = genBody(RequestRfidsDao(rfids))
-                val rep = RetrofitClient.getService().getRfids(body)
-                val data = rep.body()
+
                 //获取到之后跟本地数据对比(增加或减少了什么)
                 val tempList = mutableListOf<String>()
                 val outList = mutableListOf<AvailRfid>()//领出列表
                 val inList = mutableListOf<AvailRfid>()//存入列表
-                val localAvailRfid = localRfidData!!.results.avail_rfids
-                val getAvailRfid = rep.body()!!.results.avail_rfids
 
-                if (getAvailRfid != null && getAvailRfid.isNotEmpty()) {
-                    GlobalScope.launch {
-                        try {
-                            var localDatas = DbUtil.getDb().availRfidDao().getAll()
-                            val sncode = SharedPreferencesUtils.getPrefString(
-                                BaseApp.app, SNCODE,
-                                SNCODE_TEST
-                            )
-                            for (rfid in getAvailRfid) {
-                                if (rfid.cell_number > 1) {
-                                    if (rfid.fridge_id != null && rfid.fridge_id != sncode) {
-                                        continue// 跳过
-                                    }
-                                    var res =
-                                        localDatas.stream().filter { obj -> obj.rfid == rfid.rfid }
-                                            .findFirst().orElse(null);
-                                    if (res != null && res.cell_number != rfid.cell_number) {
-                                        res.cell_number = rfid.cell_number
-                                        DbUtil.getDb().availRfidDao().update(res)//更新宫格
+                val body = genBody(RequestRfidsDao(rfids))
+                val rep = RetrofitClient.getService().getRfids(body)
+                if (rep.code() == 200) {
+                    val localAvailRfid = localRfidData!!.results.avail_rfids
+                    val getAvailRfid = rep.body()!!.results.avail_rfids
+
+                    if (getAvailRfid != null && getAvailRfid.isNotEmpty()) {
+                        GlobalScope.launch {
+                            try {
+                                var localDatas = DbUtil.getDb().availRfidDao().getAll()
+                                val sncode = SharedPreferencesUtils.getPrefString(
+                                    BaseApp.app, SNCODE,
+                                    SNCODE_TEST
+                                )
+                                for (rfid in getAvailRfid) {
+                                    if (rfid.cell_number > 1) {
+                                        if (rfid.fridge_id != null && rfid.fridge_id != sncode) {
+                                            continue// 跳过
+                                        }
+                                        var res =
+                                            localDatas.stream()
+                                                .filter { obj -> obj.rfid == rfid.rfid }
+                                                .findFirst().orElse(null);
+                                        if (res != null && res.cell_number != rfid.cell_number) {
+                                            res.cell_number = rfid.cell_number
+                                            DbUtil.getDb().availRfidDao().update(res)//更新宫格
+                                        }
                                     }
                                 }
-                            }
-                        } catch (e: Exception) {
-                            Log.e(TAG, e.toString())
-                        }
-                    }
-                }
-
-
-                val aAvailRfid = mutableListOf<String>()
-                for (availrfis in getAvailRfid) {
-                    aAvailRfid.add(availrfis.rfid)
-                }
-                for (localRfid in localAvailRfid) {
-                    tempList.add(localRfid.rfid)
-                }
-                for (rfid in tempList) {
-                    if (!aAvailRfid.contains(rfid)) {
-                        for (localRfid in localAvailRfid) {
-                            if (localRfid.rfid == rfid) {
-                                outList.add(localRfid)
+                            } catch (e: Exception) {
+                                Log.e(TAG, e.toString())
                             }
                         }
                     }
-                }
-                for (rfid in rfids) {
-                    if (!tempList.contains(rfid)) {
-                        for (getRfid in getAvailRfid) {
-                            if (getRfid.rfid == rfid) {
-                                inList.add(getRfid)
+                    val aAvailRfid = mutableListOf<String>()
+                    for (availrfis in getAvailRfid) {
+                        aAvailRfid.add(availrfis.rfid)
+                    }
+                    for (localRfid in localAvailRfid) {
+                        tempList.add(localRfid.rfid)
+                    }
+                    for (rfid in tempList) {
+                        if (!aAvailRfid.contains(rfid)) {
+                            for (localRfid in localAvailRfid) {
+                                if (localRfid.rfid == rfid) {
+                                    outList.add(localRfid)
+                                }
                             }
                         }
                     }
-                }
-                delay(500)
-                if (outList.size > 0 && inList.size > 0) {//存取都有
-                    val tempList = mutableListOf<List<AvailRfid>>()
-                    tempList.add(outList)
-                    tempList.add(inList)
-                    outAndInRfidData.postValue(tempList)
-                } else if (outList.size > 0) {//领出
-                    deleteRfidData.postValue(outList)
-                } else if (inList.size > 0) {//领入
-                    addRfidData.postValue(inList)
-                } else {
-                    noData.postValue(true)
-                    toast("没有存取")
+                    for (rfid in rfids) {
+                        if (!tempList.contains(rfid)) {
+                            for (getRfid in getAvailRfid) {
+                                if (getRfid.rfid == rfid) {
+                                    inList.add(getRfid)
+                                }
+                            }
+                        }
+                    }
+                    delay(500)
+                    if (outList.size > 0 && inList.size > 0) {//存取都有
+                        val tempList = mutableListOf<List<AvailRfid>>()
+                        tempList.add(outList)
+                        tempList.add(inList)
+                        outAndInRfidData.postValue(tempList)
+                    } else if (outList.size > 0) {//领出
+                        deleteRfidData.postValue(outList)
+                    } else if (inList.size > 0) {//领入
+                        addRfidData.postValue(inList)
+                    } else {
+                        noData.postValue(true)
+                        toast("没有存取")
 //                    closeStatus.postValue(true)
+                    }
+
+                } else {
+                    //离线存储
+
                 }
+
+
             } catch (e: Exception) {
                 Log.e(TAG, e.toString())
                 toast("查询异常$e")
+                //离线存储
+
             } finally {
 //                hideLoading()
             }

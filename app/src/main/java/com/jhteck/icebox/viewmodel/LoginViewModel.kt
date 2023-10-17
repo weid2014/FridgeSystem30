@@ -261,9 +261,18 @@ class LoginViewModel(application: android.app.Application) :
                 var datas = LocalService.loadRfidsFromLocal(gson);
                 rfidDatas.postValue(datas);
             } catch (e: Exception) {
-
             }
-
+        }
+    }
+    //离线数据
+    fun loadOfflineRfidsFromLocal() {
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                var gson = Gson();
+                var datas = LocalService.loadRfidsFromLocal(gson);
+                rfidOfflineDatas.postValue(datas);
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -331,6 +340,9 @@ class LoginViewModel(application: android.app.Application) :
         SingleLiveEvent<AccountEntity>()
     }
     val rfidDatas by lazy {
+        SingleLiveEvent<RfidResults>()
+    }
+    val rfidOfflineDatas by lazy {
         SingleLiveEvent<RfidResults>()
     }
     val loginStatus by lazy {

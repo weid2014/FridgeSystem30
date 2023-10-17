@@ -24,14 +24,14 @@
         </FrameLayout>
 
         <TextView
-            android:layout_width="384dp"
+            android:id="@+id/tv_offline_num"
+            android:layout_width="252dp"
             android:layout_height="67dp"
-            android:layout_marginStart="54dp"
-            android:layout_marginTop="49dp"
-            android:text="智能库存监管系统"
+            android:layout_gravity="right"
+            android:paddingTop="22dp"
+            android:text="离线存储:共10个"
             android:textColor="@color/app_white"
-            android:textSize="32sp"
-            android:visibility="gone" />
+            android:textSize="22sp" />
 
         <ImageView
             android:id="@+id/im_testLogin"
