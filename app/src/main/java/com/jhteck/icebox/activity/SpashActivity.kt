@@ -58,7 +58,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
 
     override fun initView() {
         binding.llFridgesOperate.visibility = View.GONE
-//        startService()
+        startService()
         // 检查是否是第一次运行应用程序
         var isFirstRun =
             SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
