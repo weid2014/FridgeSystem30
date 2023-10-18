@@ -77,6 +77,17 @@ public class RfidOperationEntity implements Serializable {
     @ColumnInfo(name = "role_id")
     private int role_id;
 
+    @ColumnInfo(name = "isOfflineData")
+    private boolean isOfflineData;
+
+    public boolean isOfflineData() {
+        return isOfflineData;
+    }
+
+    public void setOfflineData(boolean offlineData) {
+        isOfflineData = offlineData;
+    }
+
     public int getRole_id() {
         return role_id;
     }

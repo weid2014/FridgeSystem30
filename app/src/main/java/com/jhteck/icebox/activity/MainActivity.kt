@@ -572,6 +572,8 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             }
         }
         viewModel.accountOperationLog(operationEntity, loginUserInfo)//操作日志
+
+        viewModel.rfidOffLineOperationLog(loginUserInfo,inOffList,outOffList);//操作日志
 //        viewModel.rfidOperationLog(loginUserInfo, inList, outList)//操作日志
 
         //弹出结算界面

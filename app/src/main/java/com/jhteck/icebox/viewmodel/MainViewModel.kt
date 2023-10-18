@@ -156,7 +156,7 @@ class MainViewModel(application: android.app.Application) :
                 val bodySync = genBody(requestSync(rfidList))
 //                apiService.syncRfids()
                 val repSync = RetrofitClient.getService().syncRfids(bodySync)
-                if (repSync.code()== 200) {
+                if (repSync.code() == 200) {
                     Log.d(TAG, "全量上报成功")
                     DbUtil.getDb().offlineRfidDao().clean()
                 }
@@ -188,75 +188,75 @@ class MainViewModel(application: android.app.Application) :
 
                 val body = genBody(RequestRfidsDao(rfids))
                 val rep = RetrofitClient.getService().getRfids(body)
-                    val localAvailRfid = localRfidData!!.results.avail_rfids
-                    val getAvailRfid = rep.body()!!.results.avail_rfids
+                val localAvailRfid = localRfidData!!.results.avail_rfids
+                val getAvailRfid = rep.body()!!.results.avail_rfids
 
-                    if (getAvailRfid != null && getAvailRfid.isNotEmpty()) {
-                        GlobalScope.launch {
-                            try {
-                                var localDatas = DbUtil.getDb().availRfidDao().getAll()
-                                val sncode = SharedPreferencesUtils.getPrefString(
-                                    BaseApp.app, SNCODE,
-                                    SNCODE_TEST
-                                )
-                                for (rfid in getAvailRfid) {
-                                    if (rfid.cell_number > 1) {
-                                        if (rfid.fridge_id != null && rfid.fridge_id != sncode) {
-                                            continue// 跳过
-                                        }
-                                        var res =
-                                            localDatas.stream()
-                                                .filter { obj -> obj.rfid == rfid.rfid }
-                                                .findFirst().orElse(null);
-                                        if (res != null && res.cell_number != rfid.cell_number) {
-                                            res.cell_number = rfid.cell_number
-                                            DbUtil.getDb().availRfidDao().update(res)//更新宫格
-                                        }
+                if (getAvailRfid != null && getAvailRfid.isNotEmpty()) {
+                    GlobalScope.launch {
+                        try {
+                            var localDatas = DbUtil.getDb().availRfidDao().getAll()
+                            val sncode = SharedPreferencesUtils.getPrefString(
+                                BaseApp.app, SNCODE,
+                                SNCODE_TEST
+                            )
+                            for (rfid in getAvailRfid) {
+                                if (rfid.cell_number > 1) {
+                                    if (rfid.fridge_id != null && rfid.fridge_id != sncode) {
+                                        continue// 跳过
+                                    }
+                                    var res =
+                                        localDatas.stream()
+                                            .filter { obj -> obj.rfid == rfid.rfid }
+                                            .findFirst().orElse(null);
+                                    if (res != null && res.cell_number != rfid.cell_number) {
+                                        res.cell_number = rfid.cell_number
+                                        DbUtil.getDb().availRfidDao().update(res)//更新宫格
                                     }
                                 }
-                            } catch (e: Exception) {
-                                Log.e(TAG, e.toString())
+                            }
+                        } catch (e: Exception) {
+                            Log.e(TAG, e.toString())
+                        }
+                    }
+                }
+                val aAvailRfid = mutableListOf<String>()
+                for (availrfis in getAvailRfid) {
+                    aAvailRfid.add(availrfis.rfid)
+                }
+                for (localRfid in localAvailRfid) {
+                    tempList.add(localRfid.rfid)
+                }
+                for (rfid in tempList) {
+                    if (!aAvailRfid.contains(rfid)) {
+                        for (localRfid in localAvailRfid) {
+                            if (localRfid.rfid == rfid) {
+                                outList.add(localRfid)
                             }
                         }
                     }
-                    val aAvailRfid = mutableListOf<String>()
-                    for (availrfis in getAvailRfid) {
-                        aAvailRfid.add(availrfis.rfid)
-                    }
-                    for (localRfid in localAvailRfid) {
-                        tempList.add(localRfid.rfid)
-                    }
-                    for (rfid in tempList) {
-                        if (!aAvailRfid.contains(rfid)) {
-                            for (localRfid in localAvailRfid) {
-                                if (localRfid.rfid == rfid) {
-                                    outList.add(localRfid)
-                                }
+                }
+                for (rfid in rfids) {
+                    if (!tempList.contains(rfid)) {
+                        for (getRfid in getAvailRfid) {
+                            if (getRfid.rfid == rfid) {
+                                inList.add(getRfid)
                             }
                         }
                     }
-                    for (rfid in rfids) {
-                        if (!tempList.contains(rfid)) {
-                            for (getRfid in getAvailRfid) {
-                                if (getRfid.rfid == rfid) {
-                                    inList.add(getRfid)
-                                }
-                            }
-                        }
-                    }
-                    delay(500)
-                    if (outList.size > 0 && inList.size > 0) {//存取都有
-                        val tempList = mutableListOf<List<AvailRfid>>()
-                        tempList.add(outList)
-                        tempList.add(inList)
-                        outAndInRfidData.postValue(tempList)
-                    } else if (outList.size > 0) {//领出
-                        deleteRfidData.postValue(outList)
-                    } else if (inList.size > 0) {//领入
-                        addRfidData.postValue(inList)
-                    } else {
-                        noData.postValue(true)
-                    }
+                }
+                delay(500)
+                if (outList.size > 0 && inList.size > 0) {//存取都有
+                    val tempList = mutableListOf<List<AvailRfid>>()
+                    tempList.add(outList)
+                    tempList.add(inList)
+                    outAndInRfidData.postValue(tempList)
+                } else if (outList.size > 0) {//领出
+                    deleteRfidData.postValue(outList)
+                } else if (inList.size > 0) {//领入
+                    addRfidData.postValue(inList)
+                } else {
+                    noData.postValue(true)
+                }
                 rfidsSync(rfids)
             } catch (e: Exception) {
                 Log.e(TAG, e.toString())
@@ -287,7 +287,7 @@ class MainViewModel(application: android.app.Application) :
 
                 if (offLineDatas.isNotEmpty()) {
                     for (offLineId in offLineDatas) {
-                        offlineRfids.add(offLineId.rifd)
+                        offlineRfids.add(offLineId.rfid)
                     }
                 }
 
@@ -319,13 +319,13 @@ class MainViewModel(application: android.app.Application) :
                 }
 
                 for (offlineId in offLineDatas) {
-                    if (!rfids.contains(offlineId.rifd)) {
+                    if (!rfids.contains(offlineId.rfid)) {
                         offlineRfidDao.delete(offlineId)
                         outOffline.add(offlineId)//离线取出的数据
                     }
                 }
 
-                for (offlineId in outList){
+                for (offlineId in outList) {
                     var offlineRfidEntity = OfflineRfidEntity(
                         null,
                         offlineId.rfid,
@@ -350,7 +350,7 @@ class MainViewModel(application: android.app.Application) :
                     deleteOffRfidData.postValue(outOffline)
                 } else if (inOffline.size > 0) {//领入
                     addOffRfidData.postValue(inOffline)
-                }else {
+                } else {
                     noData.postValue(true)
                 }
 
@@ -491,6 +491,7 @@ class MainViewModel(application: android.app.Application) :
                     rfidOperationEntity.user_id = accountEntity.user_id;
                     rfidOperationEntity.user_log_id = SnowFlake.getInstance().nextIdStr();
                     rfidOperationEntity.nick_name = accountEntity.nick_name;
+                    rfidOperationEntity.isOfflineData = false;
                     if (accountEntity.role_id.toInt() == 30) {
                         rfidOperationEntity.operation = 2
                     } else {
@@ -520,6 +521,7 @@ class MainViewModel(application: android.app.Application) :
                 }
                 for (item in outList) {
                     var rfidOperationEntity = RfidOperationEntity()
+                    rfidOperationEntity.isOfflineData = false
                     rfidOperationEntity.user_id = accountEntity.user_id;
                     rfidOperationEntity.user_log_id = SnowFlake.getInstance().nextIdStr();
                     rfidOperationEntity.nick_name = accountEntity.nick_name;
@@ -579,6 +581,121 @@ class MainViewModel(application: android.app.Application) :
                         }
                     }
                 }
+
+            } catch (e: Exception) {
+
+                toast("更新失败${e.message}")
+                Log.d(TAG, "保存失败2${e.message}")
+            }
+        }
+    }
+
+    /**
+     * RFID 离线操作记录
+     */
+    fun rfidOffLineOperationLog(
+        accountEntity: AccountEntity,
+        inList: List<OfflineRfidEntity>,
+        outList: List<OfflineRfidEntity>
+    ) {
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                var updaloads = mutableListOf<RfidOperationEntity>();
+                for (item in inList) {
+                    var rfidOperationEntity = RfidOperationEntity()
+                    rfidOperationEntity.user_id = accountEntity.user_id;
+                    rfidOperationEntity.user_log_id = SnowFlake.getInstance().nextIdStr();
+                    rfidOperationEntity.nick_name = accountEntity.nick_name;
+                    rfidOperationEntity.isOfflineData = true;
+                    if (accountEntity.role_id.toInt() == 30) {
+                        rfidOperationEntity.operation = 2
+                    } else {
+                        rfidOperationEntity.operation = 0
+                    }
+                    rfidOperationEntity.log_at = "${
+                        DateUtils.formatDateToString(
+                            Date(),
+                            DateUtils.format_yyyyMMddhhmmssfff
+                        )
+                    }+08:00".replace(" ", "T")
+                    rfidOperationEntity.eas_material_number = "";
+                    rfidOperationEntity.eas_material_name = "-";
+                    rfidOperationEntity.eas_unit_number = "-";
+                    rfidOperationEntity.eas_supplier_name = "-";
+                    rfidOperationEntity.eas_unit_name = "-";
+                    rfidOperationEntity.number = "1";
+                    rfidOperationEntity.eas_lot = "-";
+                    rfidOperationEntity.rfid = item.rfid;
+                    rfidOperationEntity.cell_number = 1
+                    rfidOperationEntity.eas_specs = "-"
+                    rfidOperationEntity.eas_manufacturer = "-"
+                    rfidOperationEntity.role_id = accountEntity.role_id.toInt()
+                    var id = DbUtil.getDb().rfidOperationDao().insert(rfidOperationEntity);
+                    rfidOperationEntity.id = id
+//                    updaloads.add(rfidOperationEntity);
+                }
+                for (item in outList) {
+                    var rfidOperationEntity = RfidOperationEntity()
+                    rfidOperationEntity.user_id = accountEntity.user_id;
+                    rfidOperationEntity.user_log_id = SnowFlake.getInstance().nextIdStr();
+                    rfidOperationEntity.nick_name = accountEntity.nick_name;
+                    rfidOperationEntity.isOfflineData = true;
+                    rfidOperationEntity.operation = 1
+                    rfidOperationEntity.log_at = "${
+                        DateUtils.formatDateToString(
+                            Date(),
+                            DateUtils.format_yyyyMMddhhmmssfff
+                        )
+                    }+08:00".replace(" ", "T")
+                    rfidOperationEntity.eas_material_number = "-";
+                    rfidOperationEntity.eas_material_name = "-";
+                    rfidOperationEntity.eas_unit_number = "-";
+                    rfidOperationEntity.eas_supplier_name = "-";
+                    rfidOperationEntity.eas_unit_name = "-";
+                    rfidOperationEntity.number = "1";
+                    rfidOperationEntity.eas_lot = "-";
+                    rfidOperationEntity.rfid = item.rfid;
+                    rfidOperationEntity.cell_number = 1
+                    rfidOperationEntity.eas_specs = "-";
+                    rfidOperationEntity.eas_manufacturer = "-";
+                    rfidOperationEntity.role_id = accountEntity.role_id.toInt()
+                    var id = DbUtil.getDb().rfidOperationDao().insert(rfidOperationEntity);
+                    rfidOperationEntity.id = id
+                    updaloads.add(rfidOperationEntity);
+                }
+//                var rfidOperationBO = RfidOperationBO(updaloads);
+
+//                if (rfidOperationBO.logs.size > 0) {
+//
+//                    var toJson = Gson().toJson(rfidOperationBO)
+//
+//                    Log.d(TAG, "${toJson}")
+//                    try {
+//                        var res = RetrofitClient.getService().syncRfidsLogs(rfidOperationBO)
+//                        if (res.code() == 200) {
+//                            for (data in rfidOperationBO.logs) {
+//                                data.isHasUpload = true;
+//                                DbUtil.getDb().rfidOperationDao().update(data);
+//                            }
+//                        }
+//                    } catch (te: TimeoutException) {
+//                        Log.e(TAG, te.message.toString())
+//                        var operationErrorLogDao = DbUtil.getDb().operationErrorLogDao()
+//                        for (rfidOperationEntity in updaloads) {
+//                            var operationErrorLogEntity = OperationErrorLogEntity(
+//                                rfidOperationEntity.id,
+//                                rfidOperationEntity.user_id,
+//                                rfidOperationEntity.role_id.toString(),
+//                                100,
+//                                rfidOperationEntity.rfid,
+//                                OperationErrorEnum.TIME_OUT.v,
+//                                rfidOperationEntity.log_at,
+//                                false
+//                            )
+//                            operationErrorLogDao.insert(operationErrorLogEntity)//保存异常操作
+//                        }
+//                    }
+//                }
 
             } catch (e: Exception) {
 
