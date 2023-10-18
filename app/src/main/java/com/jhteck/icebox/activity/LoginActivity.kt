@@ -89,7 +89,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
     override fun initView() {
         //开启service，初始化TCP服务
 //        CrashReport.testJavaCrash();
-//        startService()
+        startService()
 
         binding.btnLogin.setOnClickListener {
             //登录按键点击事件
@@ -127,7 +127,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
             }
         }
         initPermission()
-//        doRegisterReceiver();
+        doRegisterReceiver();
     }
 
     override fun tryLoadData() {

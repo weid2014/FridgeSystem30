@@ -45,37 +45,42 @@ object FileUtils {
      * 传入天数
      */
     fun deleteImageByDate(dayNum: Int) {
-        val calendar = Calendar.getInstance()
+        try {
+            val calendar = Calendar.getInstance()
 //            calendar.clear()
-        calendar.time = Date()
-        calendar.add(Calendar.DATE, dayNum)
-        val deleteDay = DateUtils.formatDateToString(
-            calendar.time,
-            DateUtils.format_yyyyMMddhhmmssNew
-        )
-        //文件夹路径,不包含文件的路径
-        val listFiles = FileUtil.listFilesInDir(imagePath)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            listFiles?.stream()?.forEach {
-                println(it)
-                println(it.name)
+            calendar.time = Date()
+            calendar.add(Calendar.DATE, dayNum)
+            val deleteDay = DateUtils.formatDateToString(
+                calendar.time,
+                DateUtils.format_yyyyMMddhhmmssNew
+            )
+            //文件夹路径,不包含文件的路径
+            val listFiles = FileUtil.listFilesInDir(imagePath)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                listFiles?.stream()?.forEach {
+                    println(it)
+                    println(it.name)
 
-                var temp = it.name.split(".")
-                println(temp[0])
-                val pictureDate =
-                    DateUtils.formatStringToDate(temp[0], DateUtils.format_yyyyMMddhhmmssNew)
-                println("result=" + pictureDate)
-                if (pictureDate.before(calendar.time)) {
-                    Log.d("CameraXBasic", "deleteDay=${deleteDay}")
-                    deleteFile(it.absolutePath)
-                }
+                    var temp = it.name.split(".")
+                    println(temp[0])
+                    val pictureDate =
+                        DateUtils.formatStringToDate(temp[0], DateUtils.format_yyyyMMddhhmmssNew)
+                    println("result=" + pictureDate)
+                    if (pictureDate.before(calendar.time)) {
+                        Log.d("CameraXBasic", "deleteDay=${deleteDay}")
+                        deleteFile(it.absolutePath)
+                    }
 
 //                delete(it.toString())
 //                FileUtil.getFileByPath()
+                }
             }
+
+            Log.d("CameraXBasic", deleteDay)
+        }catch (e:Exception){
+            Log.e("CameraXBasic", e.toString())
         }
 
-        Log.d("CameraXBasic", deleteDay)
     }
 
     fun deleteFile(path: String) {

@@ -168,8 +168,8 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         viewModel.loginStatus.observe(this) {
             //如果账户验证成功，跳转到主界面
             if (it)
-//                toMainPage()
-                takePhoto()
+                toMainPage()
+//                takePhoto()
         }
         loadRridsData()
     }
@@ -264,7 +264,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         binding.edPassword.setText("")
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("loginUserInfo", Gson().toJson(viewModel.loginUserInfo.value))
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent)
         finish()
     }

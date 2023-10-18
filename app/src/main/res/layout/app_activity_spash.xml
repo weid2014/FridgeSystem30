@@ -29,11 +29,12 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:layout_marginTop="54dp"
         android:id="@+id/ll_fridges_operate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <ImageView
@@ -480,7 +481,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="48dp"
                             android:gravity="center_vertical"
-                            android:text="是否同步其他智能库系统账号信息 (选填)"
+                            android:text="是否同步其他智能库系统账号信息"
                             android:textColor="@color/app_black"
                             android:textSize="22sp" />
                     </LinearLayout>

@@ -43,8 +43,7 @@ class LoginViewModel(application: android.app.Application) :
     fun login(username: String?, password: String?) {
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                showLoading(BaseApp.app.getString(R.string.login_tip))
-                delay(200)
+//                showLoading(BaseApp.app.getString(R.string.login_tip))
                 var userInfo = userDao.findByName(username)
                 if (userInfo == null || userInfo.status != 0) {
                     toast("用户不存在")
@@ -66,6 +65,7 @@ class LoginViewModel(application: android.app.Application) :
                         LockManage.getInstance().preOpenLock();
                         LockManage.getInstance().openLock()
                     }
+                    delay(1000)
                     loginUserInfo.postValue(userInfo)
                     SharedPreferencesUtils.setPrefString(
                         ContextUtils.getApplicationContext(),
@@ -77,7 +77,7 @@ class LoginViewModel(application: android.app.Application) :
                 toast(e.message)
 //                toast(BaseApp.app.getString(R.string.login_tip_fail))
             } finally {
-                hideLoading()
+//                hideLoading()
             }
         }
     }
@@ -92,7 +92,7 @@ class LoginViewModel(application: android.app.Application) :
             lastonclickTime = time
             viewModelScope.launch(Dispatchers.Default) {
                 try {
-                    showLoading(BaseApp.app.getString(R.string.login_tip))
+//                    showLoading(BaseApp.app.getString(R.string.login_tip))
                     var userInfo = userDao.findByNfcId(myTcpMsg);
                     Log.d(TAG, userInfo.nfc_id)
                     if (userInfo == null) {
@@ -106,7 +106,7 @@ class LoginViewModel(application: android.app.Application) :
                         LockManage.getInstance().preOpenLock();
                         LockManage.getInstance().openLock()
                     }
-//                    delay(1000)
+                    delay(1000)
                     loginUserInfo.postValue(userInfo)
                     SharedPreferencesUtils.setPrefString(
                         ContextUtils.getApplicationContext(),
@@ -118,7 +118,7 @@ class LoginViewModel(application: android.app.Application) :
                     Log.e(TAG, e.toString())
                     toast(BaseApp.app.getString(R.string.login_tip_hfc_fail))
                 } finally {
-                    hideLoading()
+//                    hideLoading()
                 }
             }
         }
