@@ -230,22 +230,19 @@ class SpashViewModel(application: android.app.Application) :
 //        MyTcpServerListener.getInstance().sendCloseLamp()
     }
 
-    fun getOldInfo() {
-        synchronizedAccount()
-    }
 
     val Target = "SettingViewModel"
 
     /**
      * 同步账户
      */
-    private fun synchronizedAccount() {
+    fun synchronizedAccount(sncode: String) {
         val accountDao = DbUtil.getDb().accountDao()
 //        if (isNetAvailable()) {
         val users = accountDao.getAll();
         val uploadUsers = users.filter { user -> user.hasUpload == false }
         GlobalScope.launch(context = Dispatchers.IO) {
-            var accountService = RetrofitClient.getService();
+            var accountService = RetrofitClient.getService(sncode=sncode);
             //同步远端到本地账户
             for (user in uploadUsers) {
                 if (user.status != 0) {
@@ -268,11 +265,11 @@ class SpashViewModel(application: android.app.Application) :
 
             try {
                 var accountResponse = accountService.getAccounts()
-                Log.d("synchronizedAccount", "accountResponse=${accountResponse.body().toString()}")
+                Log.d("synchronizedAccount", "accountResponse=${accountResponse.body()?.results}")
                 if (accountResponse.code() == 200) {
                     var remoteAccounts = accountResponse.body()?.results
                     if (remoteAccounts?.accounts != null) {
-                        for (u in localUsers) {
+                       for (u in localUsers) {
                             if ("10".equals(u.role_id)) continue//系统管理员不做任何修改
                             var userLists =
                                 remoteAccounts.accounts.filter { obj -> obj.user_id == u.user_id }

@@ -112,7 +112,7 @@ class MainViewModel(application: android.app.Application) :
 //                    showLoading("正在结算中，请稍等...")
                     RfidManage.getInstance().setRfidArraysRendEndCallback {
                         Log.d(TAG, "正在结算中，请稍等...${it.toString()}")
-                        rfidsSync(it.toList())
+                        rfidsSync.postValue(it.toList())
                     }
                     delay(
                         SharedPreferencesUtils.getPrefLong(
@@ -134,7 +134,6 @@ class MainViewModel(application: android.app.Application) :
 
 
     fun rfidsSync(rfids: List<String>) {
-        Log.d(TAG, "rfidsSync")
         viewModelScope.launch {
             try {
 //                showLoading("全量上报，请稍等...")
@@ -157,13 +156,14 @@ class MainViewModel(application: android.app.Application) :
                 val bodySync = genBody(requestSync(rfidList))
 //                apiService.syncRfids()
                 val repSync = RetrofitClient.getService().syncRfids(bodySync)
-                if (repSync.isSuccessful) {
+                if (repSync.code()== 200) {
                     Log.d(TAG, "全量上报成功")
+                    DbUtil.getDb().offlineRfidDao().clean()
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "全量上报异常$e")
             } finally {
-                rfidsSync.postValue(rfids)
+
 //                hideLoading()
             }
         }
@@ -181,7 +181,6 @@ class MainViewModel(application: android.app.Application) :
         viewModelScope.launch {
             try {
 //                showLoading("正在查询RFID，请稍等...")
-
                 //获取到之后跟本地数据对比(增加或减少了什么)
                 val tempList = mutableListOf<String>()
                 val outList = mutableListOf<AvailRfid>()//领出列表
@@ -189,7 +188,6 @@ class MainViewModel(application: android.app.Application) :
 
                 val body = genBody(RequestRfidsDao(rfids))
                 val rep = RetrofitClient.getService().getRfids(body)
-                if (rep.code() == 200) {
                     val localAvailRfid = localRfidData!!.results.avail_rfids
                     val getAvailRfid = rep.body()!!.results.avail_rfids
 
@@ -259,7 +257,7 @@ class MainViewModel(application: android.app.Application) :
                     } else {
                         noData.postValue(true)
                     }
-                }
+                rfidsSync(rfids)
             } catch (e: Exception) {
                 Log.e(TAG, e.toString())
                 toast("查询异常$e")
@@ -269,22 +267,23 @@ class MainViewModel(application: android.app.Application) :
                 val inOffline = mutableListOf<OfflineRfidEntity>()//离线存入
                 val outOffline = mutableListOf<OfflineRfidEntity>()//离线取出
                 val localAvailRfid = localRfidData!!.results.avail_rfids
-
+                var offlineRfidDao = DbUtil.getDb().offlineRfidDao()
+                var offLineDatas = offlineRfidDao.getAll()
+                var offlineRfids = mutableListOf<String>()
                 for (localRfid in localAvailRfid) {
                     tempList.add(localRfid.rfid)
                 }
+
                 for (rfid in tempList) {
                     if (!rfids.contains(rfid)) {
                         for (localRfid in localAvailRfid) {
                             if (localRfid.rfid == rfid) {
                                 outList.add(localRfid)//本地离线取出
+                                offlineRfids.add(localRfid.rfid)//离线取出的数据
                             }
                         }
                     }
                 }
-                var offlineRfidDao = DbUtil.getDb().offlineRfidDao()
-                var offLineDatas = offlineRfidDao.getAll()
-                var offlineRfids = mutableListOf<String>()
 
                 if (offLineDatas.isNotEmpty()) {
                     for (offLineId in offLineDatas) {
@@ -326,6 +325,21 @@ class MainViewModel(application: android.app.Application) :
                     }
                 }
 
+                for (offlineId in outList){
+                    var offlineRfidEntity = OfflineRfidEntity(
+                        null,
+                        offlineId.rfid,
+                        DateUtils.format_yyyyMMddhhmmssfff,
+                        accountEntity.user_id,
+                        accountEntity.role_id,
+                        accountEntity.nick_name,
+                        1,
+                        100
+                    );
+                    outOffline.add(offlineRfidEntity)
+                }
+
+                LocalService.deleteDataToLocal(outList)
                 delay(500)
                 if (outOffline.size > 0 && inOffline.size > 0) {//存取都有
                     val tempOffList = mutableListOf<List<OfflineRfidEntity>>()
@@ -336,7 +350,7 @@ class MainViewModel(application: android.app.Application) :
                     deleteOffRfidData.postValue(outOffline)
                 } else if (inOffline.size > 0) {//领入
                     addOffRfidData.postValue(inOffline)
-                } else {
+                }else {
                     noData.postValue(true)
                 }
 

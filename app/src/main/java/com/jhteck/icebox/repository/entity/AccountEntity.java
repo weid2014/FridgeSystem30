@@ -194,4 +194,29 @@ public class AccountEntity {
         this.faceUrl = faceUrl;
     }
 
+    @Override
+    public String toString() {
+        return "AccountEntity{" +
+                "id=" + id +
+                ", user_id='" + user_id + '\'' +
+                ", role_id='" + role_id + '\'' +
+                ", real_name='" + real_name + '\'' +
+                ", nick_name='" + nick_name + '\'' +
+                ", nfc_id='" + nfc_id + '\'' +
+                ", password_digest='" + password_digest + '\'' +
+                ", store_count=" + store_count +
+                ", consume_count=" + consume_count +
+                ", deposit_count=" + deposit_count +
+                ", created_by='" + created_by + '\'' +
+                ", created_time='" + created_time + '\'' +
+                ", login_time='" + login_time + '\'' +
+                ", km_user_id='" + km_user_id + '\'' +
+                ", updated_by='" + updated_by + '\'' +
+                ", updated_time='" + updated_time + '\'' +
+                ", hasUpload=" + hasUpload +
+                ", faceUrl='" + faceUrl + '\'' +
+                ", status=" + status +
+                ", faceAccount=" + faceAccount +
+                '}';
+    }
 }

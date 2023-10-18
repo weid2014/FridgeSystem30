@@ -61,7 +61,7 @@ class AccountViewModel(application: android.app.Application) :
                     userDao.update(user)
                     addStatus.postValue(true)
                 } else {
-                    toast("新增账户异常${response.message()}")
+                    toast("平台新增账户异常${response.message()}")
                     addStatus.postValue(false)
                 }
             } catch (e: Exception) {

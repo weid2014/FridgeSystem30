@@ -27,7 +27,6 @@ import com.jhteck.icebox.fragment.SettingFrag
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.OfflineRfidEntity
 import com.jhteck.icebox.service.MyService
-import com.jhteck.icebox.utils.CustomDialog
 import com.jhteck.icebox.utils.CustomDialogMain
 import com.jhteck.icebox.utils.DensityUtil
 import com.jhteck.icebox.utils.SharedPreferencesUtils
@@ -168,8 +167,8 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
         viewModel.loadDataLocal()
 
-        val intent = Intent(this, MyService::class.java)
-        bindService(intent, conn, Context.BIND_AUTO_CREATE)
+      /*  val intent = Intent(this, MyService::class.java)
+        bindService(intent, conn, Context.BIND_AUTO_CREATE)*/
 
 //        MyTcpServerListener.getInstance().getAntPower()
     }
@@ -315,7 +314,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(conn);
+//        unbindService(conn);
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
@@ -323,6 +322,10 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     }
 
     private fun backLoginPage() {
+        if (customDialog!=null&&(customDialog as CustomDialogMain).isShowing) {
+            (customDialog as CustomDialogMain).hide()
+            customDialog = null
+        }
         if (popupWindow !== null && popupWindow!!.isShowing) {
             DensityUtil.backgroundAlpha(this@MainActivity, 1f)
             binding.cover.visibility = View.GONE
@@ -360,10 +363,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     private var showTitle = "存入列表"
     private var operatortype = 0;
     private fun showPopWindow(outList: List<AvailRfid>, inList: List<AvailRfid>) {
-        if ((customDialog as CustomDialogMain).isShowing) {
-            (customDialog as CustomDialogMain).hide()
-            customDialog = null
-        }
+        dismissDialog()
         //获取用户角色ID
         val roleID = SharedPreferencesUtils.getPrefInt(this, ROLE_ID, 10)
         var operationEntity = AccountOperationEnum.NO_OPERATION;
@@ -526,27 +526,24 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     }
 
     private fun showOffPopWindow(
-        outList: List<OfflineRfidEntity>,
-        inList: List<OfflineRfidEntity>
+        outOffList: List<OfflineRfidEntity>,
+        inOffList: List<OfflineRfidEntity>
     ) {
-        if ((customDialog as CustomDialogMain).isShowing) {
-            (customDialog as CustomDialogMain).hide()
-            customDialog = null
-        }
+        dismissDialog()
         //获取用户角色ID
         val roleID = SharedPreferencesUtils.getPrefInt(this, ROLE_ID, 10)
         var operationEntity = AccountOperationEnum.NO_OPERATION;
         when (roleID) {
             10, 20 -> {
                 showTitle = "存入列表"
-                if (outList.size > 0 && inList.size > 0) {
+                if (outOffList.size > 0 && inOffList.size > 0) {
                     operatortype = 3
                     operationEntity =
                         (AccountOperationEnum.STORE_CONSUME)//存入取出
-                } else if (outList.size > 0) {
+                } else if (outOffList.size > 0) {
                     operatortype = 2
                     operationEntity = (AccountOperationEnum.CONSUME)//取出
-                } else if (inList.size > 0) {
+                } else if (inOffList.size > 0) {
                     operatortype = 1
                     operationEntity =
                         (AccountOperationEnum.STORE)//存入
@@ -557,14 +554,14 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             }
             else -> {
                 showTitle = "暂存列表"
-                if (outList.size > 0 && inList.size > 0) {
+                if (outOffList.size > 0 && inOffList.size > 0) {
                     operatortype = 3
                     operationEntity =
                         (AccountOperationEnum.DESPOSIT_CONSUME)//存入取出
-                } else if (outList.size > 0) {
+                } else if (outOffList.size > 0) {
                     operatortype = 2
                     operationEntity = (AccountOperationEnum.CONSUME)//取出
-                } else if (inList.size > 0) {
+                } else if (inOffList.size > 0) {
                     operatortype = 1
                     operationEntity =
                         (AccountOperationEnum.DEPOSIT)//存入
@@ -597,8 +594,8 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                 val tvCountIn = contentView.findViewById<TextView>(R.id.tvCountIn)
                 val tvCountOut = contentView.findViewById<TextView>(R.id.tvCountOut)
                 val tvRemainTitle = contentView.findViewById<TextView>(R.id.tvRemainTitle)
-                tvCountOut.text = "领出列表(x${outList.size})"
-                tvCountIn.text = "${showTitle}(x${inList.size})"
+                tvCountOut.text = "领出列表(x${outOffList.size})"
+                tvCountIn.text = "${showTitle}(x${inOffList.size})"
                 val btnCountDownTime = contentView.findViewById<Button>(R.id.btnCountDownTime)
                 when (roleID) {
                     10, 20 -> {
@@ -681,13 +678,12 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                     } else {
                         try {
                             retryScanNum = 0
-                            viewModel.startFCLInventory30()
-
                             if (customDialog == null) {
                                 customDialog = CustomDialogMain(this@MainActivity)
                                 (customDialog as CustomDialogMain).setsTitle("温馨提示")
-                                    .setsMessage("正在结算中").show()
+                                    .setsMessage("正在结算中...").show()
                             }
+                            viewModel.startFCLInventory30()
 //                            viewModel.startFCLInventory()
                         } catch (e: Exception) {
                         }
@@ -702,6 +698,18 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                     binding.tvUserID.text = "${loginUserInfo.km_user_id}"
                 }
             }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismissDialog()
+    }
+
+    private fun dismissDialog() {
+        if (customDialog != null&&(customDialog as CustomDialogMain).isShowing) {
+            (customDialog as CustomDialogMain).dismiss()
+            customDialog = null
         }
     }
 

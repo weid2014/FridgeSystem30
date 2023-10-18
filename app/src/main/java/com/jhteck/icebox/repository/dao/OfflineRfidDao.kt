@@ -21,4 +21,10 @@ import com.jhteck.icebox.repository.entity.OfflineRfidEntity
      */
     @Query("SELECT * from t_offline_rfid where rifid =(:rfid) limit 1")
      fun getByRfid(rfid:String): OfflineRfidEntity;
+
+    /**
+     * 清空表
+     */
+    @Query("delete from t_offline_rfid")
+    fun clean();
 }

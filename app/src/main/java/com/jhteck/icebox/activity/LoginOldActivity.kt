@@ -283,6 +283,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
     override fun onRestart() {
         super.onRestart()
         viewModel.loadRfidsFromLocal();
+        viewModel.loadOfflineRfidsFromLocal();
         //从主页面返回
     }
 
