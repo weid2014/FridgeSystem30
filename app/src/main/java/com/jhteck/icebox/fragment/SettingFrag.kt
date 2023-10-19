@@ -54,8 +54,7 @@ class SettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingBinding>() 
 
 
         when (roleID) {
-            10, 20 -> {
-
+            10 -> {
                 val upgradesFrag = UpgradesFrag.newInstance()
                 val deviceSettingFrag = DeviceSettingFrag.newInstance()
                 tabs.add(binding.tvAccount)
@@ -81,33 +80,25 @@ class SettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingBinding>() 
                     setupSelectItem(2)
                 }
             }
-            else -> {
-                val upgradesFrag = UpgradesFrag.newInstance()
-                val deviceSettingFrag = DeviceSettingFrag.newInstance()
-                tabs.add(binding.tvUpgrades)
-                tabs.add(binding.tvDeviceSetting)
+            20->{
+                tabs.add(binding.tvAccount)
                 binding.vpContentSetting.adapter =
                     AppTabPagerAdapter(
-                        arrayListOf(upgradesFrag, deviceSettingFrag),
+                        arrayListOf(accountFrag),
                         childFragmentManager,
                         lifecycle
                     )
                 binding.vpContentSetting.isSaveEnabled = false
                 binding.vpContentSetting.isUserInputEnabled = false
-                binding.rlAccount.visibility = View.GONE
-                binding.tvUpgrades.setOnClickListener {
+                binding.rlAccount.visibility = View.VISIBLE
+                binding.tvDeviceSetting.visibility=View.GONE
+                binding.tvUpgrades.visibility=View.GONE
+                binding.tvAccount.setOnClickListener {
                     setupSelectItem(0)
-
                 }
-                binding.tvDeviceSetting.setOnClickListener {
-                    setupSelectItem(1)
-                }
-                tabs[0].setBackgroundResource(R.drawable.radius_border_tab)
             }
-
         }
         setupSelectItem(0)
-
     }
 
     private fun setupSelectItem(position: Int) {

@@ -428,6 +428,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                 val tvCountIn = contentView.findViewById<TextView>(R.id.tvCountIn)
                 val tvCountOut = contentView.findViewById<TextView>(R.id.tvCountOut)
                 val tvRemainTitle = contentView.findViewById<TextView>(R.id.tvRemainTitle)
+                val tvNoOperation = contentView.findViewById<TextView>(R.id.tv_no_operation)
                 tvCountOut.text = "领出列表(x${outList.size})"
                 tvCountIn.text = "${showTitle}(x${inList.size})"
                 val btnCountDownTime = contentView.findViewById<Button>(R.id.btnCountDownTime)
@@ -512,13 +513,13 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                         rvInventoryResultOUT.visibility = View.GONE
                     }//存入
                     0 -> {
-                        tvCountIn.visibility = View.INVISIBLE
-                        rvInventoryResultIN.visibility = View.INVISIBLE
-                        tvCountOut.visibility = View.INVISIBLE
-                        rvInventoryResultOUT.visibility = View.INVISIBLE
+                        tvNoOperation.visibility = View.VISIBLE
+                        tvCountIn.visibility = View.GONE
+                        rvInventoryResultIN.visibility = View.GONE
+                        tvCountOut.visibility = View.GONE
+                        rvInventoryResultOUT.visibility = View.GONE
                     }//无操作
                 }
-
 
                 showAtLocation(binding.root, Gravity.CENTER, 0, 0);
             }
@@ -595,7 +596,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                 val btnClosePop = contentView.findViewById<ImageButton>(R.id.btnClose)
                 val tvCountIn = contentView.findViewById<TextView>(R.id.tvCountIn)
                 val tvCountOut = contentView.findViewById<TextView>(R.id.tvCountOut)
-                val tvRemainTitle = contentView.findViewById<TextView>(R.id.tvRemainTitle)
+                val tvNoOperation = contentView.findViewById<TextView>(R.id.tv_no_operation)
                 tvCountOut.text = "领出列表(x${outOffList.size})"
                 tvCountIn.text = "${showTitle}(x${inOffList.size})"
                 val btnCountDownTime = contentView.findViewById<Button>(R.id.btnCountDownTime)
@@ -635,12 +636,11 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                         tvCountOut.visibility = View.GONE
                     }//存入
                     0 -> {
+                        tvNoOperation.visibility = View.VISIBLE
                         tvCountIn.visibility = View.INVISIBLE
                         tvCountOut.visibility = View.INVISIBLE
                     }//无操作
                 }
-
-
                 showAtLocation(binding.root, Gravity.CENTER, 0, 0);
             }
         }

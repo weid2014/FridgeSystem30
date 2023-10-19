@@ -95,6 +95,11 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             }
         }
 
+        binding.edSncode.isEnabled=false
+        binding.edAdminName.isEnabled=false
+        binding.edAdminPassword.isEnabled=false
+        binding.edStyle.isEnabled=false
+        binding.edCells.isEnabled=false
         binding.btnEditSave.setOnClickListener {
             val sncode = binding.edSncode.text.toString().trim()
             val deviceAlias = binding.edDeviceAlias.text.toString().trim()
@@ -170,6 +175,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             }
         })
 
+        binding.btnUrlSelect.visibility=View.GONE
         binding.btnUrlSelect.setOnClickListener {
             hideAllLayout()
             binding.llUrlSelect.visibility = View.VISIBLE

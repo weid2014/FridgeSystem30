@@ -89,7 +89,8 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         //开启service，初始化TCP服务
 //        CrashReport.testJavaCrash();
         startService()
-
+        //删除30天前的相片
+//        FileUtils.deleteImageByDate(-30)
         binding.btnLogin.setOnClickListener {
             //登录按键点击事件
             viewModel.login(binding.edUserName.text.toString(), binding.edPassword.text.toString())
@@ -168,8 +169,8 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         viewModel.loginStatus.observe(this) {
             //如果账户验证成功，跳转到主界面
             if (it)
-                toMainPage()
-//                takePhoto()
+//                toMainPage()
+                takePhoto()
         }
         loadRridsData()
     }
@@ -230,8 +231,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
 
     //拍照
     private fun takePhoto() {
-        //拍照前删除30天前的相片
-        FileUtils.deleteImageByDate(-30)
+
         val imageCapture = imageCamera ?: return
         val mDateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.US)
         val file =

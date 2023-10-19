@@ -90,8 +90,19 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
         }
         viewModel.onUsersLoaded.observe(this) {
             val testList = mutableListOf<AccountEntity>()
-            for (user in it) {
-                testList.add(user)
+            when(SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10)){
+                10->{
+                    for (user in it) {
+                        testList.add(user)
+                    }
+                }
+                else->{
+                    for (user in it) {
+                        if(user.role_id.toInt()!=10) {
+                            testList.add(user)
+                        }
+                    }
+                }
             }
             val inventoryListItemAdapter = AccoutListItemAdapter(testList,
                 object : ItemOperatorAdapter<AccountEntity> {

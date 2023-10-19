@@ -29,11 +29,11 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_marginTop="54dp"
         android:id="@+id/ll_fridges_operate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="54dp"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
@@ -64,135 +64,9 @@
             app:sv_stepPadding="4dp"
             app:sv_stepViewStyle="@style/StepView" />
 
+
         <LinearLayout
             android:id="@+id/ll_step1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="600dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:text="http设置 "
-                        android:textColor="@color/app_black"
-                        android:textSize="22sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:text="*"
-                        android:textColor="@color/colorTextRed"
-                        android:textSize="22sp" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/app_shape_white_radius_9">
-
-                    <EditText
-                        android:id="@+id/ed_http_url"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="20dp"
-                        android:background="@android:color/transparent"
-                        android:hint="请输入"
-                        android:text="@string/url_test"
-                        android:textSize="16sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="600dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="48dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:text="版本更新链接 "
-                        android:textColor="@color/app_black"
-                        android:textSize="22sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:text="*"
-                        android:textColor="@color/colorTextRed"
-                        android:textSize="22sp" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/app_shape_white_radius_9">
-
-                    <EditText
-                        android:id="@+id/ed_update_url"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="20dp"
-                        android:background="@android:color/transparent"
-                        android:hint="请输入"
-                        android:text="@string/update_apk_address"
-                        android:textSize="16sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginTop="72dp"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_step1_next"
-                    android:layout_width="300dp"
-                    android:layout_height="72dp"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/app_shape_bottom_green_radius_5"
-                    android:gravity="center"
-                    android:text="下一步"
-                    android:textColor="@color/app_white"
-                    android:textSize="24sp" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_step2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="144dp"
@@ -411,87 +285,103 @@
                 </LinearLayout>
             </LinearLayout>
 
+
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="24dp"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="400dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:text="是否拉取旧操作记录 "
+                        android:textColor="@color/app_black"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:text="*"
+                        android:textColor="@color/colorTextRed"
+                        android:textSize="22sp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:layout_gravity="center">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="是否拉取旧记录 "
-                            android:textColor="@color/app_black"
-                            android:textSize="22sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="*"
-                            android:textColor="@color/colorTextRed"
-                            android:textSize="22sp" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        android:layout_gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
                         android:background="@drawable/app_shape_white_radius_9">
 
                         <androidx.appcompat.widget.AppCompatSpinner
                             android:id="@+id/sp_get_old_info"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="20dp"
+                            android:layout_weight="1"
                             android:textSize="16sp" />
                     </LinearLayout>
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:paddingStart="25dp"
+                        android:text="(如果是新激活的冰箱则没有操作日志等)"
+                        android:textSize="15dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:text="是否同步其他智能库系统账号信息"
+                        android:textColor="@color/app_black"
+                        android:textSize="22sp" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="400dp"
-                    android:layout_height="120dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="24dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="是否同步其他智能库系统账号信息"
-                            android:textColor="@color/app_black"
-                            android:textSize="22sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/app_shape_white_radius_9"
-                        android:orientation="horizontal">
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/app_shape_white_radius_9">
 
                         <androidx.appcompat.widget.AppCompatSpinner
                             android:id="@+id/sp_sync_other_system"
@@ -515,51 +405,90 @@
                             android:textSize="16sp"
                             android:visibility="gone" />
                     </LinearLayout>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:paddingStart="25dp"
+                        android:text="(可以同步其他已经激活的冰箱的账号信息)"
+                        android:textSize="15dp" />
                 </LinearLayout>
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:text="http设置 "
+                        android:textColor="@color/app_black"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:text="*"
+                        android:textColor="@color/colorTextRed"
+                        android:textSize="22sp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/app_shape_white_radius_9">
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/sp_select_url"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="20dp"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="72dp"
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btn_step2_back"
+                    android:id="@+id/btn_step1_next"
                     android:layout_width="300dp"
                     android:layout_height="72dp"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/btn_grey_radius_5"
-                    android:gravity="center"
-                    android:text="返回"
-                    android:textColor="@color/app_white"
-                    android:textSize="24sp" />
-
-                <Button
-                    android:id="@+id/btn_step2_next"
-                    android:layout_width="300dp"
-                    android:layout_height="72dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginStart="48dp"
                     android:background="@drawable/app_shape_bottom_green_radius_5"
                     android:gravity="center"
                     android:text="下一步"
                     android:textColor="@color/app_white"
                     android:textSize="24sp" />
-
             </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_step3"
+            android:id="@+id/ll_step2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="54dp"
+            android:layout_marginStart="144dp"
             android:layout_marginTop="60dp"
-            android:layout_marginEnd="54dp"
+            android:layout_marginEnd="144dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -601,38 +530,41 @@
                         android:id="@+id/btn_link"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="28dp"
                         android:layout_marginEnd="20dp"
-                        android:text="连接"
+                        android:background="@drawable/btn_grey_radius_5"
                         android:paddingStart="8dp"
                         android:paddingEnd="8dp"
-                        android:background="@drawable/btn_grey_radius_5"
+                        android:text="连接"
                         android:textColor="@color/app_white"
                         android:textSize="16sp" />
+
                     <Button
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
                         android:id="@+id/btn_get_version"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
-                        android:text="获取版本号"
                         android:background="@drawable/btn_grey_radius_5"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="获取版本号"
                         android:textColor="@color/app_white"
                         android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_marginTop="24dp"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:layout_marginTop="24dp"
+                    android:orientation="vertical">
+
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="48dp"
@@ -640,17 +572,18 @@
                             android:text="天线强度设置 "
                             android:textColor="@color/app_black"
                             android:textSize="22sp" />
+
                         <Button
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp"
                             android:id="@+id/btn_get_ant_power"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="48dp"
                             android:layout_marginEnd="20dp"
                             android:background="@drawable/app_shape_bottom_green_radius_5"
-                            android:textColor="@color/app_white"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp"
                             android:text="获取天线功率"
+                            android:textColor="@color/app_white"
                             android:textSize="15sp" />
                     </LinearLayout>
 
@@ -662,10 +595,10 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="48dp"
                 android:layout_width="600dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="108dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -682,7 +615,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="48dp"
                             android:gravity="center_vertical"
-                            android:text="开关锁设置 "
+                            android:text="门锁设置 "
                             android:textColor="@color/app_black"
                             android:textSize="22sp" />
 
@@ -702,45 +635,46 @@
                         </LinearLayout>
 
                         <Button
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp"
                             android:id="@+id/btn_link_lock"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
+                            android:layout_marginStart="24dp"
                             android:layout_marginEnd="20dp"
                             android:background="@drawable/btn_grey_radius_5"
-                            android:textColor="@color/app_white"
-                            android:textSize="16sp"
-                            android:text="连接" />
-
-                        <Button
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp"
+                            android:text="连接"
+                            android:textColor="@color/app_white"
+                            android:textSize="16sp" />
+
+                        <Button
                             android:id="@+id/btn_get_version_lock"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="20dp"
                             android:layout_marginEnd="20dp"
-                            android:text="获取版本号"
                             android:background="@drawable/btn_grey_radius_5"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp"
+                            android:text="获取版本号"
                             android:textColor="@color/app_white"
                             android:textSize="16sp" />
                     </LinearLayout>
 
 
                     <LinearLayout
-                        android:layout_marginTop="24dp"
                         android:layout_width="match_parent"
-                        android:layout_height="72dp"
+                        android:layout_height="54dp"
                         android:layout_gravity="center"
+                        android:layout_marginTop="24dp"
                         android:orientation="horizontal">
 
                         <Button
                             android:id="@+id/btn_open_lock"
                             android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="54dp"
                             android:layout_weight="1"
-                            android:layout_height="72dp"
                             android:background="@drawable/app_shape_bottom_green_radius_5"
                             android:text="开锁"
                             android:textColor="@color/app_white"
@@ -749,9 +683,10 @@
                         <Button
                             android:id="@+id/btn_close_lock"
                             android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="27dp"
+                            android:layout_marginEnd="54dp"
                             android:layout_weight="1"
-                            android:layout_height="72dp"
-                            android:layout_marginStart="12dp"
                             android:background="@drawable/btn_grey_radius_5"
                             android:text="关锁"
                             android:textColor="@color/app_white"
@@ -763,7 +698,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -782,6 +718,7 @@
 
 
                     <LinearLayout
+
                         android:layout_width="match_parent"
                         android:layout_height="72dp"
                         android:layout_gravity="center"
@@ -809,22 +746,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginTop="72dp"
+                android:layout_marginTop="222dp"
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btn_step3_back"
+                    android:id="@+id/btn_step2_back"
                     android:layout_width="300dp"
                     android:layout_height="72dp"
                     android:layout_centerInParent="true"
                     android:background="@drawable/btn_grey_radius_5"
                     android:gravity="center"
-                    android:text="返回"
+                    android:text="上一步"
                     android:textColor="@color/app_white"
                     android:textSize="24sp" />
 
                 <Button
-                    android:id="@+id/btn_step3_finish"
+                    android:id="@+id/btn_step2_finish"
                     android:layout_width="300dp"
                     android:layout_height="72dp"
                     android:layout_centerInParent="true"
@@ -834,10 +771,7 @@
                     android:text="完成"
                     android:textColor="@color/app_white"
                     android:textSize="24sp" />
-
             </LinearLayout>
-
-
         </LinearLayout>
 
     </LinearLayout>

@@ -2,6 +2,7 @@ package com.jhteck.icebox.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
 import com.jhteck.icebox.api.ROLE_ID

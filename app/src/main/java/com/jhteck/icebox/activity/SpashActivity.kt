@@ -38,8 +38,11 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     private var service: MyService? = null
     private var isBind = false
     private var tempList = mutableListOf<AntPowerDao>()
-    private var mArrayAdapter: ArrayAdapter<String>? = null
     private var mDevicesPath: Array<String>? = null
+    private var isGetOldInfo: Boolean = false
+    private var isSyncOtherSystem: Boolean = false
+    private var  oldSncoede:String?=null
+
     private var conn = object : ServiceConnection {
         override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
             isBind = true
@@ -59,26 +62,33 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     override fun initView() {
         binding.llFridgesOperate.visibility = View.GONE
         startService()
+        initSpinnerView()
         // 检查是否是第一次运行应用程序
         var isFirstRun =
             SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
-        /*if (DEBUG) {
-            viewModel.registAdmin("Jinghe233")
-            isFirstRun = false
-        }*/
+        if (DEBUG) {
+//            viewModel.registAdmin("Jinghe233")
+            isFirstRun = true
+        }
         if (isFirstRun) {
             binding.llFridgesOperate.visibility = View.VISIBLE
             binding.rlSpash.visibility = View.GONE
             var steps = mutableListOf<String>()
             steps.add("Step 1")
             steps.add("Step 2")
-            steps.add("Step 3")
             binding.stepView.setSteps(steps)
             binding.stepView.setOnStepClickListener {
                 binding.stepView.go(it, true)
                 changeUI(it)
             }
             binding.btnStep1Next.setOnClickListener {
+                oldSncoede = binding.edOldSncode.text.toString().trim()
+                val sncode = binding.edSncode.text.toString().trim()
+                if (!chechSnCode(oldSncoede!!)||!chechSnCode(sncode)) {
+                    toast("请输入正确的SN码")
+                    return@setOnClickListener
+                }
+                SharedPreferencesUtils.setPrefString(this@SpashActivity, SNCODE, sncode)
                 changeUI(1)
                 binding.stepView.go(1, true)
             }
@@ -86,16 +96,8 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 binding.stepView.go(0, true)
                 changeUI(0)
             }
-            binding.btnStep2Next.setOnClickListener {
-                binding.stepView.go(2, true)
-                changeUI(2)
-            }
 
-            binding.btnStep3Back.setOnClickListener {
-                binding.stepView.go(1, true)
-                changeUI(1)
-            }
-            binding.btnStep3Finish.setOnClickListener {
+            binding.btnStep2Finish.setOnClickListener {
                 activyFinish()
             }
 
@@ -159,10 +161,6 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 }
             })
             changeUI(0)
-            // 第一次运行应用程序的操作
-            // TODO: 在这里执行你的操作，例如显示欢迎页面或引导用户完成设置等
-
-
         } else {
             // 不是第一次运行应用程序的操作
             binding.rlSpash.visibility = View.VISIBLE
@@ -175,18 +173,45 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     }
 
     private fun activyFinish() {
-        val url = binding.edHttpUrl.text.toString().trim()
-        if (url.isNotEmpty()) {
-            SharedPreferencesUtils.setPrefString(this, URL_REQUEST, url)
-            viewModel.setAntPower(tempList)
-        } else {
-            toast("url不能为空")
-        }
+        viewModel.setAntPower(tempList)
     }
 
-    private var isGetOldInfo: Boolean = false
-    private var isSyncOtherSystem: Boolean = false
+    fun chechSnCode(sncodeStr:String): Boolean {
+        return sncodeStr.isNotEmpty()&&sncodeStr.length==16&&sncodeStr.startsWith("FEDCBA")
+    }
+
+
     private fun initSpinnerView() {
+        SharedPreferencesUtils.setPrefString(this@SpashActivity, URL_REQUEST, URL_TEST)
+        val selectUrlList = listOf(
+            URL_TEST, URL_KM
+        )
+        binding.spSelectUrl.adapter =
+            ArrayAdapter(
+                this,
+                R.layout.app_item_text,
+                R.id.tv_content,
+                selectUrlList
+            )
+        binding.spSelectUrl.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    SharedPreferencesUtils.setPrefString(
+                        this@SpashActivity,
+                        URL_REQUEST,
+                        selectUrlList[position]
+                    )
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+            }
+
         val selectList = listOf(
             "不拉取", "拉取"
         )
@@ -251,8 +276,6 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
             }
-
-
     }
 
     private fun registIceBox() {
@@ -275,19 +298,12 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         )
 //        viewModel.activeFridges(fridgesActiveBo)
         if (isGetOldInfo) {
-            //同步旧账号信息
-            viewModel.synchronizedAccount(sncode)
+            //同步其他冰箱信息，操作记录，库存记录等
+            viewModel.syncOtherSystem(sncode)
         }
         if (isSyncOtherSystem) {
-            //wait wait wait
-            //同步其他冰箱信息，操作记录，库存记录等
-            val oldSncoede = binding.edOldSncode.text.toString().trim()
-
-            if (oldSncoede.isNotEmpty()) {
-                viewModel.syncOtherSystem(oldSncoede)
-            } else {
-                toast("旧序列号不能为空")
-            }
+            //同步旧账号信息
+            oldSncoede?.let { viewModel.synchronizedAccount(it) }
         }
         viewModel.activeFridges(fridgesActiveBo)
     }
@@ -301,18 +317,10 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
             0 -> {
                 binding.llStep1.visibility = View.VISIBLE
                 binding.llStep2.visibility = View.GONE
-                binding.llStep3.visibility = View.GONE
             }
             1 -> {
-                initSpinnerView()
                 binding.llStep1.visibility = View.GONE
                 binding.llStep2.visibility = View.VISIBLE
-                binding.llStep3.visibility = View.GONE
-            }
-            2 -> {
-                binding.llStep1.visibility = View.GONE
-                binding.llStep2.visibility = View.GONE
-                binding.llStep3.visibility = View.VISIBLE
                 initTempList()
                 if (DEBUG) {
                     initTempList()
@@ -417,7 +425,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     }
 
     private fun initAntRecycleView(antList: List<AntPowerDao>) {
-        binding.llStep3.visibility = View.VISIBLE
+        binding.llStep2.visibility = View.VISIBLE
         val layoutManager = GridLayoutManager(this, 2)
         binding.rvAnt.layoutManager = layoutManager
         binding.rvAnt.adapter =

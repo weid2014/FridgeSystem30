@@ -71,7 +71,15 @@
             android:id="@+id/rvInventoryResultOUT"
             android:layout_width="match_parent"
             android:layout_height="680dp" />
-
+        <TextView
+            android:text="没有存取"
+            android:textSize="35sp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textColor="@color/app_black"
+            android:id="@+id/tv_no_operation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/btnCountDownTime"

@@ -129,7 +129,7 @@ class UpgradesFrag : WithoutViewModelFragment<AppFragmentSettingUpgradesBinding>
 //                }
 //            networkStatus.postValue(true)
 //            } else {
-                Toast.makeText(context,"当前网络状态:不可用!!!!",Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context,"当前网络状态:不可用!!!!",Toast.LENGTH_SHORT).show()
 //            }
 
 

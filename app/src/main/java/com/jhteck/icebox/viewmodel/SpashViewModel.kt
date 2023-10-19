@@ -118,7 +118,7 @@ class SpashViewModel(application: android.app.Application) :
                         user.role_id = "10";
                         user.password_digest = MD5Util.encrypt(passWord);
 //                        user.nfc_id = "1698A803CB9C2B04010100048804F1FEF453";
-                        user.nfc_id = "1698A858A115F60401010004880432E54BD9";
+                        user.nfc_id = "12345678";
 //                        user.nfc_id = "1698A803CB9C2B04010100048804C0E4718C"
                         user.status = 0;
                         user.created_time = "${
@@ -132,6 +132,7 @@ class SpashViewModel(application: android.app.Application) :
                         for (u in users) {
                             println(u)
                         }
+                        LockManage.getInstance().closeLock()
                         loginStatus.postValue(true)
                         setAdminStatus.postValue(true)
                     } else {

@@ -43,7 +43,7 @@ class LoginViewModel(application: android.app.Application) :
     fun login(username: String?, password: String?) {
         viewModelScope.launch(Dispatchers.Default) {
             try {
-//                showLoading(BaseApp.app.getString(R.string.login_tip))
+                showLoading(BaseApp.app.getString(R.string.login_tip))
                 var userInfo = userDao.findByName(username)
                 if (userInfo == null || userInfo.status != 0) {
                     toast("用户不存在")
@@ -57,7 +57,7 @@ class LoginViewModel(application: android.app.Application) :
                 } else {
                     toast("登录成功")
 
-                    delay(300)
+//                    delay(300)
 //                    loginStatus.postValue(true)
                     //wait wait wait
                     if (!DEBUG) {
@@ -65,7 +65,7 @@ class LoginViewModel(application: android.app.Application) :
                         LockManage.getInstance().preOpenLock();
                         LockManage.getInstance().openLock()
                     }
-                    delay(1000)
+//                    delay(1000)
                     loginUserInfo.postValue(userInfo)
                     SharedPreferencesUtils.setPrefString(
                         ContextUtils.getApplicationContext(),
@@ -77,7 +77,7 @@ class LoginViewModel(application: android.app.Application) :
                 toast(e.message)
 //                toast(BaseApp.app.getString(R.string.login_tip_fail))
             } finally {
-//                hideLoading()
+                hideLoading()
             }
         }
     }
@@ -86,13 +86,13 @@ class LoginViewModel(application: android.app.Application) :
     fun loginByCark(myTcpMsg: String) {
         //防止刷卡响应过于频繁
         var time = SystemClock.uptimeMillis();//局部变量
-        if (time - lastonclickTime <= 8000) {
+        if (time - lastonclickTime <= 3000) {
 
         } else {
             lastonclickTime = time
             viewModelScope.launch(Dispatchers.Default) {
                 try {
-//                    showLoading(BaseApp.app.getString(R.string.login_tip))
+                    showLoading(BaseApp.app.getString(R.string.login_tip))
                     var userInfo = userDao.findByNfcId(myTcpMsg);
                     Log.d(TAG, userInfo.nfc_id)
                     if (userInfo == null) {
@@ -106,7 +106,7 @@ class LoginViewModel(application: android.app.Application) :
                         LockManage.getInstance().preOpenLock();
                         LockManage.getInstance().openLock()
                     }
-                    delay(1000)
+//                    delay(1000)
                     loginUserInfo.postValue(userInfo)
                     SharedPreferencesUtils.setPrefString(
                         ContextUtils.getApplicationContext(),
@@ -118,7 +118,7 @@ class LoginViewModel(application: android.app.Application) :
                     Log.e(TAG, e.toString())
                     toast(BaseApp.app.getString(R.string.login_tip_hfc_fail))
                 } finally {
-//                    hideLoading()
+                    hideLoading()
                 }
             }
         }
