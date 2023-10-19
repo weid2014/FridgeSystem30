@@ -23,7 +23,7 @@ const val UPDATE_APK_ADDRESS = "update_apk_address"
 const val SNCODE = "sncode"
 //const val SNCODE_TEST = "FEDCBA0123456788"
 
-const val SNCODE_TEST = "FEDCBA01TEST0000"
+const val SNCODE_TEST = "FEDCBA01TEST0008"
 const val SNCODE_ORIGEN = "FEDCBA01CC000001"
 const val URL_REQUEST = "url_request"
 const val URL_TEST = "https://jh.test.lavandachen.com/"
