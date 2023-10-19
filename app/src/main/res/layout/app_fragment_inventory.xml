@@ -98,7 +98,7 @@
                     android:id="@+id/tv_DrugSpec"
                     style="@style/TextViewInventoryListTitleStyle"
                     android:drawableEnd="@mipmap/ic_triangle_down"
-                    android:text="商品规格" />
+                    android:text="@string/drug_spec" />
 
             </RelativeLayout>
 
@@ -130,7 +130,7 @@
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5">
+                android:layout_weight="0.7">
 
                 <TextView
                     android:id="@+id/tv_number"
@@ -142,20 +142,20 @@
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5">
+                android:layout_weight="0.7">
 
                 <TextView
                     android:id="@+id/tv_remain"
                     style="@style/TextViewInventoryListTitleStyle"
                     android:drawableEnd="@mipmap/ic_triangle_down"
-                    android:text="试剂余量" />
+                    android:text="余量" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5">
+                android:layout_weight="0.7">
 
                 <TextView
                     android:id="@+id/tv_BatchNumber"
@@ -207,7 +207,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:text="单品码"
                 android:textColor="@color/app_color_646464"

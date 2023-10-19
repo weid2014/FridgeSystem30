@@ -30,7 +30,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="商品规格"
+        android:text="@string/drug_spec"
         android:textColor="@color/app_color_646464"
         android:textSize="16dp" />
 
@@ -48,7 +48,7 @@
         android:id="@+id/tv_DrugUnit"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
+        android:layout_weight="0.7"
         android:gravity="center"
         android:text="单位"
         android:textColor="@color/app_color_646464"
@@ -58,7 +58,7 @@
         android:id="@+id/tv_Number"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
+        android:layout_weight="0.7"
         android:gravity="center"
         android:text="数量"
         android:textColor="@color/app_color_646464"
@@ -68,7 +68,7 @@
         android:id="@+id/tv_DrugMargin"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
+        android:layout_weight="0.7"
         android:gravity="center"
         android:text="试剂余量"
         android:textColor="@color/app_color_btn"
@@ -78,7 +78,7 @@
         android:id="@+id/tv_BatchNumber"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
+        android:layout_weight="0.7"
         android:gravity="center"
         android:text="批号"
         android:textColor="@color/app_color_646464"
@@ -118,7 +118,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:layout_marginEnd="8dp"
         android:orientation="horizontal">
 

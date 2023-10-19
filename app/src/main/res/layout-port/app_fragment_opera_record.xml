@@ -165,7 +165,7 @@
                 android:id="@+id/tv_DrugSpec"
                 style="@style/TextViewInventoryListTitleStyle"
                 android:drawableEnd="@mipmap/ic_triangle_down"
-                android:text="商品规格" />
+                android:text="@string/drug_spec" />
 
         </RelativeLayout>
 
