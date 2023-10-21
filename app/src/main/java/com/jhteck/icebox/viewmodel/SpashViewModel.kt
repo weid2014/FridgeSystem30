@@ -34,10 +34,9 @@ class SpashViewModel(application: android.app.Application) :
     fun spash() {
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                delay(3000)
+                delay(2000)
                 loginStatus.postValue(true)
             } catch (e: Exception) {
-
                 toast(e.message)
             } finally {
                 hideLoading()

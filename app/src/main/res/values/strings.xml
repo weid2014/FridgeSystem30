@@ -13,8 +13,8 @@
         <item>现场人员</item>
     </string-array>
 
-    <string name="update_json_address">https://file.lavandachen.com/jhwms/fridge_app/update.json</string>
-    <string name="update_apk_address">https://file.lavandachen.com/jhwms/fridge_app/icu.apk</string>
+    <string name="update_json_address">https://file.lavandachen.com/jhwms/fridge_app/fridgeupdate.json</string>
+    <string name="update_apk_address">https://file.lavandachen.com/jhwms/fridge_app/fridge30.apk</string>
 
     <string name="sncode">FEDCBA01TEST0008</string>
     <string name="url_test">https://jh.test.lavandachen.com/</string>
@@ -22,6 +22,7 @@
     <string name="admin_password">Jinghe233</string>
 
     <string name="drug_spec">规格</string>
+    <string name="instructions_old">如果是新安装冰箱，则选择不拉取。\n如果是恢复指定冰箱数据，则选择拉取。将拉取：\n（1）系统错误日志 （2）操作错误日志\n后续可以到操作日志界面中查看。</string>
 
 
     <!--配置、功能选择界面-->

@@ -51,12 +51,13 @@ class UpdateAppUtil {
         //APK的地址
 //        val apkUrl = "https://file.lavandachen.com/jhwms/fridge_app/icu.apk";
         try {
-            val apkUrl = SharedPreferencesUtils.getPrefString(
+           /* val apkUrl = SharedPreferencesUtils.getPrefString(
                 context,
                 UPDATE_APK_ADDRESS, context.getString(
                     R.string.update_apk_address
                 )
-            )
+            )*/
+            val apkUrl = updateInfo.url
             //更新弹窗标题
             var updateTitle = "${updateInfo.updateTitle} V${updateInfo.versionName}";
             //更新弹窗简介

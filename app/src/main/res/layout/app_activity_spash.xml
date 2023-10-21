@@ -11,8 +11,8 @@
         android:id="@+id/rl_spash"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#396DFF"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:background="#396DFF">
 
         <ImageView
             android:layout_width="match_parent"
@@ -22,8 +22,9 @@
 
         <ImageView
             android:id="@+id/iv_gif"
-            android:layout_width="750dp"
-            android:layout_height="434dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/logo"
             android:layout_centerInParent="true"
             android:scaleType="fitCenter" />
     </RelativeLayout>
@@ -289,7 +290,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="128dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="24dp"
                 android:gravity="center"
@@ -320,12 +321,12 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="72dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center">
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="72dp"
                         android:layout_weight="1"
                         android:background="@drawable/app_shape_white_radius_9">
 
@@ -344,8 +345,8 @@
                         android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:paddingStart="25dp"
-                        android:text="(如果是新激活的冰箱则没有操作日志等)"
-                        android:textSize="15dp" />
+                        android:text="@string/instructions_old"
+                        android:textSize="12dp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -696,10 +697,10 @@
 
 
                 <LinearLayout
+                    android:layout_marginTop="72dp"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:layout_height="120dp"
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -710,7 +711,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="48dp"
                             android:gravity="center_vertical"
-                            android:text="NFC参数 "
+                            android:text="NFC参数 （测试）"
                             android:textColor="@color/app_black"
                             android:textSize="22sp" />
 
@@ -746,7 +747,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginTop="222dp"
+                android:layout_marginTop="122dp"
                 android:orientation="horizontal">
 
                 <Button

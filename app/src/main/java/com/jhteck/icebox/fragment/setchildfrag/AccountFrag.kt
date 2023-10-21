@@ -21,10 +21,12 @@ import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
 import com.jhteck.icebox.adapter.AccoutListItemAdapter
 import com.jhteck.icebox.adapter.ItemOperatorAdapter
+import com.jhteck.icebox.adapter.OperaRecordListAdapter
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.bean.MyTcpMsg
 import com.jhteck.icebox.databinding.AppFragmentSettingAccoutBinding
 import com.jhteck.icebox.repository.entity.AccountEntity
+import com.jhteck.icebox.repository.entity.RfidOperationEntity
 import com.jhteck.icebox.utils.*
 import com.jhteck.icebox.utils.BroadcastUtil.sendMyBroadcast
 import com.jhteck.icebox.viewmodel.AccountViewModel
@@ -76,10 +78,41 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
             LockManage.getInstance().tryOpenLock();
         }
         initRecyclerView()
+        //监听搜索栏里面的变化
+        binding.svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                //当提交了输入时
+                return false
+            }
+
+            override fun onQueryTextChange(keyword: String?): Boolean {
+                // 当修改了输入时的操作，根据关键字过滤列表，让Adapter填入新列表
+                // 如果只是更新部分数据，推荐使用notifyItemRangeChanged()或者notifyItemChanged()
+                val filterList = keyword?.let { filter(it) }
+                filterList?.let { updateList(it) }
+//                testList= filterList as MutableList<AccountEntity>
+//                updateList(testList)
+                inventoryListItemAdapter?.notifyDataSetChanged()
+                binding.rvContentSettingAccount.adapter?.notifyDataSetChanged()
+                return false
+            }
+        })
         doRegisterReceiver()
     }
 
+    private fun filter(keyWord: String): List<AccountEntity> {
+        // 过滤原本的列表，返回一个新的列表
+        val filterList = mutableListOf<AccountEntity>()
 
+        for (l in testList!!) {
+            if (l.nick_name.contains(keyWord) || l.user_id.contains(keyWord))
+                filterList.add(l)
+        }
+        return filterList
+    }
+
+    var testList: MutableList<AccountEntity> = mutableListOf()
+    var inventoryListItemAdapter:AccoutListItemAdapter?=null
     //初始化用户列表
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(BaseApp.app)
@@ -89,7 +122,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
             Log.d("onFailed", it.toString())
         }
         viewModel.onUsersLoaded.observe(this) {
-            val testList = mutableListOf<AccountEntity>()
+            testList = mutableListOf<AccountEntity>()
             when(SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10)){
                 10->{
                     for (user in it) {
@@ -104,27 +137,35 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                     }
                 }
             }
-            val inventoryListItemAdapter = AccoutListItemAdapter(testList,
-                object : ItemOperatorAdapter<AccountEntity> {
-                    override fun onDelete(t: AccountEntity) {
-                        val customDialog = CustomDialog(requireActivity())
-                        customDialog.setsTitle("温馨提示").setsMessage("是否删除（${t.nick_name})账号？")
-                            .setsCancel("取消", View.OnClickListener {
-                                customDialog.dismiss()
-                            }).setsConfirm("确定", View.OnClickListener {
-                                viewModel.delete(t)//删除用户
-                                customDialog.dismiss()
-                            }).show()
+            updateList(testList)
 
-                    }
-
-                    override fun onEdit(t: AccountEntity) {
-                        showEditAccountPopWindow(t)
-                    }
-                })
-            binding.rvContentSettingAccount.adapter = inventoryListItemAdapter
         }
         viewModel.getAllUsers()
+    }
+
+    fun updateList(list: List<AccountEntity>) {
+        Log.d("updateList"," list.size+=${list.size}")
+        inventoryListItemAdapter = AccoutListItemAdapter(list,
+            object : ItemOperatorAdapter<AccountEntity> {
+                override fun onDelete(t: AccountEntity) {
+                    val customDialog = CustomDialog(requireActivity())
+                    customDialog.setsTitle("温馨提示").setsMessage("是否删除（${t.nick_name})账号？")
+                        .setsCancel("取消", View.OnClickListener {
+                            customDialog.dismiss()
+                        }).setsConfirm("确定", View.OnClickListener {
+                            viewModel.delete(t)//删除用户
+                            customDialog.dismiss()
+                        }).show()
+
+                }
+
+                override fun onEdit(t: AccountEntity) {
+                    showEditAccountPopWindow(t)
+                }
+            })
+        binding.rvContentSettingAccount.adapter = inventoryListItemAdapter
+        inventoryListItemAdapter?.notifyDataSetChanged()
+        binding.rvContentSettingAccount.adapter?.notifyDataSetChanged()
     }
 
     private var tv_nfcId: TextView? = null

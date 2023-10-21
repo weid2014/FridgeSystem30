@@ -164,9 +164,9 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         } else {
             // 不是第一次运行应用程序的操作
             binding.rlSpash.visibility = View.VISIBLE
-            Glide.with(this)
+            /*Glide.with(this)
                 .load("file:///android_asset/start.gif")
-                .into(binding.ivGif)
+                .into(binding.ivGif)*/
             viewModel.spash()
         }
         doRegisterReceiver()
@@ -410,7 +410,10 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 }
                 initAntRecycleView(tempList)
             } else if (key.equals(HFCard)) {
-                binding.tvNfcId.text = value
+                runOnUiThread {
+                    binding.tvNfcId.text = value
+                    toast("测试卡号为：${value}")
+                }
             } else if (key.equals(REPORT_ANT_POWER_30)) {
                 tempList.clear()
                 val jsonArray = JSONArray(value.toString())
