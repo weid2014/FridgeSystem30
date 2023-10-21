@@ -31,6 +31,12 @@ public class DateUtils {
 
     public final static String format_hh = "HH";
 
+    public static String currentStringFormatTime() {
+        return (DateUtils.formatDateToString(
+                new Date(),
+                DateUtils.format_yyyyMMddhhmmssfff) + "08:00").replace(" ", "T");
+    }
+
     //日期转字符串
     public static String formatDateToString(Date date, String formatDate) {
         if (date == null) {

@@ -12,15 +12,16 @@ import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
-import com.jhteck.icebox.api.APP_ID
-import com.jhteck.icebox.api.DEBUG
-import com.jhteck.icebox.api.RfidResults
-import com.jhteck.icebox.api.SDK_KEY
+import com.jhteck.icebox.api.*
 import com.jhteck.icebox.api.request.RequestRfidsDao
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.LocalService
+import com.jhteck.icebox.apiserver.RetrofitClient
+import com.jhteck.icebox.bean.SystemOperationErrorEnum
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.OfflineRfidEntity
+import com.jhteck.icebox.repository.entity.SysOperationErrorEntity
+import com.jhteck.icebox.service.LogUpLoadManager
 import com.jhteck.icebox.utils.*
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -72,6 +73,7 @@ class LoginViewModel(application: android.app.Application) :
                         "loginUserInfo",
                         Gson().toJson(userInfo)
                     )
+                    loginOperator(userInfo)//记录登录信息
                 }
             } catch (e: Exception) {
                 toast(e.message)
@@ -80,6 +82,45 @@ class LoginViewModel(application: android.app.Application) :
                 hideLoading()
             }
         }
+    }
+
+    private suspend fun loginOperator(accountEntity: AccountEntity) {
+        try {
+            var entity = SysOperationErrorEntity(
+                SnowFlake.getInstance().nextId().toInt(),
+                accountEntity.user_id,
+                accountEntity.nick_name,
+                accountEntity.role_id,
+                accountEntity.km_user_id,
+                accountEntity.real_name,
+                SystemOperationErrorEnum.REBOOT.v,
+                "网络状态",//todo 网络状态
+                "系统信息",//todo
+                "App版本",//todo
+                "串口信息",//
+                "冰箱信息",//
+                DateUtils.currentStringFormatTime(),
+                false
+            );
+            DbUtil.getDb().sysOperationErrorDao().insert(entity);//保存
+
+            var logs = mutableListOf<SysOperationErrorEntity>()
+            logs.add(entity);
+            var rfidOperationBO = SysOperationErrorLogsBo(logs);
+
+            var toJson = Gson().toJson(rfidOperationBO)
+            Log.d(TAG, "${toJson}")
+            var res = RetrofitClient.getService().addSystemErrorLogs(rfidOperationBO)
+            if (res.code() == 200) {
+                for (data in rfidOperationBO.logs) {
+                    data.hasUpload = true;
+                    DbUtil.getDb().sysOperationErrorDao().update(data);
+                }
+            }
+        } catch (e: Exception) {
+            Log.i(TAG, "${e.message}")
+        }
+
     }
 
     private var lastonclickTime = 0L;//全局变量
@@ -113,6 +154,7 @@ class LoginViewModel(application: android.app.Application) :
                         "loginUserInfo",
                         Gson().toJson(userInfo)
                     )
+                    loginOperator(userInfo)//记录登录信息
 //                    cardStatus.postValue(true)
                 } catch (e: Exception) {
                     Log.e(TAG, e.toString())
@@ -162,6 +204,7 @@ class LoginViewModel(application: android.app.Application) :
                         "loginUserInfo",
                         Gson().toJson(userInfo)
                     )
+                    loginOperator(userInfo)//记录登录信息
 //                    cardStatus.postValue(true)
                 } catch (e: Exception) {
                     Log.e(TAG, e.toString())
@@ -265,6 +308,7 @@ class LoginViewModel(application: android.app.Application) :
             }
         }
     }
+
     //离线数据
     fun loadOfflineRfidsFromLocal() {
         viewModelScope.launch(Dispatchers.Default) {
