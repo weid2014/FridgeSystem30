@@ -1,32 +1,30 @@
 package com.jhteck.icebox
 
-import android.app.Activity
-import android.os.Bundle
 import android.util.Log
+import com.google.gson.Gson
 import com.hele.mrd.app.lib.api.ApiManager
 import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.createLoading
 import com.hele.mrd.app.lib.common.lifecycle.ActivityManager
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.apiserver.RetrofitClient
+import com.jhteck.icebox.bean.SystemOperationErrorEnum
 import com.jhteck.icebox.repository.entity.AccountEntity
+import com.jhteck.icebox.repository.entity.SysOperationErrorEntity
 import com.jhteck.icebox.utils.*
 import com.jhteck.icebox.view.AppLoadingDialog
 import com.tencent.bugly.crashreport.CrashReport
 import es.dmoral.toasty.Toasty
-import extension.log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.util.*
 
 /**
  *@Description:(用一句话描述)
  *@author wade
  *@date 2023/6/28 16:14
  */
-class Application : BaseApp() {
+class Application : BaseApp(), Thread.UncaughtExceptionHandler {
+
     val Target = "Application";
     override fun setupApiManager(): ApiManager {
         return ApiManager.build {
@@ -79,10 +77,10 @@ class Application : BaseApp() {
     override fun onCreate() {
         super.onCreate()
         //腾讯bugly捕获bug日志.如果是外网才初始化
-        if(SharedPreferencesUtils.getPrefString(this,URL_REQUEST,URL_TEST).equals(URL_TEST)) {
+        if (SharedPreferencesUtils.getPrefString(this, URL_REQUEST, URL_TEST).equals(URL_TEST)) {
             CrashReport.initCrashReport(applicationContext, "30a4125338", false);
         }
-
+        Thread.setDefaultUncaughtExceptionHandler(this)
         /*registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 activity.window.decorView.setOnTouchListener { v, event ->
@@ -118,4 +116,58 @@ class Application : BaseApp() {
 
     }
 
+
+    override fun uncaughtException(p0: Thread, p1: Throwable) {
+
+        val userInfoString = SharedPreferencesUtils.getPrefString(
+            ContextUtils.getApplicationContext(),
+            "loginUserInfo",
+            null
+        )
+
+        var accountEntity = Gson().fromJson(userInfoString, AccountEntity::class.java)
+        loginOperator(accountEntity)
+    }
+
+    private fun loginOperator(accountEntity: AccountEntity) {
+        GlobalScope.launch {
+            try {
+                var entity = SysOperationErrorEntity(
+                    SnowFlake.getInstance().nextId().toInt(),
+                    accountEntity.user_id,
+                    accountEntity.nick_name,
+                    accountEntity.role_id,
+                    accountEntity.km_user_id,
+                    accountEntity.real_name,
+                    SystemOperationErrorEnum.REBOOT.v,
+                    "网络状态",//todo 网络状态
+                    "系统信息",//todo
+                    "App版本",//todo
+                    "串口信息",//
+                    "冰箱信息",//
+                    DateUtils.currentStringFormatTime(),
+                    false
+                );
+                DbUtil.getDb().sysOperationErrorDao().insert(entity);//保存
+
+                var logs = mutableListOf<SysOperationErrorEntity>()
+                logs.add(entity);
+                var rfidOperationBO = SysOperationErrorLogsBo(logs);
+
+                var toJson = Gson().toJson(rfidOperationBO)
+                Log.d(Target, "${toJson}")
+                var res = RetrofitClient.getService().addSystemErrorLogs(rfidOperationBO)
+                if (res.code() == 200) {
+                    for (data in rfidOperationBO.logs) {
+                        data.hasUpload = true;
+                        DbUtil.getDb().sysOperationErrorDao().update(data);
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.i(Target, "${e.message}")
+            }
+            System.exit(0)
+        }
+    }
 }
