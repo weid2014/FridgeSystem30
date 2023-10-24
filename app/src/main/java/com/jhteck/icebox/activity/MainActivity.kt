@@ -417,7 +417,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                     layoutInflater.inflate(R.layout.pup_out_list, null)
                 width = ViewGroup.LayoutParams.WRAP_CONTENT
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
-                isTouchable = true
                 isFocusable = false
                 isOutsideTouchable = false
                 setBackgroundDrawable(BitmapDrawable())
@@ -586,7 +585,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                     layoutInflater.inflate(R.layout.pup_out_off_list, null)
                 width = ViewGroup.LayoutParams.WRAP_CONTENT
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
-                isTouchable = true
                 isFocusable = false
                 isOutsideTouchable = false
                 setBackgroundDrawable(BitmapDrawable())
@@ -711,8 +709,8 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     private fun dismissDialog() {
         if (customDialog != null&&(customDialog as CustomDialogMain).isShowing) {
             (customDialog as CustomDialogMain).dismiss()
-            customDialog = null
         }
+        customDialog = null
     }
 
 }

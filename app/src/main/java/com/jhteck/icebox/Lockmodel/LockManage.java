@@ -1,12 +1,16 @@
 package com.jhteck.icebox.Lockmodel;
 
+import static com.jhteck.icebox.api.AppConstantsKt.FRIDGE_TYPE;
+
 import android.util.Log;
 
 import com.headleader.MrbBoard.ICallBack;
 import com.headleader.MrbBoard.LockInfo;
 import com.headleader.MrbBoard.MrbBoardHandler;
+import com.hele.mrd.app.lib.base.BaseApp;
 import com.jhteck.icebox.api.AppConstantsKt;
 import com.jhteck.icebox.myinterface.MyCallback;
+import com.jhteck.icebox.utils.SharedPreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -136,14 +140,14 @@ public class LockManage {
     }
 
     private void stopAll() {
-        if(AppConstantsKt.DEBUG){
+        if (AppConstantsKt.DEBUG) {
             return;
         }
         Log.e(TAG, "stopAll: ");
-        closeLock();
         updateCalculatingStatus(true);//进入结算页面
         clearThread();
         lockCallback.callback(1 + "");
+        closeLock();
     }
 
     /**
@@ -159,9 +163,20 @@ public class LockManage {
                         while (sendTime > 0) {
                             try {
                                 Log.i(TAG, "openLockThread: 定时开锁 +sendTime=" + sendTime);
-                                if (sensorChanged() && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
-                                    Log.i(TAG, "openLockThread:tryOpenLock: 计入结算环节1");
-                                    break;
+                                if ( SharedPreferencesUtils.getPrefInt(BaseApp.app, FRIDGE_TYPE, 0) == 0) {
+                                    if (sensorChanged() && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
+                                        Log.i(TAG, "openLockThread:tryOpenLock: 计入结算环节1");
+                                        break;
+                                    }
+                                }else {
+                                    if (sensorChanged() && lockInfo1.sensor == 0 ) {
+                                        Log.i(TAG, "openLockThread:tryOpenLock: 计入结算环节2");
+                                        break;
+                                    }
+                                    if (sensorChanged() && lockInfo2.sensor == 0 ) {
+                                        Log.i(TAG, "openLockThread:tryOpenLock: 计入结算环节3");
+                                        break;
+                                    }
                                 }
                                 if (sensorChanged() && isCalculating) {
                                     Log.i(TAG, "openLockThread:tryOpenLock: 计入结算环节");
@@ -208,7 +223,7 @@ public class LockManage {
             }
         } catch (Exception e) {
 
-        }finally {
+        } finally {
             mSendThread.setResume();
         }
     }
@@ -268,8 +283,8 @@ public class LockManage {
     }
 
     public void clearThread() {
-        if(mSendThread!=null)
-        mSendThread.setSuspendFlag();
+        if (mSendThread != null)
+            mSendThread.setSuspendFlag();
     }
 
     private LockInfo lockInfo1 = new LockInfo();
@@ -328,11 +343,24 @@ public class LockManage {
 
                 sensor1Status.add(lockInfo1.sensor);
                 sensor2Status.add(lockInfo2.sensor);
-                if (lockInfo1.lock == 0 && lockInfo2.lock == 0 && sensorChanged() && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
-                    stopAll();
-                } else if (sensorChanged() || lockInfo1.sensor == 1 || lockInfo2.sensor == 1) {
-                    //假如有一个传感器有变化，重新几时
-                    sendTime = 10;
+                Log.d(TAG, "fridgeType="+ SharedPreferencesUtils.getPrefInt(BaseApp.app, FRIDGE_TYPE, 0));
+                if ( SharedPreferencesUtils.getPrefInt(BaseApp.app, FRIDGE_TYPE, 0) == 0) {
+                    if (lockInfo1.lock == 0 && lockInfo2.lock == 0 && sensorChanged() && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
+                        stopAll();
+                    } else if (sensorChanged() || lockInfo1.sensor == 1 || lockInfo2.sensor == 1) {
+                        //假如有一个传感器有变化，重新几时
+                        sendTime = 10;
+                    }
+                } else {
+                    //增加单锁结算逻辑
+                    if (lockInfo1.lock == 0 && lockInfo1.sensor == 0 && sensorChanged()) {
+                        stopAll();
+                    } else if (lockInfo2.lock == 0 && lockInfo2.sensor == 0 && sensorChanged()) {
+                        stopAll();
+                    } else if (sensorChanged() || lockInfo1.sensor == 1 || lockInfo2.sensor == 1) {
+                        //假如有一个传感器有变化，重新几时
+                        sendTime = 10;
+                    }
                 }
             }
 

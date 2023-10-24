@@ -18,6 +18,7 @@ import com.jhteck.icebox.adapter.ItemEditCellNumberAdapter
 import com.jhteck.icebox.api.AvailRfid
 import com.jhteck.icebox.api.ROLE_ID
 import com.jhteck.icebox.api.RfidDao
+import com.jhteck.icebox.bean.InventoryDao
 import com.jhteck.icebox.databinding.AppFragmentInventoryBinding
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.viewmodel.InventoryListViewModel
@@ -306,7 +307,7 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
             binding.rvDrugContent.layoutManager = layoutManager
 
             var mapOutList = list!!.stream()
-                .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_number })//根据批号分组
+                .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_number+t.remain })//根据批号分组
 
             var tempOutList = mutableListOf<List<AvailRfid>>()
             for (key in mapOutList.keys) {
@@ -318,7 +319,13 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
                 tempOutList = tempOutList.sortedByDescending { it.size }.toMutableList()
             }
             clickTvNumber = false
-            when (roleID) {
+            binding.rvDrugContent.adapter = InventoryListItemAdapter(this, tempOutList,
+                object : ItemEditCellNumberAdapter<AvailRfid> {
+                    override fun onEdit(t: AvailRfid, position: Int) {
+                        viewModel.editCellNumber(t, position)
+                    }
+                })
+            /*when (roleID) {
                 10, 20 -> {
                     binding.rvDrugContent.adapter = InventoryListItemAdapter(this, tempOutList,
                         object : ItemEditCellNumberAdapter<AvailRfid> {
@@ -335,7 +342,7 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
                             }
                         })
                 }
-            }
+            }*/
 
             showEmptyImage(false)
         } else {

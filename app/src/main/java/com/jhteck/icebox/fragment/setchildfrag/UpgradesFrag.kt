@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import com.hele.mrd.app.lib.base.BaseApp
+import com.hele.mrd.app.lib.base.BaseFragment
 import com.hele.mrd.app.lib.base.WithoutViewModelFragment
 import com.jhteck.icebox.R
 import com.jhteck.icebox.api.UPDATE_APK_ADDRESS
@@ -17,6 +18,7 @@ import com.jhteck.icebox.utils.NetworkUtil
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.utils.UpdateAppUtil
 import com.jhteck.icebox.utils.VersionUtil
+import com.jhteck.icebox.viewmodel.SettingViewModel
 import com.jhteck.icebox.viewmodel.UpgradesViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +29,7 @@ import kotlinx.coroutines.launch
  *@author wade
  *@date 2023/6/28 21:59
  */
-class UpgradesFrag : WithoutViewModelFragment<AppFragmentSettingUpgradesBinding>() {
+class UpgradesFrag : BaseFragment<UpgradesViewModel,AppFragmentSettingUpgradesBinding>() {
     private var isEditAddress = false
 
     companion object {
@@ -98,7 +100,8 @@ class UpgradesFrag : WithoutViewModelFragment<AppFragmentSettingUpgradesBinding>
 
         binding.llAddress.visibility = View.GONE
         binding.btnUpdate.setOnClickListener {
-            checkNetworkStatus(requireContext())
+//            checkNetworkStatus(requireContext())
+            viewModel.checkVision(requireContext())
         }
     }
 

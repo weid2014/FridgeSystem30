@@ -39,6 +39,8 @@ class UpdateAppUtil {
                 if (localVisionCode < updateInfo.versionCode) {
                     delay(1000)
                     UpdateApp(updateInfo, context)
+                }else{
+                    ToastUtils.longToast(context,"已经是最新版本了")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

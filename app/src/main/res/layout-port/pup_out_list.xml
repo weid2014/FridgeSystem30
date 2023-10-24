@@ -78,7 +78,7 @@
             android:textColor="@color/app_black"
             android:id="@+id/tv_no_operation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="600dp"/>
 
         <Button
             android:id="@+id/btnCountDownTime"

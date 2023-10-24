@@ -6,8 +6,6 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.IBinder
-import android.os.Process.killProcess
-import android.os.Process.myPid
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -34,7 +32,6 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.stream.Collectors
-import kotlin.system.exitProcess
 
 
 /**
@@ -93,6 +90,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
 //        FileUtils.deleteImageByDate(-30)
         binding.btnLogin.setOnClickListener {
             //登录按键点击事件
+            takePhoto()
             viewModel.login(binding.edUserName.text.toString(), binding.edPassword.text.toString())
         }
         viewModel.initHFCradList()
@@ -156,75 +154,63 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
 
         binding.rvPauseContent1?.layoutManager =
             GridLayoutManager(this, 7)
-        binding.rvPauseContent1?.adapter = LoginPageShowItemAdapter(tempList30)
+        binding.rvPauseContent1?.adapter = LoginPageShowItemAdapter(tempListPause)
     }
 
     override fun initObservables() {
         super.initObservables()
         viewModel.loginUserInfo.observe(this) {
             SharedPreferencesUtils.setPrefInt(this, ROLE_ID, it.role_id.toInt())
-//            toMainPage()
-            takePhoto()
+            toMainPage()
         }
         viewModel.loginStatus.observe(this) {
             //如果账户验证成功，跳转到主界面
             if (it)
-//                toMainPage()
-                takePhoto()
+                toMainPage()
         }
         loadRridsData()
     }
 
-    var tempList10 = mutableListOf<InventoryDao>()//未编辑位置
-    var tempList30 = mutableListOf<InventoryDao>()//未编辑位置
+    var tempListPause = mutableListOf<InventoryDao>()//未编辑位置
     var tempList = mutableListOf<InventoryDao>()
     var tempListNormal = mutableListOf<AvailRfid>()
     private fun clearList() {
         tempList.clear()
         tempListNormal.clear()
-        tempList10.clear()
-        tempList30.clear()
+        tempListPause.clear()
     }
 
     private fun loadRridsData() {
         viewModel.rfidDatas.observe(this) {
             clearList()
-            var map = it.avail_rfids.stream()
-                .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_id + t.cell_number })//根据批号分组
-            for (i in map.values) {
-                tempList.add(
-                    InventoryDao(
-                        "${i[0].material_batch.eas_lot}",
-                        "${i[0].material?.eas_material_name}",
-                        i.size,
-                        i[0].cell_number
-                    )
-                )
+            for (i in it.avail_rfids) {
+                if (i.remain == 100) {
+                    tempListNormal.add(i)
+                }
             }
-            for (item in it.avail_rfids) {
-                    tempListNormal.add(item)
+            var map = it.avail_rfids.stream()
+                .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_id + t.remain })//根据批号分组
+            for (i in map.values) {
+                val inventoryDao = InventoryDao(
+                    "${i[0].material_batch.eas_lot}",
+                    "${i[0].material?.eas_material_name}",
+                    i.size,
+                    i[0].cell_number
+                )
+                if (i[0].remain == 100) {
+                    tempList.add(inventoryDao)
+                } else {
+                    tempListPause.add(inventoryDao)
+                }
             }
 
             binding.rvNormalContent?.adapter?.notifyDataSetChanged()
             binding.tvNormalNum.text = "共${tempListNormal.size}个"
 
-            //显示暂存区域
-            for (i in it.avail_rfids) {
-                if (i.remain < 100) {
-                    tempList30.add(
-                        InventoryDao(
-                            "${i.material_batch.eas_lot}",
-                            "${i.material?.eas_material_name}",
-                            1,
-                            i.cell_number
-                        )
-                    )
-                }
-            }
             binding.rvPauseContent1?.adapter?.notifyDataSetChanged()
-            binding.tvPauseNum1?.text = "共${tempList30.size}个"
+            binding.tvPauseNum1?.text = "共${tempListPause.size}个"
         }
-        viewModel.rfidOfflineDatas.observe(this){
+        viewModel.rfidOfflineDatas.observe(this) {
             binding.tvOfflineNum.text = "离线存储:共${it?.size}个"
         }
     }
@@ -245,7 +231,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                     ToastUtils.shortToast(" 拍照失败 ${exc.message}")
 //                    Toasty.info(this@LoginActivity, " 拍照失败 ${exc.message}", Toast.LENGTH_SHORT, true).show()
-                    toMainPage()
+//                    toMainPage()
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
@@ -254,7 +240,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
                     ToastUtils.shortToast(" 拍照成功 $savedUri")
 //                    Toasty.info(this@LoginActivity, " 拍照成功 $savedUri", Toast.LENGTH_SHORT, true).show()
                     Log.d(TAG, msg)
-                    toMainPage()
+//                    toMainPage()
                 }
             })
     }
@@ -262,7 +248,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
     private fun toMainPage() {
         //跳转到主页面
         binding.edPassword.setText("")
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this@LoginOldActivity, MainActivity::class.java)
         intent.putExtra("loginUserInfo", Gson().toJson(viewModel.loginUserInfo.value))
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent)
@@ -333,6 +319,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
                     finish()
                 }
                 HFCard -> {
+                    takePhoto()
                     value?.let { viewModel.loginByCark(it) }
                 }
             }

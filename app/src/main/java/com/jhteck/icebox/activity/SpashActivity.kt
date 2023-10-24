@@ -8,7 +8,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.Glide
 import com.hele.mrd.app.lib.base.BaseActivity
 import com.hele.mrd.app.lib.common.ext.toast
 import com.jhteck.icebox.Lockmodel.LockManage
@@ -41,7 +40,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     private var mDevicesPath: Array<String>? = null
     private var isGetOldInfo: Boolean = false
     private var isSyncOtherSystem: Boolean = false
-    private var  oldSncoede:String?=null
+    private var oldSncoede: String? = null
 
     private var conn = object : ServiceConnection {
         override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
@@ -67,8 +66,8 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         var isFirstRun =
             SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
         if (DEBUG) {
-//            viewModel.registAdmin("Jinghe233")
-            isFirstRun = true
+            viewModel.registAdmin("Jinghe233")
+            isFirstRun = false
         }
         if (isFirstRun) {
             binding.llFridgesOperate.visibility = View.VISIBLE
@@ -84,7 +83,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
             binding.btnStep1Next.setOnClickListener {
                 oldSncoede = binding.edOldSncode.text.toString().trim()
                 val sncode = binding.edSncode.text.toString().trim()
-                if (!chechSnCode(oldSncoede!!)||!chechSnCode(sncode)) {
+                if (!chechSnCode(oldSncoede!!) || !chechSnCode(sncode)) {
                     toast("请输入正确的SN码")
                     return@setOnClickListener
                 }
@@ -176,8 +175,8 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         viewModel.setAntPower(tempList)
     }
 
-    fun chechSnCode(sncodeStr:String): Boolean {
-        return sncodeStr.isNotEmpty()&&sncodeStr.length==16&&sncodeStr.startsWith("FEDCBA")
+    fun chechSnCode(sncodeStr: String): Boolean {
+        return sncodeStr.isNotEmpty() && sncodeStr.length == 16 && sncodeStr.startsWith("FEDCBA")
     }
 
 
@@ -205,6 +204,36 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                         this@SpashActivity,
                         URL_REQUEST,
                         selectUrlList[position]
+                    )
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+            }
+
+        SharedPreferencesUtils.setPrefInt(this@SpashActivity, FRIDGE_TYPE, FRIDGE_TYPE_SELECT)
+        val selectFridgeType = listOf(
+            FRIDGE_TYPE_TWO, FRIDGE_TYPE_ONE
+        )
+        binding.spSelectFridgeType.adapter =
+            ArrayAdapter(
+                this,
+                R.layout.app_item_text,
+                R.id.tv_content,
+                selectFridgeType
+            )
+        binding.spSelectFridgeType.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    SharedPreferencesUtils.setPrefInt(
+                        this@SpashActivity,
+                        FRIDGE_TYPE,
+                        position
                     )
                 }
 

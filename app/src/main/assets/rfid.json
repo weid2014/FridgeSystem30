@@ -78,7 +78,7 @@
             {
                 "id": 62,
                 "rfid": "E1234567000000000000003E",
-                "remain": 100,
+                "remain": 80,
                 "eas_supplier_number": "01.19.17.0002",
                 "eas_supplier_name": "复星诊断科技（上海）有限公司",
                 "created_at": "2022-10-28T12:02:24.782+08:00",
@@ -102,7 +102,7 @@
             {
                 "id": 4,
                 "rfid": "E12345670000000000000004",
-                "remain": 100,
+                "remain": 80,
                 "eas_supplier_number": "01.04.04.0010",
                 "eas_supplier_name": "广州市宝迪科技有限公司",
                 "created_at": "2022-10-26T17:47:26.647+08:00",

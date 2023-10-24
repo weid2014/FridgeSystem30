@@ -40,6 +40,11 @@ const val APP_ID = "3Xpdq6N7xzday4bVTdFxSzLVWhRLEgm5Pgei8HmNrWzZ"
 const val SDK_KEY = "GK9tmQ23mNFZSgyQnnYYqKnCsW5iqBiKTnfmz1igFpJN"
 const val ACTIVE_KEY = "85Q1-11LF-G138-3BJR"
 
+const val FRIDGE_TYPE = "fridge_type"
+const val FRIDGE_TYPE_SELECT = 0
+const val FRIDGE_TYPE_TWO = "双锁冰箱"
+const val FRIDGE_TYPE_ONE = "单锁冰箱"
+
 /**
  * IR预览数据相对于RGB预览数据的横向偏移量，注意：是预览数据，一般的摄像头的预览数据都是 width > height
  */

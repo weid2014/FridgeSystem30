@@ -41,18 +41,18 @@ class LogUpLoadManager {
                 while (true) {
                     try {
                         if (isNetAvailable()) {
-                            Thread.sleep(10 * 1000);//十秒钟后尝试一次
+                            Thread.sleep(1200 * 1000);//十秒钟后尝试一次
                             continue
                         }
                         var all = accountOperationDao.getAll()
                         if (all.size == 0) {
-                            Thread.sleep(10 * 1000);
+                            Thread.sleep(1200 * 1000);
                             continue
                         }
                         var logs = all.stream().filter { t -> !t.hasUploaded }
                             .collect(Collectors.toList())
                         if (logs.size == 0) {
-                            Thread.sleep(10 * 1000);
+                            Thread.sleep(1200 * 1000);
                             continue
                         }
                         var accountOperationBO = AccountOperationBO(logs)
@@ -73,7 +73,7 @@ class LogUpLoadManager {
                             TAG, e.message.toString()
                         )
                         try {
-                            Thread.sleep(60 * 1000 * 5);//五分钟后尝试推送数据
+                            Thread.sleep(60 * 1000 * 30);//五分钟后尝试推送数据
                         } catch (e: Exception) {
                             Log.i(
                                 TAG, e.message.toString()
@@ -94,19 +94,19 @@ class LogUpLoadManager {
                 while (true) {
                     try {
                         if (isNetAvailable()) {
-                            Thread.sleep(10 * 1000);//十秒钟后尝试一次
+                            Thread.sleep(300 * 1000);//十秒钟后尝试一次
                             continue
                         }
                         var all = rfidOperationDao.getAll()
                         if (all.size == 0) {
-                            Thread.sleep(10 * 1000);
+                            Thread.sleep(1200 * 1000);
                             continue
                         }
                         var logs =
                             all.stream().filter { t -> t.isHasUpload == null || !t.isHasUpload }
                                 .collect(Collectors.toList())
                         if (logs.size == 0) {
-                            Thread.sleep(10 * 1000);
+                            Thread.sleep(1200 * 1000);
                             continue
                         }
                         var rfidOperationBO = RfidOperationBO(logs);
@@ -126,7 +126,7 @@ class LogUpLoadManager {
                             TAG, e.message.toString()
                         )
                         try {
-                            Thread.sleep(60 * 1000 * 5);//五分钟后尝试推送数据
+                            Thread.sleep(60 * 1000 * 30);//五分钟后尝试推送数据
                         } catch (e: Exception) {
                             Log.i(
                                 TAG, e.message.toString()
@@ -138,7 +138,8 @@ class LogUpLoadManager {
         }
 
         private fun isNetAvailable(): Boolean {
-            return !NetworkUtil.isNetSystemUsable(ContextUtils.getApplicationContext())
+            return false;
+//            return !NetworkUtil.isNetSystemUsable(ContextUtils.getApplicationContext())
 //                    || !NetworkUtil.isNetOnline()
         }
 
@@ -152,19 +153,19 @@ class LogUpLoadManager {
                 while (true) {
                     try {
                         if (isNetAvailable()) {
-                            Thread.sleep(10 * 1000);//十秒钟后尝试一次
+                            Thread.sleep(300 * 1000);//十秒钟后尝试一次
                             continue
                         }
                         var all = sysOperationErrorDao.getAll()
                         if (all.isEmpty()) {
-                            Thread.sleep(10 * 1000);
+                            Thread.sleep(1200 * 1000);
                             continue
                         }
                         var logs =
                             all.stream().filter { t -> t.hasUpload == null || !t.hasUpload }
                                 .collect(Collectors.toList())
                         if (logs.size == 0) {
-                            Thread.sleep(10 * 1000);
+                            Thread.sleep(1200 * 1000);
                             continue
                         }
                         var rfidOperationBO = SysOperationErrorLogsBo(logs);
@@ -195,19 +196,19 @@ class LogUpLoadManager {
                 while (true) {
                     try {
                         if (isNetAvailable()) {
-                            Thread.sleep(10 * 1000);//十秒钟后尝试一次
+                            Thread.sleep(1200 * 1000);//十秒钟后尝试一次
                             continue
                         }
                         var all = operationErrorDao.getAll()
                         if (all.isEmpty()) {
-                            Thread.sleep(10 * 1000);
+                            Thread.sleep(1200 * 1000);
                             continue
                         }
                         var logs =
                             all.stream().filter { t -> t.hasUpload == null || !t.hasUpload }
                                 .collect(Collectors.toList())
                         if (logs.size == 0) {
-                            Thread.sleep(10 * 1000);
+                            Thread.sleep(1200 * 1000);
                             continue
                         }
                         var rfidOperationBO = OperationErrorLogsBo(logs);
