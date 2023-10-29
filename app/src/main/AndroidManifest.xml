@@ -60,8 +60,7 @@
             android:exported="true"
             android:launchMode="singleTop" />
         <activity android:name=".tcpServer.TestActivity" />
-        <activity android:name=".arcface.FaceManageActivity"/>
-        <activity android:name=".arcface.RegisterAndRecognizeActivity"/>
+        <activity android:name=".face.RegisterAndRecognizeActivity"/>
 
         <service android:name=".service.MyService" />
         <provider

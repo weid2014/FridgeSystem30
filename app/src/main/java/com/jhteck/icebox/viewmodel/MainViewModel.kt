@@ -109,7 +109,7 @@ class MainViewModel(application: android.app.Application) :
             viewModelScope.launch {
                 try {
                     RfidManage.getInstance().startStop(true, false)
-//                    showLoading("正在结算中，请稍等...")
+                    showLoading("正在结算中，请稍等...")
                     RfidManage.getInstance().setRfidArraysRendEndCallback {
                         Log.d(TAG, "正在结算中，请稍等...${it.toString()}")
                         rfidsSync.postValue(it.toList())
@@ -355,7 +355,7 @@ class MainViewModel(application: android.app.Application) :
                 }
 
             } finally {
-//                hideLoading()
+                hideLoading()
             }
         }
     }

@@ -107,6 +107,7 @@ abstract class BaseDialog<VM: BaseViewModel<*>,VB: ViewBinding>: DialogFragment(
             attributes.height = dialogHeight()
             attributes.gravity = dialogGravity()
             attributes = attributes
+            isCancelable=false
             setWindowAnimations(dialogAnimations())
             //全屏显示，不弹出底部导航栏
             setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);

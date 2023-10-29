@@ -56,5 +56,8 @@
     <color name="app_tab_cells_bg1">#31A7B5</color>
     <color name="app_tab_cells_bg2">#74C7D1</color>
     <color name="color_bg_name">#80000000</color>
-
+    <color name="color_black_shadow">#80000000</color>
+    <color name="color_bg_notification">#80000000</color>
+    <color name="color_white_shadow">#80FFFFFF</color>
+    <color name="color_black">#000000</color>
 </resources>

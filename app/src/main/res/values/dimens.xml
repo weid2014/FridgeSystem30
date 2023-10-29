@@ -6,4 +6,6 @@
     <dimen name="login_cell_height">150dp</dimen>
     <dimen name="login_cell_height1">192dp</dimen>
     <dimen name="login_cell_pause_height">68dp</dimen>
+    <dimen name="item_head_image_padding">10dp</dimen>
+    <dimen name="item_image_size">80dp</dimen>
 </resources>

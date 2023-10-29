@@ -1,22 +1,33 @@
 package com.jhteck.icebox.face;
 
+
+import com.jhteck.icebox.face.facedb.entity.FaceEntity;
+
 public class CompareResult {
-    private String userName;
+    private FaceEntity faceEntity;
     private float similar;
     private int trackId;
+    private int compareCode;
+    private long cost;
 
-    public CompareResult(String userName, float similar) {
-        this.userName = userName;
+    public CompareResult(FaceEntity faceEntity, float similar) {
+        this.faceEntity = faceEntity;
         this.similar = similar;
     }
 
-
-    public String getUserName() {
-        return userName;
+    public CompareResult(FaceEntity faceEntity, float similar, int compareCode, long cost) {
+        this.faceEntity = faceEntity;
+        this.similar = similar;
+        this.compareCode = compareCode;
+        this.cost = cost;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public FaceEntity getFaceEntity() {
+        return faceEntity;
+    }
+
+    public void setFaceEntity(FaceEntity faceEntity) {
+        this.faceEntity = faceEntity;
     }
 
     public float getSimilar() {
@@ -33,5 +44,21 @@ public class CompareResult {
 
     public void setTrackId(int trackId) {
         this.trackId = trackId;
+    }
+
+    public int getCompareCode() {
+        return compareCode;
+    }
+
+    public void setCompareCode(int compareCode) {
+        this.compareCode = compareCode;
+    }
+
+    public long getCost() {
+        return cost;
+    }
+
+    public void setCost(long cost) {
+        this.cost = cost;
     }
 }

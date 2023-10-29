@@ -322,10 +322,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     }
 
     private fun backLoginPage() {
-        if (customDialog!=null&&(customDialog as CustomDialogMain).isShowing) {
-            (customDialog as CustomDialogMain).hide()
-            customDialog = null
-        }
         if (popupWindow !== null && popupWindow!!.isShowing) {
             DensityUtil.backgroundAlpha(this@MainActivity, 1f)
             binding.cover.visibility = View.GONE
@@ -363,7 +359,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     private var showTitle = "存入列表"
     private var operatortype = 0;
     private fun showPopWindow(outList: List<AvailRfid>, inList: List<AvailRfid>) {
-        dismissDialog()
         //获取用户角色ID
         val roleID = SharedPreferencesUtils.getPrefInt(this, ROLE_ID, 10)
         var operationEntity = AccountOperationEnum.NO_OPERATION;
@@ -529,7 +524,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         outOffList: List<OfflineRfidEntity>,
         inOffList: List<OfflineRfidEntity>
     ) {
-        dismissDialog()
         //获取用户角色ID
         val roleID = SharedPreferencesUtils.getPrefInt(this, ROLE_ID, 10)
         var operationEntity = AccountOperationEnum.NO_OPERATION;
@@ -656,8 +650,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         registerReceiver(mReceiver, filter)
     }
 
-    private var customDialog: Dialog? = null
-
     inner class ContentReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             val key = intent.getStringExtra(TCP_MSG_KEY)
@@ -678,11 +670,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                     } else {
                         try {
                             retryScanNum = 0
-                            if (customDialog == null) {
-                                customDialog = CustomDialogMain(this@MainActivity)
-                                (customDialog as CustomDialogMain).setsTitle("温馨提示")
-                                    .setsMessage("正在结算中...").show()
-                            }
                             viewModel.startFCLInventory30()
 //                            viewModel.startFCLInventory()
                         } catch (e: Exception) {
@@ -703,14 +690,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
     override fun onPause() {
         super.onPause()
-        dismissDialog()
-    }
-
-    private fun dismissDialog() {
-        if (customDialog != null&&(customDialog as CustomDialogMain).isShowing) {
-            (customDialog as CustomDialogMain).dismiss()
-        }
-        customDialog = null
     }
 
 }

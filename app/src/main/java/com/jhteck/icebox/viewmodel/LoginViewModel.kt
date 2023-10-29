@@ -3,16 +3,15 @@ package com.jhteck.icebox.viewmodel
 import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.arcsoft.face.ActiveFileInfo
-import com.arcsoft.face.ErrorInfo
-import com.arcsoft.face.FaceEngine
 import com.google.gson.Gson
 import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
-import com.jhteck.icebox.api.*
+import com.jhteck.icebox.api.DEBUG
+import com.jhteck.icebox.api.RfidResults
+import com.jhteck.icebox.api.SysOperationErrorLogsBo
 import com.jhteck.icebox.api.request.RequestRfidsDao
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.LocalService
@@ -21,13 +20,7 @@ import com.jhteck.icebox.bean.SystemOperationErrorEnum
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.OfflineRfidEntity
 import com.jhteck.icebox.repository.entity.SysOperationErrorEntity
-import com.jhteck.icebox.service.LogUpLoadManager
 import com.jhteck.icebox.utils.*
-import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -318,65 +311,6 @@ class LoginViewModel(application: android.app.Application) :
             } catch (e: Exception) {
             }
         }
-    }
-
-    /**
-     * 激活引擎
-     *
-     * @param view
-     */
-    fun activeEngine() {
-        val cpuArchitecture = System.getProperty("os.arch")
-        Log.d("activeEngine", "CPU Architecture: $cpuArchitecture")
-        Observable.create<Int> { emitter ->
-            val runtimeABI = FaceEngine.getRuntimeABI()
-
-            val start = System.currentTimeMillis()
-            val activeCode = FaceEngine.activeOnline(
-                BaseApp.app,
-                APP_ID,
-                SDK_KEY
-            )
-            emitter.onNext(activeCode)
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<Int> {
-                override fun onSubscribe(d: Disposable) {}
-                override fun onNext(activeCode: Int) {
-                    if (activeCode == ErrorInfo.MOK) {
-//                            showToast(getString(R.string.active_success))
-                        Log.d("activeEngine", "active success")
-                        toast("active success")
-                    } else if (activeCode == ErrorInfo.MERR_ASF_ALREADY_ACTIVATED) {
-//                            showToast(getString(R.string.already_activated))
-                        Log.d("activeEngine", "already activated")
-                        toast("already activated")
-                    } else {
-//                            showToast(getString(R.string.active_failed, activeCode))
-                        Log.d("activeEngine", "active failed")
-                        toast("active failed")
-                    }
-                    val activeFileInfo = ActiveFileInfo()
-                    val res = FaceEngine.getActiveFileInfo(
-                        BaseApp.app,
-                        activeFileInfo
-                    )
-                    if (res == ErrorInfo.MOK) {
-                        /*Log.i(
-                            com.arcsoft.arcfacedemo.activity.ChooseFunctionActivity.TAG,
-                            activeFileInfo.toString()
-                        )*/
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.d("activeEngine", e.message.toString())
-
-                }
-
-                override fun onComplete() {}
-            })
     }
 
 
