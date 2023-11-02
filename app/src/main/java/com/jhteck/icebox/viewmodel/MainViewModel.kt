@@ -191,173 +191,182 @@ class MainViewModel(application: android.app.Application) :
 
                 val body = genBody(RequestRfidsDao(rfids))
                 val rep = RetrofitClient.getService().getRfids(body)
-                val localAvailRfid = localRfidData!!.results.avail_rfids
-                val getAvailRfid = rep.body()!!.results.avail_rfids
+                if (rep.code() == 200) {
+                    val localAvailRfid = localRfidData!!.results.avail_rfids
+                    val getAvailRfid = rep.body()!!.results.avail_rfids
 
-                if (getAvailRfid != null && getAvailRfid.isNotEmpty()) {
-                    GlobalScope.launch {
-                        try {
-                            var localDatas = DbUtil.getDb().availRfidDao().getAll()
-                            val sncode = SharedPreferencesUtils.getPrefString(
-                                BaseApp.app, SNCODE,
-                                SNCODE_TEST
-                            )
-                            for (rfid in getAvailRfid) {
-                                if (rfid.cell_number > 1) {
-                                    if (rfid.fridge_id != null && rfid.fridge_id != sncode) {
-                                        continue// 跳过
-                                    }
-                                    var res =
-                                        localDatas.stream()
-                                            .filter { obj -> obj.rfid == rfid.rfid }
-                                            .findFirst().orElse(null);
-                                    if (res != null && res.cell_number != rfid.cell_number) {
-                                        res.cell_number = rfid.cell_number
-                                        DbUtil.getDb().availRfidDao().update(res)//更新宫格
+                    if (getAvailRfid != null && getAvailRfid.isNotEmpty()) {
+                        GlobalScope.launch {
+                            try {
+                                var localDatas = DbUtil.getDb().availRfidDao().getAll()
+                                val sncode = SharedPreferencesUtils.getPrefString(
+                                    BaseApp.app, SNCODE,
+                                    SNCODE_TEST
+                                )
+                                for (rfid in getAvailRfid) {
+                                    if (rfid.cell_number > 1) {
+                                        if (rfid.fridge_id != null && rfid.fridge_id != sncode) {
+                                            continue// 跳过
+                                        }
+                                        var res =
+                                            localDatas.stream()
+                                                .filter { obj -> obj.rfid == rfid.rfid }
+                                                .findFirst().orElse(null);
+                                        if (res != null && res.cell_number != rfid.cell_number) {
+                                            res.cell_number = rfid.cell_number
+                                            DbUtil.getDb().availRfidDao().update(res)//更新宫格
+                                        }
                                     }
                                 }
-                            }
-                        } catch (e: Exception) {
-                            Log.e(TAG, e.toString())
-                        }
-                    }
-                }
-                val aAvailRfid = mutableListOf<String>()
-                for (availrfis in getAvailRfid) {
-                    aAvailRfid.add(availrfis.rfid)
-                }
-                for (localRfid in localAvailRfid) {
-                    tempList.add(localRfid.rfid)
-                }
-                for (rfid in tempList) {
-                    if (!aAvailRfid.contains(rfid)) {
-                        for (localRfid in localAvailRfid) {
-                            if (localRfid.rfid == rfid) {
-                                outList.add(localRfid)
+                            } catch (e: Exception) {
+                                Log.e(TAG, e.toString())
                             }
                         }
                     }
-                }
-                for (rfid in rfids) {
-                    if (!tempList.contains(rfid)) {
-                        for (getRfid in getAvailRfid) {
-                            if (getRfid.rfid == rfid) {
-                                inList.add(getRfid)
+                    val aAvailRfid = mutableListOf<String>()
+                    for (availrfis in getAvailRfid) {
+                        aAvailRfid.add(availrfis.rfid)
+                    }
+                    for (localRfid in localAvailRfid) {
+                        tempList.add(localRfid.rfid)
+                    }
+                    for (rfid in tempList) {
+                        if (!aAvailRfid.contains(rfid)) {
+                            for (localRfid in localAvailRfid) {
+                                if (localRfid.rfid == rfid) {
+                                    outList.add(localRfid)
+                                }
                             }
                         }
                     }
+                    for (rfid in rfids) {
+                        if (!tempList.contains(rfid)) {
+                            for (getRfid in getAvailRfid) {
+                                if (getRfid.rfid == rfid) {
+                                    inList.add(getRfid)
+                                }
+                            }
+                        }
+                    }
+                    if (outList.size > 0 && inList.size > 0) {//存取都有
+                        val tempList = mutableListOf<List<AvailRfid>>()
+                        tempList.add(outList)
+                        tempList.add(inList)
+                        outAndInRfidData.postValue(tempList)
+                    } else if (outList.size > 0) {//领出
+                        deleteRfidData.postValue(outList)
+                    } else if (inList.size > 0) {//领入
+                        addRfidData.postValue(inList)
+                    } else {
+                        noData.postValue(true)
+                    }
+                    rfidsSync(rfids)
+                }else{
+                    goToOffLineData(rfids)
                 }
-                if (outList.size > 0 && inList.size > 0) {//存取都有
-                    val tempList = mutableListOf<List<AvailRfid>>()
-                    tempList.add(outList)
-                    tempList.add(inList)
-                    outAndInRfidData.postValue(tempList)
-                } else if (outList.size > 0) {//领出
-                    deleteRfidData.postValue(outList)
-                } else if (inList.size > 0) {//领入
-                    addRfidData.postValue(inList)
-                } else {
-                    noData.postValue(true)
-                }
-                rfidsSync(rfids)
             } catch (e: Exception) {
                 Log.e(TAG, e.toString())
                 toast("查询异常$e")
-                //离线存储
-                val tempList = mutableListOf<String>()
-                val outList = mutableListOf<AvailRfid>()//领出列表
-                val inOffline = mutableListOf<OfflineRfidEntity>()//离线存入
-                val outOffline = mutableListOf<OfflineRfidEntity>()//离线取出
-                val localAvailRfid = localRfidData!!.results.avail_rfids
-                var offlineRfidDao = DbUtil.getDb().offlineRfidDao()
-                var offLineDatas = offlineRfidDao.getAll()
-                var offlineRfids = mutableListOf<String>()
-                for (localRfid in localAvailRfid) {
-                    tempList.add(localRfid.rfid)
-                }
-
-                for (rfid in tempList) {
-                    if (!rfids.contains(rfid)) {
-                        for (localRfid in localAvailRfid) {
-                            if (localRfid.rfid == rfid) {
-                                outList.add(localRfid)//本地离线取出
-                                offlineRfids.add(localRfid.rfid)//离线取出的数据
-                            }
-                        }
-                    }
-                }
-
-                if (offLineDatas.isNotEmpty()) {
-                    for (offLineId in offLineDatas) {
-                        offlineRfids.add(offLineId.rfid)
-                    }
-                }
-
-
-                val userInfoString = SharedPreferencesUtils.getPrefString(
-                    ContextUtils.getApplicationContext(),
-                    "loginUserInfo",
-                    null
-                )
-
-                var accountEntity = Gson().fromJson(userInfoString, AccountEntity::class.java)
-
-                for (rfid in rfids) {
-                    if (!tempList.contains(rfid) && !offlineRfids.contains(rfid)) {
-                        var offlineRfidEntity = OfflineRfidEntity(
-                            null,
-                            rfid,
-                            DateUtils.format_yyyyMMddhhmmssfff,
-                            accountEntity.user_id,
-                            accountEntity.role_id,
-                            accountEntity.nick_name,
-                            1,
-                            100
-                        );
-                        offlineRfidDao.insert(offlineRfidEntity);
-                        var localOffLineData = offlineRfidDao.getByRfid(rfid)
-                        inOffline.add(localOffLineData);//离线存入
-                    }
-                }
-
-                for (offlineId in offLineDatas) {
-                    if (!rfids.contains(offlineId.rfid)) {
-                        offlineRfidDao.delete(offlineId)
-                        outOffline.add(offlineId)//离线取出的数据
-                    }
-                }
-
-                for (offlineId in outList) {
-                    var offlineRfidEntity = OfflineRfidEntity(
-                        null,
-                        offlineId.rfid,
-                        DateUtils.format_yyyyMMddhhmmssfff,
-                        accountEntity.user_id,
-                        accountEntity.role_id,
-                        accountEntity.nick_name,
-                        1,
-                        100
-                    );
-                    outOffline.add(offlineRfidEntity)
-                }
-
-                LocalService.deleteDataToLocal(outList)
-                if (outOffline.size > 0 && inOffline.size > 0) {//存取都有
-                    val tempOffList = mutableListOf<List<OfflineRfidEntity>>()
-                    tempOffList.add(outOffline)
-                    tempOffList.add(inOffline)
-                    outAndInRfidOffData.postValue(tempOffList)
-                } else if (outOffline.size > 0) {//领出
-                    deleteOffRfidData.postValue(outOffline)
-                } else if (inOffline.size > 0) {//领入
-                    addOffRfidData.postValue(inOffline)
-                } else {
-                    noData.postValue(true)
-                }
+                goToOffLineData(rfids)
 
             } finally {
                 hideLoading()
             }
+        }
+    }
+
+
+    private fun goToOffLineData(rfids: List<String>) {
+        //离线存储
+        val tempList = mutableListOf<String>()
+        val outList = mutableListOf<AvailRfid>()//领出列表
+        val inOffline = mutableListOf<OfflineRfidEntity>()//离线存入
+        val outOffline = mutableListOf<OfflineRfidEntity>()//离线取出
+        val localAvailRfid = localRfidData!!.results.avail_rfids
+        var offlineRfidDao = DbUtil.getDb().offlineRfidDao()
+        var offLineDatas = offlineRfidDao.getAll()
+        var offlineRfids = mutableListOf<String>()
+        for (localRfid in localAvailRfid) {
+            tempList.add(localRfid.rfid)
+        }
+
+        for (rfid in tempList) {
+            if (!rfids.contains(rfid)) {
+                for (localRfid in localAvailRfid) {
+                    if (localRfid.rfid == rfid) {
+                        outList.add(localRfid)//本地离线取出
+                        offlineRfids.add(localRfid.rfid)//离线取出的数据
+                    }
+                }
+            }
+        }
+
+        if (offLineDatas.isNotEmpty()) {
+            for (offLineId in offLineDatas) {
+                offlineRfids.add(offLineId.rfid)
+            }
+        }
+
+
+        val userInfoString = SharedPreferencesUtils.getPrefString(
+            ContextUtils.getApplicationContext(),
+            "loginUserInfo",
+            null
+        )
+
+        var accountEntity = Gson().fromJson(userInfoString, AccountEntity::class.java)
+
+        for (rfid in rfids) {
+            if (!tempList.contains(rfid) && !offlineRfids.contains(rfid)) {
+                var offlineRfidEntity = OfflineRfidEntity(
+                    null,
+                    rfid,
+                    DateUtils.format_yyyyMMddhhmmssfff,
+                    accountEntity.user_id,
+                    accountEntity.role_id,
+                    accountEntity.nick_name,
+                    1,
+                    100
+                );
+                offlineRfidDao.insert(offlineRfidEntity);
+                var localOffLineData = offlineRfidDao.getByRfid(rfid)
+                inOffline.add(localOffLineData);//离线存入
+            }
+        }
+
+        for (offlineId in offLineDatas) {
+            if (!rfids.contains(offlineId.rfid)) {
+                offlineRfidDao.delete(offlineId)
+                outOffline.add(offlineId)//离线取出的数据
+            }
+        }
+
+        for (offlineId in outList) {
+            var offlineRfidEntity = OfflineRfidEntity(
+                null,
+                offlineId.rfid,
+                DateUtils.format_yyyyMMddhhmmssfff,
+                accountEntity.user_id,
+                accountEntity.role_id,
+                accountEntity.nick_name,
+                1,
+                100
+            );
+            outOffline.add(offlineRfidEntity)
+        }
+
+        LocalService.deleteDataToLocal(outList)
+        if (outOffline.size > 0 && inOffline.size > 0) {//存取都有
+            val tempOffList = mutableListOf<List<OfflineRfidEntity>>()
+            tempOffList.add(outOffline)
+            tempOffList.add(inOffline)
+            outAndInRfidOffData.postValue(tempOffList)
+        } else if (outOffline.size > 0) {//领出
+            deleteOffRfidData.postValue(outOffline)
+        } else if (inOffline.size > 0) {//领入
+            addOffRfidData.postValue(inOffline)
+        } else {
+            noData.postValue(true)
         }
     }
 
@@ -722,25 +731,27 @@ class MainViewModel(application: android.app.Application) :
         accountOperationEntity.hasUploaded = false
         return accountOperationEntity
     }
-    private  var timer:CountDownTimer?=null
-    fun startCountDownTime(){
-        timer = object : CountDownTimer(10*1000, 1000) {
+
+    private var timer: CountDownTimer? = null
+    fun startCountDownTime() {
+        timer = object : CountDownTimer(10 * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 println("seconds remaining: " + millisUntilFinished / 1000)
-                var remainTimeInt:Int= (millisUntilFinished / 1000).toInt()
+                var remainTimeInt: Int = (millisUntilFinished / 1000).toInt()
                 remainTime.postValue(remainTimeInt)
             }
 
             override fun onFinish() {
-                Log.d(TAG,"remainTime onFinish")
+                Log.d(TAG, "remainTime onFinish")
                 remainTime.postValue(0)
             }
         }
         timer?.start()
     }
-    fun stopCountDownTime(){
+
+    fun stopCountDownTime() {
         timer?.cancel()
-        timer=null
+        timer = null
         remainTime.postValue(0)
     }
 
