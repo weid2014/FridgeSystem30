@@ -2,10 +2,12 @@ package com.jhteck.icebox.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -15,7 +17,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -45,9 +46,6 @@ import kotlin.system.exitProcess
  */
 class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
 
-    private var service: MyService? = null
-    private var isBind = false
-
     private val TAG = "LoginActivity"
     private var imageCamera: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
@@ -55,17 +53,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
     var preview: Preview? = null//预览对象
     var cameraProvider: ProcessCameraProvider? = null//相机信息
     var camera: Camera? = null//相机对象
-    private var conn = object : ServiceConnection {
-        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-            isBind = true
-            val myBinder = p1 as MyService.MyBinder
-            service = myBinder.service
-        }
 
-        override fun onServiceDisconnected(p0: ComponentName?) {
-            isBind = false
-        }
-    }
 
     override fun createViewBinding(): AppActivityLoginBinding {
         //隐藏底部的虚拟键并全屏显示
@@ -89,7 +77,6 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
     override fun initView() {
         //开启service，初始化TCP服务
 //        CrashReport.testJavaCrash();
-        startService()
 
         binding.btnLogin.setOnClickListener {
             //登录按键点击事件
@@ -340,14 +327,9 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
         //从主页面返回
     }
 
-    private fun startService() {
-        val intent = Intent(this, MyService::class.java)
-        intent.putExtra("from", "LoginActivity")
-        bindService(intent, conn, Context.BIND_AUTO_CREATE)
-    }
 
     private fun stopService() {
-//        unbindService(conn);
+        stopService(Intent(this, MyService::class.java))
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }

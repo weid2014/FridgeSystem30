@@ -9,6 +9,7 @@ import androidx.annotation.StringRes;
 import com.arcsoft.face.enums.DetectFaceOrientPriority;
 import com.jhteck.icebox.R;
 import com.jhteck.icebox.api.AppConstantsKt;
+import com.jhteck.icebox.face.Constants;
 
 /**
  * 配置项设置，注意，{@link SharedPreferences}对象需要使用{@link PreferenceManager#getDefaultSharedPreferences(Context)}，
@@ -411,15 +412,15 @@ public class ConfigUtil {
     }
 
     public static String getAppId(Context context) {
-        return getString(context, R.string.preference_app_id, AppConstantsKt.APP_ID);
+        return getString(context, R.string.preference_app_id, Constants.APP_ID);
     }
 
     public static String getSdkKey(Context context) {
-        return getString(context, R.string.preference_sdk_key, AppConstantsKt.SDK_KEY);
+        return getString(context, R.string.preference_sdk_key, Constants.SDK_KEY);
     }
 
     public static String getActiveKey(Context context) {
-        return getString(context, R.string.preference_active_key, AppConstantsKt.ACTIVE_KEY);
+        return getString(context, R.string.preference_active_key, Constants.ACTIVE_KEY);
     }
 
     public static boolean commitAppId(Context context, String appId) {

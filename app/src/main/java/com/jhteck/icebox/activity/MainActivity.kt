@@ -1,9 +1,9 @@
 package com.jhteck.icebox.activity
 
-import android.app.Dialog
-import android.content.*
-import android.graphics.drawable.BitmapDrawable
-import android.os.IBinder
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -26,12 +26,11 @@ import com.jhteck.icebox.fragment.OperationLogFrag
 import com.jhteck.icebox.fragment.SettingFrag
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.OfflineRfidEntity
-import com.jhteck.icebox.service.MyService
-import com.jhteck.icebox.utils.CustomDialogMain
+import com.jhteck.icebox.utils.BroadcastUtil
 import com.jhteck.icebox.utils.DensityUtil
 import com.jhteck.icebox.utils.SharedPreferencesUtils
+import com.jhteck.icebox.view.SingletonPopupWindow
 import com.jhteck.icebox.viewmodel.MainViewModel
-import kotlinx.coroutines.*
 import java.util.*
 import java.util.stream.Collectors
 
@@ -42,6 +41,8 @@ import java.util.stream.Collectors
  *@date 2023/6/28 20:17
  */
 class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
+
+    private val TAG = "MainActivity"
     private val tabs = arrayListOf<FrameLayout>()
     private var currentSelectItem = 0
     private val inventoryListFrag = InventoryListFrag.newInstance()
@@ -51,25 +52,8 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     private var retryScanNum = 0
     private var popupWindow: PopupWindow? = null
 
-    private var service: MyService? = null
-    private var isBind = false
     private var localData: RfidDao? = null
 
-    //    private var isLoginByCard = true//是否刷卡登录
-    private val TAG = "MainActivity"
-    private var conn = object : ServiceConnection {
-        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-            isBind = true
-            val myBinder = p1 as MyService.MyBinder
-            service = myBinder.service
-            val num = service!!.getRandomNumber()
-            Log.i(TAG, "MainActivity getRandomNumber =$num")
-        }
-
-        override fun onServiceDisconnected(p0: ComponentName?) {
-            isBind = false
-        }
-    }
 
     override fun createViewBinding(): AppActivityMainBinding {
         window.decorView.systemUiVisibility =
@@ -107,10 +91,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         }
         if (DEBUG) {
             binding.tvUserName.setOnClickListener {
-                service?.asyncSendMsg()
-            }
-            binding.tvUserID.setOnClickListener {
-                service?.sendRfid()
+                BroadcastUtil.sendMyBroadcast(this@MainActivity, LOCKED_SUCCESS, "lock")
             }
         }
 
@@ -167,10 +148,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
         viewModel.loadDataLocal()
 
-      /*  val intent = Intent(this, MyService::class.java)
-        bindService(intent, conn, Context.BIND_AUTO_CREATE)*/
-
-//        MyTcpServerListener.getInstance().getAntPower()
     }
 
     var time: Long = 0 //上次点击时间
@@ -255,12 +232,21 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         viewModel.scanStatus.observe(this) {
             if (it && retryScanNum < 3) {
                 retryScanNum++
-                viewModel.startFCLInventory()//重新扫描
+                viewModel.startFCLInventory30()//重新扫描
             }
         }
 
         viewModel.closeStatus.observe(this) {
             backLoginPage()
+        }
+
+        viewModel.remainTime.observe(this) {
+            if (it > 0 && btnCountDownTime != null) {
+                btnCountDownTime!!.isEnabled = false
+                btnCountDownTime!!.text = "${it}秒后将自动关闭"
+            } else {
+                backLoginPage()
+            }
         }
     }
 
@@ -314,7 +300,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-//        unbindService(conn);
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
@@ -322,7 +307,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     }
 
     private fun backLoginPage() {
-        if (popupWindow !== null && popupWindow!!.isShowing) {
+        if (popupWindow?.isShowing == true) {
             DensityUtil.backgroundAlpha(this@MainActivity, 1f)
             binding.cover.visibility = View.GONE
             popupWindow!!.dismiss()
@@ -334,23 +319,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         finish()
     }
 
-    private var isContinue = true;
-    private fun useCoroutines(buttonCount: Button) {
-        isContinue = true;
-        CoroutineScope(Dispatchers.Main).launch {
-            buttonCount.isEnabled = false
-            var count = 10
-            while (count > 0 && isContinue) {
-                withContext(Dispatchers.IO) {
-                    delay(1000)
-                    count--
-                }
-                buttonCount.text = "${count}秒后将自动关闭"
-            }
-            buttonCount.isEnabled = true
-            backLoginPage()
-        }
-    }
 
     /**
      * 管理员和仓库管理员  显示存入
@@ -358,6 +326,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
      */
     private var showTitle = "存入列表"
     private var operatortype = 0;
+    private var btnCountDownTime: Button? = null
     private fun showPopWindow(outList: List<AvailRfid>, inList: List<AvailRfid>) {
         //获取用户角色ID
         val roleID = SharedPreferencesUtils.getPrefInt(this, ROLE_ID, 10)
@@ -404,120 +373,112 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         viewModel.rfidOperationLog(loginUserInfo, inList, outList)//操作日志
 
         //弹出结算界面
-        if (popupWindow == null) {
-            popupWindow = PopupWindow().apply {
-                //入口参数配置
-                val layoutInflater = LayoutInflater.from(this@MainActivity)
-                contentView =
-                    layoutInflater.inflate(R.layout.pup_out_list, null)
-                width = ViewGroup.LayoutParams.WRAP_CONTENT
-                height = ViewGroup.LayoutParams.WRAP_CONTENT
-                isFocusable = false
-                isOutsideTouchable = false
-                setBackgroundDrawable(BitmapDrawable())
-                binding.cover.visibility = View.VISIBLE
-                DensityUtil.backgroundAlpha(this@MainActivity, 0.5f)
-                //设置按钮
-                val btnClosePop = contentView.findViewById<ImageButton>(R.id.btnClose)
-                val tvCountIn = contentView.findViewById<TextView>(R.id.tvCountIn)
-                val tvCountOut = contentView.findViewById<TextView>(R.id.tvCountOut)
-                val tvRemainTitle = contentView.findViewById<TextView>(R.id.tvRemainTitle)
-                val tvNoOperation = contentView.findViewById<TextView>(R.id.tv_no_operation)
-                tvCountOut.text = "领出列表(x${outList.size})"
-                tvCountIn.text = "${showTitle}(x${inList.size})"
-                val btnCountDownTime = contentView.findViewById<Button>(R.id.btnCountDownTime)
-                when (roleID) {
-                    10, 20 -> {
-                        tvCountIn.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                            getDrawable(R.mipmap.ic_put_in),
-                            null,
-                            null,
-                            null
-                        )
+        popupWindow = SingletonPopupWindow.getInstance(this@MainActivity)
+        val layoutInflater = LayoutInflater.from(this@MainActivity)
+        popupWindow?.contentView =
+            layoutInflater.inflate(R.layout.pup_out_list, null)
+
+        binding.cover.visibility = View.VISIBLE
+        DensityUtil.backgroundAlpha(this@MainActivity, 0.5f)
+        //设置按钮
+        val btnClosePop = popupWindow?.contentView?.findViewById<ImageButton>(R.id.btnClose)
+        val tvCountIn = popupWindow?.contentView?.findViewById<TextView>(R.id.tvCountIn)
+        val tvCountOut = popupWindow?.contentView?.findViewById<TextView>(R.id.tvCountOut)
+        val tvRemainTitle = popupWindow?.contentView?.findViewById<TextView>(R.id.tvRemainTitle)
+        val tvNoOperation =
+            popupWindow?.contentView?.findViewById<TextView>(R.id.tv_no_operation)
+        tvCountOut?.text = "领出列表(x${outList.size})"
+        tvCountIn?.text = "${showTitle}(x${inList.size})"
+        btnCountDownTime = popupWindow?.contentView?.findViewById<Button>(R.id.btnCountDownTime)
+        when (roleID) {
+            10, 20 -> {
+                tvCountIn?.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    getDrawable(R.mipmap.ic_put_in),
+                    null,
+                    null,
+                    null
+                )
 //                        tvCountIn.setBackgroundResource(R.mipmap.ic_put_in_pause)
-                    }
-                    else -> {
-                        tvCountIn.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                            getDrawable(R.mipmap.ic_put_in_pause),
-                            null,
-                            null,
-                            null
-                        )
-                    }
-                }
-
-                useCoroutines(btnCountDownTime)
-                btnClosePop.setOnClickListener {
-                    isContinue = false
-                }
-                val rvInventoryResultIN =
-                    contentView.findViewById<RecyclerView>(R.id.rvInventoryResultIN)
-                val layoutManagerResultIn = LinearLayoutManager(BaseApp.app)
-                rvInventoryResultIN.layoutManager = layoutManagerResultIn
-                //存入列表适配器
-                when (roleID) {
-                    10, 20 -> {
-                        tvRemainTitle.visibility = View.INVISIBLE
-                        var mapinList = inList.stream()
-                            .collect(Collectors.groupingBy { t -> t.material.eas_unit_name + t.material.eas_material_id })//根据批号分组
-                        val tempInList = mutableListOf<List<AvailRfid>>()
-                        for (key in mapinList.keys) {
-                            mapinList.get(key)?.let { tempInList.add(it) }
-                        }
-
-                        rvInventoryResultIN.adapter = InventoryListAdapter(tempInList)
-                    }
-                    else -> {
-                        if (inList.isNotEmpty()) {
-                            tvRemainTitle.visibility = View.VISIBLE
-                        }
-                        rvInventoryResultIN.adapter =
-                            InventoryListAdapterScener(inList, object : ISettlement {
-                                override fun settlement(availRfid: AvailRfid) {
-                                    viewModel.update(availRfid)
-                                }
-                            })
-                    }
-                }
-
-                //领出列表适配器
-                var mapOutList = outList.stream()
-                    .collect(Collectors.groupingBy { t -> t.material.eas_unit_name + t.material.eas_material_id })//根据批号分组
-
-                val tempOutList = mutableListOf<List<AvailRfid>>()
-                for (key in mapOutList.keys) {
-                    mapOutList.get(key)?.let { tempOutList.add(it) }
-                }
-                val rvInventoryResultOUT =
-                    contentView.findViewById<RecyclerView>(R.id.rvInventoryResultOUT)
-                val layoutManagerResult = LinearLayoutManager(BaseApp.app)
-                rvInventoryResultOUT.layoutManager = layoutManagerResult
-                rvInventoryResultOUT.adapter = InventoryListAdapter(tempOutList)
-
-                //判断存入，领出，控制显隐
-                when (operatortype) {
-                    3 -> {
-                    }//存入取出
-                    2 -> {
-                        tvCountIn.visibility = View.GONE
-                        rvInventoryResultIN.visibility = View.GONE
-                    }//取出
-                    1 -> {
-                        tvCountOut.visibility = View.GONE
-                        rvInventoryResultOUT.visibility = View.GONE
-                    }//存入
-                    0 -> {
-                        tvNoOperation.visibility = View.VISIBLE
-                        tvCountIn.visibility = View.GONE
-                        rvInventoryResultIN.visibility = View.GONE
-                        tvCountOut.visibility = View.GONE
-                        rvInventoryResultOUT.visibility = View.GONE
-                    }//无操作
-                }
-
-                showAtLocation(binding.root, Gravity.CENTER, 0, 0);
+            }
+            else -> {
+                tvCountIn?.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    getDrawable(R.mipmap.ic_put_in_pause),
+                    null,
+                    null,
+                    null
+                )
             }
         }
+
+        btnClosePop?.setOnClickListener {
+            viewModel.stopCountDownTime()
+        }
+        val rvInventoryResultIN =
+            popupWindow?.contentView?.findViewById<RecyclerView>(R.id.rvInventoryResultIN)
+        val layoutManagerResultIn = LinearLayoutManager(BaseApp.app)
+        rvInventoryResultIN?.layoutManager = layoutManagerResultIn
+        //存入列表适配器
+        when (roleID) {
+            10, 20 -> {
+                tvRemainTitle?.visibility = View.INVISIBLE
+                var mapinList = inList.stream()
+                    .collect(Collectors.groupingBy { t -> t.material.eas_unit_name + t.material.eas_material_id })//根据批号分组
+                val tempInList = mutableListOf<List<AvailRfid>>()
+                for (key in mapinList.keys) {
+                    mapinList.get(key)?.let { tempInList.add(it) }
+                }
+
+                rvInventoryResultIN?.adapter = InventoryListAdapter(tempInList)
+            }
+            else -> {
+                if (inList.isNotEmpty()) {
+                    tvRemainTitle?.visibility = View.VISIBLE
+                }
+                rvInventoryResultIN?.adapter =
+                    InventoryListAdapterScener(inList, object : ISettlement {
+                        override fun settlement(availRfid: AvailRfid) {
+                            viewModel.update(availRfid)
+                        }
+                    })
+            }
+        }
+
+        //领出列表适配器
+        var mapOutList = outList.stream()
+            .collect(Collectors.groupingBy { t -> t.material.eas_unit_name + t.material.eas_material_id })//根据批号分组
+
+        val tempOutList = mutableListOf<List<AvailRfid>>()
+        for (key in mapOutList.keys) {
+            mapOutList.get(key)?.let { tempOutList.add(it) }
+        }
+        val rvInventoryResultOUT =
+            popupWindow?.contentView?.findViewById<RecyclerView>(R.id.rvInventoryResultOUT)
+        val layoutManagerResult = LinearLayoutManager(BaseApp.app)
+        rvInventoryResultOUT?.layoutManager = layoutManagerResult
+        rvInventoryResultOUT?.adapter = InventoryListAdapter(tempOutList)
+
+        //判断存入，领出，控制显隐
+        when (operatortype) {
+            3 -> {
+            }//存入取出
+            2 -> {
+                tvCountIn?.visibility = View.GONE
+                rvInventoryResultIN?.visibility = View.GONE
+            }//取出
+            1 -> {
+                tvCountOut?.visibility = View.GONE
+                rvInventoryResultOUT?.visibility = View.GONE
+            }//存入
+            0 -> {
+                tvNoOperation?.visibility = View.VISIBLE
+                tvCountIn?.visibility = View.GONE
+                rvInventoryResultIN?.visibility = View.GONE
+                tvCountOut?.visibility = View.GONE
+                rvInventoryResultOUT?.visibility = View.GONE
+            }//无操作
+        }
+        popupWindow?.showAtLocation(binding.root, Gravity.CENTER, 0, 0);
+        viewModel.startCountDownTime()
     }
 
     private fun showOffPopWindow(
@@ -567,75 +528,68 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         }
         viewModel.accountOperationLog(operationEntity, loginUserInfo)//操作日志
 
-        viewModel.rfidOffLineOperationLog(loginUserInfo,inOffList,outOffList);//操作日志
+        viewModel.rfidOffLineOperationLog(loginUserInfo, inOffList, outOffList);//操作日志
 //        viewModel.rfidOperationLog(loginUserInfo, inList, outList)//操作日志
 
-        //弹出结算界面
-        if (popupWindow == null) {
-            popupWindow = PopupWindow().apply {
-                //入口参数配置
-                val layoutInflater = LayoutInflater.from(this@MainActivity)
-                contentView =
-                    layoutInflater.inflate(R.layout.pup_out_off_list, null)
-                width = ViewGroup.LayoutParams.WRAP_CONTENT
-                height = ViewGroup.LayoutParams.WRAP_CONTENT
-                isFocusable = false
-                isOutsideTouchable = false
-                setBackgroundDrawable(BitmapDrawable())
-                binding.cover.visibility = View.VISIBLE
-                DensityUtil.backgroundAlpha(this@MainActivity, 0.5f)
-                //设置按钮
-                val btnClosePop = contentView.findViewById<ImageButton>(R.id.btnClose)
-                val tvCountIn = contentView.findViewById<TextView>(R.id.tvCountIn)
-                val tvCountOut = contentView.findViewById<TextView>(R.id.tvCountOut)
-                val tvNoOperation = contentView.findViewById<TextView>(R.id.tv_no_operation)
-                tvCountOut.text = "领出列表(x${outOffList.size})"
-                tvCountIn.text = "${showTitle}(x${inOffList.size})"
-                val btnCountDownTime = contentView.findViewById<Button>(R.id.btnCountDownTime)
-                when (roleID) {
-                    10, 20 -> {
-                        tvCountIn.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                            getDrawable(R.mipmap.ic_put_in),
-                            null,
-                            null,
-                            null
-                        )
+        popupWindow = SingletonPopupWindow.getInstance(this@MainActivity)
+        //入口参数配置
+        val layoutInflater = LayoutInflater.from(this@MainActivity)
+        popupWindow?.contentView =
+            layoutInflater.inflate(R.layout.pup_out_off_list, null)
+        binding.cover.visibility = View.VISIBLE
+        DensityUtil.backgroundAlpha(this@MainActivity, 0.5f)
+        //设置按钮
+        val btnClosePop = popupWindow?.contentView?.findViewById<ImageButton>(R.id.btnClose)
+        val tvCountIn = popupWindow?.contentView?.findViewById<TextView>(R.id.tvCountIn)
+        val tvCountOut = popupWindow?.contentView?.findViewById<TextView>(R.id.tvCountOut)
+        val tvNoOperation =
+            popupWindow?.contentView?.findViewById<TextView>(R.id.tv_no_operation)
+        tvCountOut?.text = "领出列表(x${outOffList.size})"
+        tvCountIn?.text = "${showTitle}(x${inOffList.size})"
+        btnCountDownTime = popupWindow?.contentView?.findViewById<Button>(R.id.btnCountDownTime)
+        when (roleID) {
+            10, 20 -> {
+                tvCountIn?.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    getDrawable(R.mipmap.ic_put_in),
+                    null,
+                    null,
+                    null
+                )
 //                        tvCountIn.setBackgroundResource(R.mipmap.ic_put_in_pause)
-                    }
-                    else -> {
-                        tvCountIn.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                            getDrawable(R.mipmap.ic_put_in_pause),
-                            null,
-                            null,
-                            null
-                        )
-                    }
-                }
-
-                useCoroutines(btnCountDownTime)
-                btnClosePop.setOnClickListener {
-                    isContinue = false
-                }
-
-                //判断存入，领出，控制显隐
-                when (operatortype) {
-                    3 -> {
-                    }//存入取出
-                    2 -> {
-                        tvCountIn.visibility = View.GONE
-                    }//取出
-                    1 -> {
-                        tvCountOut.visibility = View.GONE
-                    }//存入
-                    0 -> {
-                        tvNoOperation.visibility = View.VISIBLE
-                        tvCountIn.visibility = View.INVISIBLE
-                        tvCountOut.visibility = View.INVISIBLE
-                    }//无操作
-                }
-                showAtLocation(binding.root, Gravity.CENTER, 0, 0);
+            }
+            else -> {
+                tvCountIn?.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    getDrawable(R.mipmap.ic_put_in_pause),
+                    null,
+                    null,
+                    null
+                )
             }
         }
+
+        btnClosePop?.setOnClickListener {
+            viewModel.stopCountDownTime()
+        }
+
+        //判断存入，领出，控制显隐
+        when (operatortype) {
+            3 -> {
+            }//存入取出
+            2 -> {
+                tvCountIn?.visibility = View.GONE
+            }//取出
+            1 -> {
+                tvCountOut?.visibility = View.GONE
+            }//存入
+            0 -> {
+                tvNoOperation?.visibility = View.VISIBLE
+                tvCountIn?.visibility = View.INVISIBLE
+                tvCountOut?.visibility = View.INVISIBLE
+            }//无操作
+        }
+        popupWindow?.showAtLocation(binding.root, Gravity.CENTER, 0, 0);
+        viewModel.startCountDownTime()
+
     }
 
     /**
@@ -686,10 +640,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                 }
             }
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
     }
 
 }

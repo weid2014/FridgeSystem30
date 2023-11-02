@@ -1,4 +1,4 @@
-package com.jhteck.icebox.face;
+package com.jhteck.icebox.face.activity;
 
 import android.app.Activity;
 import android.content.Intent;

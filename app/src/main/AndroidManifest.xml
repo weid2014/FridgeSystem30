@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -50,19 +51,31 @@
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop" />
 
         <activity
             android:name=".activity.LoginActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".activity.LoginOldActivity"
             android:exported="true"
             android:launchMode="singleTop" />
         <activity android:name=".tcpServer.TestActivity" />
-        <activity android:name=".face.RegisterAndRecognizeActivity"/>
+        <activity
+            android:name=".face.activity.RegisterAndRecognizeActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".face.activity.FaceManageActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".face.activity.ActivationActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
 
         <service android:name=".service.MyService" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

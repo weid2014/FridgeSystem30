@@ -1,5 +1,6 @@
 package com.jhteck.icebox.viewmodel
 
+import android.os.CountDownTimer
 import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.viewModelScope
@@ -48,7 +49,7 @@ class MainViewModel(application: android.app.Application) :
                 val gson = Gson()
 //                LocalService.mockDataToLocal(gson);
                 var result = LocalService.loadRfidsFromLocal(gson)
-                delay(1000)
+                delay(100)
                 loadDataLocalStatus.postValue(true)
                 localRfidData = RfidDao(200, "12313", result)
                 rfidData.postValue(localRfidData)
@@ -108,10 +109,12 @@ class MainViewModel(application: android.app.Application) :
             lastonclickTime = time
             viewModelScope.launch {
                 try {
-                    RfidManage.getInstance().startStop(true, false)
+                    //关锁后，先等一段时间在开始扫描
                     showLoading("正在结算中，请稍等...")
+                    delay(1500)
+                    RfidManage.getInstance().startStop(true, false)
                     RfidManage.getInstance().setRfidArraysRendEndCallback {
-                        Log.d(TAG, "正在结算中，请稍等...${it.toString()}")
+                        Log.d(TAG, "扫描结果...${it.toString()}")
                         rfidsSync.postValue(it.toList())
                     }
                     delay(
@@ -244,7 +247,6 @@ class MainViewModel(application: android.app.Application) :
                         }
                     }
                 }
-                delay(500)
                 if (outList.size > 0 && inList.size > 0) {//存取都有
                     val tempList = mutableListOf<List<AvailRfid>>()
                     tempList.add(outList)
@@ -340,7 +342,6 @@ class MainViewModel(application: android.app.Application) :
                 }
 
                 LocalService.deleteDataToLocal(outList)
-                delay(500)
                 if (outOffline.size > 0 && inOffline.size > 0) {//存取都有
                     val tempOffList = mutableListOf<List<OfflineRfidEntity>>()
                     tempOffList.add(outOffline)
@@ -721,9 +722,34 @@ class MainViewModel(application: android.app.Application) :
         accountOperationEntity.hasUploaded = false
         return accountOperationEntity
     }
+    private  var timer:CountDownTimer?=null
+    fun startCountDownTime(){
+        timer = object : CountDownTimer(10*1000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                println("seconds remaining: " + millisUntilFinished / 1000)
+                var remainTimeInt:Int= (millisUntilFinished / 1000).toInt()
+                remainTime.postValue(remainTimeInt)
+            }
+
+            override fun onFinish() {
+                Log.d(TAG,"remainTime onFinish")
+                remainTime.postValue(0)
+            }
+        }
+        timer?.start()
+    }
+    fun stopCountDownTime(){
+        timer?.cancel()
+        timer=null
+        remainTime.postValue(0)
+    }
 
     val scanStatus by lazy {
         SingleLiveEvent<Boolean>()
+    }
+
+    val remainTime by lazy {
+        SingleLiveEvent<Int>()
     }
 
     //本地rfid数据

@@ -349,4 +349,20 @@ public class NfcManage {
         Log.d(TAG, MyFunc.ByteArrToHex(rdata, 0, recvlen));
         return sMsg.toString();
     }
+
+    //清除所有对象
+    public void clearAll() {
+        if (DispQueue != null) {
+            DispQueue.stop();
+            DispQueue = null;
+        }
+        if (serialCom != null){
+            CloseComPort(serialCom);
+            serialCom=null;
+        }
+
+        if (instance != null)
+            instance = null;
+
+    }
 }

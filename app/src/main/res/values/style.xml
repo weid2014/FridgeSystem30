@@ -5,4 +5,7 @@
         <item name="android:height">800dp</item>
         <!-- 添加其他样式属性 -->
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
 </resources>

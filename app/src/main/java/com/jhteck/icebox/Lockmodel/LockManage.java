@@ -154,7 +154,7 @@ public class LockManage {
      * 尝试主动发启动时开锁
      */
     public void tryOpenLock() {
-        sendTime = 10;
+        sendTime = 2;
         if (openLockThread == null) {
             synchronized (this) {
                 if (openLockThread == null) {
@@ -163,17 +163,17 @@ public class LockManage {
                         while (sendTime > 0) {
                             try {
                                 Log.i(TAG, "openLockThread: 定时开锁 +sendTime=" + sendTime);
-                                if ( SharedPreferencesUtils.getPrefInt(BaseApp.app, FRIDGE_TYPE, 0) == 0) {
+                                if (SharedPreferencesUtils.getPrefInt(BaseApp.app, FRIDGE_TYPE, 0) == 0) {
                                     if (sensorChanged() && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
                                         Log.i(TAG, "openLockThread:tryOpenLock: 计入结算环节1");
                                         break;
                                     }
-                                }else {
-                                    if (sensorChanged() && lockInfo1.sensor == 0 ) {
+                                } else {
+                                    if (sensorChanged() && lockInfo1.sensor == 0) {
                                         Log.i(TAG, "openLockThread:tryOpenLock: 计入结算环节2");
                                         break;
                                     }
-                                    if (sensorChanged() && lockInfo2.sensor == 0 ) {
+                                    if (sensorChanged() && lockInfo2.sensor == 0) {
                                         Log.i(TAG, "openLockThread:tryOpenLock: 计入结算环节3");
                                         break;
                                     }
@@ -343,8 +343,8 @@ public class LockManage {
 
                 sensor1Status.add(lockInfo1.sensor);
                 sensor2Status.add(lockInfo2.sensor);
-                Log.d(TAG, "fridgeType="+ SharedPreferencesUtils.getPrefInt(BaseApp.app, FRIDGE_TYPE, 0));
-                if ( SharedPreferencesUtils.getPrefInt(BaseApp.app, FRIDGE_TYPE, 0) == 0) {
+                Log.d(TAG, "fridgeType=" + SharedPreferencesUtils.getPrefInt(BaseApp.app, FRIDGE_TYPE, 0));
+                if (SharedPreferencesUtils.getPrefInt(BaseApp.app, FRIDGE_TYPE, 0) == 0) {
                     if (lockInfo1.lock == 0 && lockInfo2.lock == 0 && sensorChanged() && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
                         stopAll();
                     } else if (sensorChanged() || lockInfo1.sensor == 1 || lockInfo2.sensor == 1) {
@@ -415,6 +415,23 @@ public class LockManage {
                 Log.e(TAG, "SetNetParamsResult");
             }
         });
+    }
+
+    //清除所有对象
+    public void clearAll() {
+        if (mySerial != null) {
+            mySerial.close();
+            mySerial = null;
+        }
+        clearThread();
+        if (mSendThread != null)
+            mSendThread = null;
+
+        if (handler != null)
+            handler = null;
+        if (instance != null)
+            instance = null;
+
     }
 
 }

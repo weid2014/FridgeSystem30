@@ -1,5 +1,6 @@
 package com.jhteck.icebox
 
+import android.content.Intent
 import android.util.Log
 import com.google.gson.Gson
 import com.hele.mrd.app.lib.api.ApiManager
@@ -11,6 +12,7 @@ import com.jhteck.icebox.apiserver.RetrofitClient
 import com.jhteck.icebox.bean.SystemOperationErrorEnum
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.SysOperationErrorEntity
+import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.utils.*
 import com.jhteck.icebox.view.AppLoadingDialog
 import com.tencent.bugly.crashreport.CrashReport
@@ -113,7 +115,8 @@ class Application : BaseApp(), Thread.UncaughtExceptionHandler {
 //            .supportDarkTheme(boolean supportDarkTheme) // optional (whether to support dark theme or not)
 //            .setRTL(boolean isRTL) // optional (icon is on the right)
             .apply(); // required
-
+        // 启动服务
+        startService(Intent(this, MyService::class.java))
     }
 
 
@@ -127,6 +130,7 @@ class Application : BaseApp(), Thread.UncaughtExceptionHandler {
 
         var accountEntity = Gson().fromJson(userInfoString, AccountEntity::class.java)
         loginOperator(accountEntity)
+        stopService(Intent(this, MyService::class.java))
     }
 
     private fun loginOperator(accountEntity: AccountEntity) {

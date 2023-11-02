@@ -1,7 +1,9 @@
 package com.jhteck.icebox.activity
 
-import android.content.*
-import android.os.IBinder
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -18,7 +20,6 @@ import com.jhteck.icebox.api.*
 import com.jhteck.icebox.databinding.AppActivitySpashBinding
 import com.jhteck.icebox.myinterface.MyCallback
 import com.jhteck.icebox.rfidmodel.RfidManage
-import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.viewmodel.SpashViewModel
 import com.naz.serial.port.SerialPortFinder
@@ -34,25 +35,12 @@ import org.json.JSONObject
 class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     private var isLink = false
     private var isLinkLock = false
-    private var service: MyService? = null
-    private var isBind = false
     private var tempList = mutableListOf<AntPowerDao>()
     private var mDevicesPath: Array<String>? = null
     private var isGetOldInfo: Boolean = false
     private var isSyncOtherSystem: Boolean = false
     private var oldSncoede: String? = null
 
-    private var conn = object : ServiceConnection {
-        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-            isBind = true
-            val myBinder = p1 as MyService.MyBinder
-            service = myBinder.service
-        }
-
-        override fun onServiceDisconnected(p0: ComponentName?) {
-            isBind = false
-        }
-    }
 
     override fun createViewBinding(): AppActivitySpashBinding {
         return AppActivitySpashBinding.inflate(layoutInflater)
@@ -60,7 +48,6 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
 
     override fun initView() {
         binding.llFridgesOperate.visibility = View.GONE
-        startService()
         initSpinnerView()
         // 检查是否是第一次运行应用程序
         var isFirstRun =
@@ -396,15 +383,6 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
 
     }
 
-    private fun startService() {
-        //测试模式就不启动服务了
-        if (!DEBUG) {
-            val intent = Intent(this, MyService::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            intent.putExtra("from", "LoginActivity")
-            bindService(intent, conn, Context.BIND_AUTO_CREATE)
-        }
-    }
 
     /**
      * 注册广播接收者
@@ -469,12 +447,6 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                         tempList[position].power = powerDao.power
                     }
                 })
-        /*binding.btnCancleAnt.setOnClickListener {
-            binding.llAntPower.visibility = View.GONE
-        }
-        binding.btnSaveAnt.setOnClickListener {
-            viewModel.setAntPower(tempList)
-        }*/
     }
 
     private fun initSerialPort() {
@@ -501,15 +473,10 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         }
     }
 
-    private fun stopService() {
-//        unbindService(conn);
+    override fun onDestroy() {
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
-    }
-
-    override fun onDestroy() {
-        stopService()
         super.onDestroy()
     }
 }

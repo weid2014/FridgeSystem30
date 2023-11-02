@@ -323,5 +323,14 @@ public class RfidManage {
                 }
         );
     }
+    //清除所有对象
+    public void clearAll() {
+        if (mReader != null) {
+            mReader.disconnect();
+            mReader=null;
+        }
+        if (instance != null)
+            instance = null;
 
+    }
 }

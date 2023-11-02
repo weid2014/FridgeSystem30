@@ -8,6 +8,7 @@ import android.util.Log;
  * @date 2023/6/29 1:54
  */
 public class LightHelp {
+    //单例
 
     public static void testStatic(){
 

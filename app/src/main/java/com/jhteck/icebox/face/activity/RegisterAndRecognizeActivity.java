@@ -1,4 +1,4 @@
-package com.jhteck.icebox.face;
+package com.jhteck.icebox.face.activity;
 
 import android.Manifest;
 import android.content.pm.ActivityInfo;
@@ -106,7 +106,7 @@ public class RegisterAndRecognizeActivity extends BaseActivity implements ViewTr
     private void initViewModel() {
         recognizeViewModel = new ViewModelProvider(
                 getViewModelStore(),
-                new ViewModelProvider.AndroidViewModelFactory(getApplication())
+                (ViewModelProvider.Factory) new ViewModelProvider.AndroidViewModelFactory(getApplication())
         )
                 .get(RecognizeViewModel.class);
 
