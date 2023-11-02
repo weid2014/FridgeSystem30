@@ -154,7 +154,7 @@ public class LockManage {
      * 尝试主动发启动时开锁
      */
     public void tryOpenLock() {
-        sendTime = 2;
+        sendTime = 10;
         if (openLockThread == null) {
             synchronized (this) {
                 if (openLockThread == null) {
