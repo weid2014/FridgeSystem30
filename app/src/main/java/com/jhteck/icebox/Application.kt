@@ -116,7 +116,7 @@ class Application : BaseApp(), Thread.UncaughtExceptionHandler {
 //            .setRTL(boolean isRTL) // optional (icon is on the right)
             .apply(); // required
         // 启动服务
-        startService(Intent(this, MyService::class.java))
+//        startService(Intent(this, MyService::class.java))
     }
 
 
@@ -130,7 +130,7 @@ class Application : BaseApp(), Thread.UncaughtExceptionHandler {
 
         var accountEntity = Gson().fromJson(userInfoString, AccountEntity::class.java)
         loginOperator(accountEntity)
-        stopService(Intent(this, MyService::class.java))
+//        stopService(Intent(this, MyService::class.java))
     }
 
     private fun loginOperator(accountEntity: AccountEntity) {

@@ -2,12 +2,10 @@ package com.jhteck.icebox.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -24,6 +22,8 @@ import com.jhteck.icebox.adapter.LoginPageShowItemAdapter
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.bean.InventoryDao
 import com.jhteck.icebox.databinding.AppActivityLoginOldBinding
+import com.jhteck.icebox.face.activity.ActivationActivity
+import com.jhteck.icebox.face.activity.RegisterAndRecognizeActivity
 import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.utils.ToastUtils
@@ -42,6 +42,10 @@ import java.util.stream.Collectors
  *@date 2023/6/28 17:21
  */
 class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding>() {
+
+    private var service: MyService? = null
+    private var isBind = false
+
     private val TAG = "LoginOldActivity"
     private var imageCamera: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
@@ -49,6 +53,17 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
     var preview: Preview? = null//预览对象
     var cameraProvider: ProcessCameraProvider? = null//相机信息
     var camera: Camera? = null//相机对象
+    private var conn = object : ServiceConnection {
+        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
+            isBind = true
+            val myBinder = p1 as MyService.MyBinder
+            service = myBinder.service
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            isBind = false
+        }
+    }
 
     override fun createViewBinding(): AppActivityLoginOldBinding {
         //隐藏底部的虚拟键并全屏显示
@@ -72,6 +87,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
     override fun initView() {
         //开启service，初始化TCP服务
 //        CrashReport.testJavaCrash();
+        startService()
         //删除30天前的相片
 //        FileUtils.deleteImageByDate(-30)
         binding.btnLogin.setOnClickListener {
@@ -105,9 +121,9 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         binding.imTestLogin.setOnClickListener {
             if (DEBUG) {
 //                takePhoto()
-                viewModel.login("admin", "Jinghe233")
+//                viewModel.login("admin", "Jinghe233")
 //                service?.sendRfid()
-//                startActivity(Intent(this, FaceManageActivity::class.java))
+                startActivity(Intent(this, ActivationActivity::class.java))
             }
         }
         initPermission()
@@ -236,7 +252,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         intent.putExtra("loginUserInfo", Gson().toJson(viewModel.loginUserInfo.value))
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent)
-//        finish()
+        finish()
     }
 
     override fun onStart() {
@@ -245,9 +261,9 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
     }
 
     override fun onDestroy() {
-        clearAll()
-        cameraExecutor.shutdown()
         super.onDestroy()
+        stopService()
+//        cameraExecutor.shutdown()
     }
 
     override fun onRestart() {
@@ -257,10 +273,14 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         //从主页面返回
     }
 
+    private fun startService() {
+        val intent = Intent(this, MyService::class.java)
+        intent.putExtra("from", "LoginActivity")
+        bindService(intent, conn, Context.BIND_AUTO_CREATE)
+    }
 
-    private fun clearAll() {
-        // 停止服务
-        stopService(Intent(this, MyService::class.java))
+    private fun stopService() {
+        unbindService(conn);
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }

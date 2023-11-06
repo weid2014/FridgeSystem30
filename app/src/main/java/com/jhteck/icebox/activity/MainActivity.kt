@@ -1,9 +1,7 @@
 package com.jhteck.icebox.activity
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
+import android.os.IBinder
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -26,7 +24,7 @@ import com.jhteck.icebox.fragment.OperationLogFrag
 import com.jhteck.icebox.fragment.SettingFrag
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.OfflineRfidEntity
-import com.jhteck.icebox.utils.BroadcastUtil
+import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.utils.DensityUtil
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.view.SingletonPopupWindow
@@ -41,8 +39,6 @@ import java.util.stream.Collectors
  *@date 2023/6/28 20:17
  */
 class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
-
-    private val TAG = "MainActivity"
     private val tabs = arrayListOf<FrameLayout>()
     private var currentSelectItem = 0
     private val inventoryListFrag = InventoryListFrag.newInstance()
@@ -52,8 +48,25 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     private var retryScanNum = 0
     private var popupWindow: PopupWindow? = null
 
+    private var service: MyService? = null
+    private var isBind = false
     private var localData: RfidDao? = null
 
+    //    private var isLoginByCard = true//是否刷卡登录
+    private val TAG = "MainActivity"
+    private var conn = object : ServiceConnection {
+        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
+            isBind = true
+            val myBinder = p1 as MyService.MyBinder
+            service = myBinder.service
+            val num = service!!.getRandomNumber()
+            Log.i(TAG, "MainActivity getRandomNumber =$num")
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            isBind = false
+        }
+    }
 
     override fun createViewBinding(): AppActivityMainBinding {
         window.decorView.systemUiVisibility =
@@ -91,7 +104,10 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         }
         if (DEBUG) {
             binding.tvUserName.setOnClickListener {
-                BroadcastUtil.sendMyBroadcast(this@MainActivity, LOCKED_SUCCESS, "lock")
+                service?.asyncSendMsg()
+            }
+            binding.tvUserID.setOnClickListener {
+                service?.sendRfid()
             }
         }
 
@@ -148,6 +164,10 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
         viewModel.loadDataLocal()
 
+        /*  val intent = Intent(this, MyService::class.java)
+          bindService(intent, conn, Context.BIND_AUTO_CREATE)*/
+
+//        MyTcpServerListener.getInstance().getAntPower()
     }
 
     var time: Long = 0 //上次点击时间
@@ -300,6 +320,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
+//        unbindService(conn);
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }

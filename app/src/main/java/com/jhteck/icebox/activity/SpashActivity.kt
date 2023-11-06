@@ -1,9 +1,7 @@
 package com.jhteck.icebox.activity
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
+import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -20,6 +18,7 @@ import com.jhteck.icebox.api.*
 import com.jhteck.icebox.databinding.AppActivitySpashBinding
 import com.jhteck.icebox.myinterface.MyCallback
 import com.jhteck.icebox.rfidmodel.RfidManage
+import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.viewmodel.SpashViewModel
 import com.naz.serial.port.SerialPortFinder
@@ -35,18 +34,32 @@ import org.json.JSONObject
 class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     private var isLink = false
     private var isLinkLock = false
+    private var service: MyService? = null
+    private var isBind = false
     private var tempList = mutableListOf<AntPowerDao>()
     private var mDevicesPath: Array<String>? = null
     private var isGetOldInfo: Boolean = false
     private var isSyncOtherSystem: Boolean = false
     private var oldSncoede: String? = null
 
+    private var conn = object : ServiceConnection {
+        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
+            isBind = true
+            val myBinder = p1 as MyService.MyBinder
+            service = myBinder.service
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            isBind = false
+        }
+    }
 
     override fun createViewBinding(): AppActivitySpashBinding {
         return AppActivitySpashBinding.inflate(layoutInflater)
     }
 
     override fun initView() {
+        startService()
         binding.llFridgesOperate.visibility = View.GONE
         initSpinnerView()
         // 检查是否是第一次运行应用程序
@@ -383,6 +396,13 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
 
     }
 
+    private fun startService() {
+        //测试模式就不启动服务了
+        if (!DEBUG) {
+            val intent = Intent(this, MyService::class.java)
+            bindService(intent, conn, Context.BIND_AUTO_CREATE)
+        }
+    }
 
     /**
      * 注册广播接收者
@@ -473,10 +493,16 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         }
     }
 
-    override fun onDestroy() {
+    private fun stopService() {
+        unbindService(conn);
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
+    }
+
+    override fun onDestroy() {
+
         super.onDestroy()
+        stopService()
     }
 }

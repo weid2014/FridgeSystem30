@@ -329,7 +329,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
 
 
     private fun stopService() {
-        stopService(Intent(this, MyService::class.java))
+//        stopService(Intent(this, MyService::class.java))
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
