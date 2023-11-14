@@ -494,7 +494,9 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     }
 
     private fun stopService() {
-        unbindService(conn);
+        if (!DEBUG) {
+            unbindService(conn);
+        }
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }

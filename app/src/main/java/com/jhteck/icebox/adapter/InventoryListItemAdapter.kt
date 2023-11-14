@@ -19,8 +19,10 @@ import com.jhteck.icebox.api.AvailRfid
 import com.jhteck.icebox.databinding.RvDrugContentItemBinding
 import com.jhteck.icebox.fragment.InventoryListFrag
 import com.jhteck.icebox.utils.CellNumberUtil
+import com.jhteck.icebox.utils.DateUtils
 import com.jhteck.icebox.utils.DensityUtil
 import com.jhteck.icebox.utils.PatternUtil
+import java.util.*
 
 
 class InventoryListItemAdapter(
@@ -72,7 +74,19 @@ class InventoryListItemAdapter(
             binding.tvBatchNumber.text = item[0].material_batch.eas_lot
             //有效期
             val showDate = item[0].material_batch?.expired_at.substring(0, 10)
+            val calendar = Calendar.getInstance()
+            val toDay = DateUtils.formatDateToString(
+                calendar.time,
+                DateUtils.format_yyyyMMdd
+            )
+            val remainDay=DateUtils.getDaysBetween(toDay,showDate,DateUtils.format_yyyyMMdd)
             binding.tvValidityDate.text = showDate
+            if(remainDay<0){
+                binding.tvValidityDate.setTextColor(BaseApp.app.getColor(R.color.app_color_ff3030))
+            }else if(remainDay<7){
+                binding.tvValidityDate.setTextColor(BaseApp.app.getColor(R.color.app_color_fbaf5d))
+            }
+
             //效期状态
             if (item[0].is_out_eas) {
                 binding.tvValidityStatus.text = "过期"

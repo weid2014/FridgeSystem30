@@ -22,9 +22,8 @@ import com.jhteck.icebox.adapter.LoginPageShowItemAdapter
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.bean.InventoryDao
 import com.jhteck.icebox.databinding.AppActivityLoginOldBinding
-import com.jhteck.icebox.face.activity.ActivationActivity
-import com.jhteck.icebox.face.activity.RegisterAndRecognizeActivity
 import com.jhteck.icebox.service.MyService
+import com.jhteck.icebox.utils.CustomDialog
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.utils.ToastUtils
 import com.jhteck.icebox.viewmodel.LoginViewModel
@@ -121,16 +120,36 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         binding.imTestLogin.setOnClickListener {
             if (DEBUG) {
 //                takePhoto()
-//                viewModel.login("admin", "Jinghe233")
+                viewModel.login("admin", "Jinghe233")
 //                service?.sendRfid()
-                startActivity(Intent(this, ActivationActivity::class.java))
+//                startActivity(Intent(this, ActivationActivity::class.java))
             }
+        }
+        binding.imTestLogin.setOnLongClickListener {
+            val isAutoLogin=SharedPreferencesUtils.getPrefBoolean(this@LoginOldActivity, AUTO_LOGIN_STR, AUTO_LOGIN)
+            val showMessageText = if(isAutoLogin){
+                "是否关闭老化测试"
+            }else{
+                "是否开启老化测试"
+            }
+            val customDialog = CustomDialog(this@LoginOldActivity)
+            customDialog.setsTitle("温馨提示").setsMessage(showMessageText)
+                .setsCancel("取消", View.OnClickListener {
+                    customDialog.dismiss()
+                }).setsConfirm("确定", View.OnClickListener {
+                    SharedPreferencesUtils.setPrefBoolean(this@LoginOldActivity, AUTO_LOGIN_STR, !isAutoLogin)
+                    customDialog.dismiss()
+                    viewModel.login_auto("admin", "Jinghe233")
+                }).show()
+            true
         }
         initPermission()
 //        doRegisterReceiver();
     }
 
     override fun tryLoadData() {
+
+            viewModel.login_auto("admin", "Jinghe233")
     }
 
     private fun initPermission() {

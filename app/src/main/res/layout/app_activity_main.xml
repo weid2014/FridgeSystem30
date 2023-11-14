@@ -8,6 +8,7 @@
     tools:context="com.jhteck.icebox.activity.MainActivity">
     <View
         android:id="@+id/fullscreen_view"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent" />

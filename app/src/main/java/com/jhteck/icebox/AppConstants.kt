@@ -40,5 +40,7 @@ const val FRIDGE_TYPE = "fridge_type"
 const val FRIDGE_TYPE_SELECT = 0
 const val FRIDGE_TYPE_TWO = "双锁冰箱"
 const val FRIDGE_TYPE_ONE = "单锁冰箱"
+const val AUTO_LOGIN = false //自动登录，用于老化测试
+const val AUTO_LOGIN_STR = "auto_login_str"
 
 

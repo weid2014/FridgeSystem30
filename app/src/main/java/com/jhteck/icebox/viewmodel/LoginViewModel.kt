@@ -9,9 +9,7 @@ import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
-import com.jhteck.icebox.api.DEBUG
-import com.jhteck.icebox.api.RfidResults
-import com.jhteck.icebox.api.SysOperationErrorLogsBo
+import com.jhteck.icebox.api.*
 import com.jhteck.icebox.api.request.RequestRfidsDao
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.LocalService
@@ -73,6 +71,18 @@ class LoginViewModel(application: android.app.Application) :
 //                toast(BaseApp.app.getString(R.string.login_tip_fail))
             } finally {
                 hideLoading()
+            }
+        }
+    }
+
+    fun login_auto(username: String?, password: String?) {
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                delay(30*1000)
+                if (SharedPreferencesUtils.getPrefBoolean(BaseApp.app, AUTO_LOGIN_STR, AUTO_LOGIN)){
+                login(username, password)}
+            } catch (e: Exception) {
+                toast(e.message)
             }
         }
     }

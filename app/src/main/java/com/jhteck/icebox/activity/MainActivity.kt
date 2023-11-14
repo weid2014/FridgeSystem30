@@ -157,17 +157,15 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             exitAfterMany()
         }
 
-        binding.fullscreenView.setOnClickListener {
-            Log.d("MainActivity", "fullscreenView")
+        /*binding.fullscreenView.setOnClickListener {
             viewModel.tryOpenLock()
-        }
+        }*/
 
         viewModel.loadDataLocal()
 
-        /*  val intent = Intent(this, MyService::class.java)
-          bindService(intent, conn, Context.BIND_AUTO_CREATE)*/
+        val intent = Intent(this, MyService::class.java)
+        bindService(intent, conn, Context.BIND_AUTO_CREATE)
 
-//        MyTcpServerListener.getInstance().getAntPower()
     }
 
     var time: Long = 0 //上次点击时间
@@ -320,9 +318,10 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-//        unbindService(conn);
+        unbindService(conn)
         if (mReceiver != null) {
-            unregisterReceiver(mReceiver);
+            unregisterReceiver(mReceiver)
+            mReceiver = null
         }
         backLoginPage()
     }
@@ -629,7 +628,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         override fun onReceive(context: Context?, intent: Intent) {
             val key = intent.getStringExtra(TCP_MSG_KEY)
             val value = intent.getStringExtra(TCP_MSG_VALUE)
-            Log.d("BroadcastReceiver", "Main ---${key}value===${value}")
 
             when (key) {
                 LOCKED_SUCCESS -> {
@@ -638,17 +636,9 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                             localData!!.results.avail_rfids,
                             localData!!.results.avail_rfids,
                         )
-                        /* showPopWindow(
-                             mutableListOf(),
-                             mutableListOf(),
-                         )*/
                     } else {
-                        try {
-                            retryScanNum = 0
-                            viewModel.startFCLInventory30()
-//                            viewModel.startFCLInventory()
-                        } catch (e: Exception) {
-                        }
+                        retryScanNum = 0
+                        viewModel.startFCLInventory30()
                     }
                 }
                 HFCard -> {
