@@ -191,15 +191,22 @@ class SettingViewModel(application: Application) : BaseViewModel<ILoginApiServic
     }
 
     fun getAntPower() {
-        viewModelScope.launch(Dispatchers.Default) {
-            try {
-                showLoading("正在获取天线功率，请稍等...")
-                RfidManage.getInstance().getOutputPower()
+        var time = SystemClock.uptimeMillis();//局部变量
+        if (time - lastonclickTime <= 3000) {
+            toast("点击频率过快")
+        }
+        else {
+            lastonclickTime = time
+            viewModelScope.launch(Dispatchers.Default) {
+                try {
+                    showLoading("正在获取天线功率，请稍等...")
+                    RfidManage.getInstance().getOutputPower()
 //                MyTcpServerListener.getInstance().getAntPower()
-            } catch (e: Exception) {
-                toast("获取天线功率异常${e.message}")
-            } finally {
-                hideLoading()
+                } catch (e: Exception) {
+                    toast("获取天线功率异常${e.message}")
+                } finally {
+                    hideLoading()
+                }
             }
         }
     }

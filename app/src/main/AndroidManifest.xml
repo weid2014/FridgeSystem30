@@ -36,7 +36,9 @@
         android:preserveLegacyExternalStorage="true"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
+        android:largeHeap = "true"
         android:theme="@style/app_theme"
+        android:hardwareAccelerated = "false"
         tools:replace="android:networkSecurityConfig">
         <activity
             android:name=".activity.SpashActivity"
@@ -71,6 +73,11 @@
             android:launchMode="singleTop" />
         <activity
             android:name=".face.activity.ActivationActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+
+        <activity
+            android:name=".face.activity.CameraXActivity"
             android:exported="true"
             android:launchMode="singleTop" />
 

@@ -22,6 +22,7 @@ import com.jhteck.icebox.adapter.LoginPageShowItemAdapter
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.bean.InventoryDao
 import com.jhteck.icebox.databinding.AppActivityLoginOldBinding
+import com.jhteck.icebox.face.activity.CameraXActivity
 import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.utils.CustomDialog
 import com.jhteck.icebox.utils.SharedPreferencesUtils
@@ -120,9 +121,9 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         binding.imTestLogin.setOnClickListener {
             if (DEBUG) {
 //                takePhoto()
-                viewModel.login("admin", "Jinghe233")
+//                viewModel.login("admin", "Jinghe233")
 //                service?.sendRfid()
-//                startActivity(Intent(this, ActivationActivity::class.java))
+                startActivity(Intent(this, CameraXActivity::class.java))
             }
         }
         binding.imTestLogin.setOnLongClickListener {

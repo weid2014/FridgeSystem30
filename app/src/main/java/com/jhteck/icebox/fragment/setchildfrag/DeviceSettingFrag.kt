@@ -39,8 +39,8 @@ import org.json.JSONObject
  */
 class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDeviceBinding>() {
     private var TAG = "DeviceSettingFrag"
-    private var isLink = false
-    private var isLinkLock = false
+    private var isLink = true
+    private var isLinkLock = true
 
     companion object {
         fun newInstance(): DeviceSettingFrag {
@@ -149,7 +149,11 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             tempList.add(AntPowerDao("0" + (i + 1), "30"))
         }
         initAntRecycleView(tempList)
-
+        if (isLink) {
+            binding.btnLink.text = "关闭"
+        }else{
+            binding.btnLink.text = "连接"
+        }
         binding.btnLink.setOnClickListener {
             val devicePath = mDevicesPath!![binding.spSerialNumber.getSelectedItemPosition()]
             isLink = !isLink
@@ -234,6 +238,11 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             viewModel.startFCLInventory30()
         }
 
+        if(isLinkLock){
+            binding.btnLinkLock.text = "关闭"
+        }else{
+            binding.btnLinkLock.text = "连接"
+        }
         binding.btnLinkLock.setOnClickListener {
             val devicePath = mDevicesPath!![binding.spSerialNumberLock.selectedItemPosition]
             isLinkLock = !isLinkLock

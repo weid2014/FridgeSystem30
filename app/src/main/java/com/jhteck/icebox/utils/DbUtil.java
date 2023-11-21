@@ -4,6 +4,8 @@ import android.content.Context;
 import android.widget.PopupWindow;
 
 import androidx.room.Room;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.jhteck.icebox.repository.AppDataBase;
 
@@ -18,7 +20,11 @@ public class DbUtil {
     public static AppDataBase getDb() {
         if (db == null) {
             db = Room.databaseBuilder(context,
-                    AppDataBase.class, "icebox-system-08").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+                    AppDataBase.class, "icebox-system-08")
+//                    .addMigrations(MIGRATION_1_2)
+                    .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
+                    .build();
         }
         return db;
     }
@@ -41,4 +47,13 @@ public class DbUtil {
             e.printStackTrace();
         }
     }
+
+    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            // 在这里执行数据库的更新操作，例如添加新的列
+            database.execSQL("ALTER TABLE YourEntity ADD COLUMN new_column INTEGER");
+        }
+    };
+
 }
