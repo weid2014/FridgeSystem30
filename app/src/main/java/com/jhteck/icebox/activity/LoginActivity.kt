@@ -209,10 +209,11 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
             for (i in map.values) {
                 tempList.add(
                     InventoryDao(
-                        "${i[0].material_batch.eas_lot}",
-                        "${i[0].material?.eas_material_name}",
+                        i[0].material_batch.eas_lot,
+                        i[0].material?.eas_material_name,
                         i.size,
-                        i[0].cell_number
+                        i[0].cell_number,
+                        i[0].material_batch.expired_at
                     )
                 )
             }
@@ -256,10 +257,11 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
                 if (i.remain < 100) {
                     tempList30.add(
                         InventoryDao(
-                            "${i.material_batch.eas_lot}",
-                            "${i.material?.eas_material_name}",
+                            i.material_batch.eas_lot,
+                            i.material?.eas_material_name,
                             1,
-                            i.cell_number
+                            i.cell_number,
+                            i.material_batch?.expired_at,
                         )
                     )
                 }

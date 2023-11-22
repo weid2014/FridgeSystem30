@@ -27,6 +27,8 @@ const val SNCODE_ORIGEN = "FEDCBA01CC000001"
 const val URL_REQUEST = "url_request"
 const val URL_TEST = "https://jh.test.lavandachen.com/"
 const val URL_KM = "http://10.128.81.174:8086/"
+const val URL_KM1 = "http://101.37.124.39:3002/"
+const val URL_KM2 = "https://rfid.kingmed.com.cn/"
 const val NOT_HARD_DEVICE = false
 
 const val SERIAL_PORT_LOCK = "serial_port_lock"
@@ -42,5 +44,6 @@ const val FRIDGE_TYPE_TWO = "双锁冰箱"
 const val FRIDGE_TYPE_ONE = "单锁冰箱"
 const val AUTO_LOGIN = false //自动登录，用于老化测试
 const val AUTO_LOGIN_STR = "auto_login_str"
+const val SHOW_ALL_NAME = "show_all_name"
 
 

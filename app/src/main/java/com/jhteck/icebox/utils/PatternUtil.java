@@ -1,5 +1,9 @@
 package com.jhteck.icebox.utils;
 
+import static com.jhteck.icebox.api.AppConstantsKt.SHOW_ALL_NAME;
+
+import com.hele.mrd.app.lib.base.BaseApp;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,22 +40,28 @@ public class PatternUtil {
 
     /**
      * 字符串只保留数字、字母、中文
+     *
      * @param str
      * @return
      */
     public static String removeMatch(String str) {
-        str=str.replaceAll("-", "");
-        str=str.replaceAll("/", "");
-        str=str.replaceAll("，", "");
-        str=str.replaceAll("_", "");
+        str = str.replaceAll("-", "");
+        str = str.replaceAll("/", "");
+        str = str.replaceAll("，", "");
+        str = str.replaceAll("_", "");
         return str.replaceAll("[^0-9a-zA-Z\u4e00-\u9fa5]", "");
     }
+
     public static String removeDigitalAndLetter(String value) {
-        String result = removeMatch(value);
-        result = removeDigital(result);
-        result = removeLetter(result);
+        if (!SharedPreferencesUtils.getPrefBoolean(BaseApp.app, SHOW_ALL_NAME, false)) {
+            String result = removeMatch(value);
+            result = removeDigital(result);
+            result = removeLetter(result);
 //        result = removeAll(result);
-        return result;
+            return result;
+        } else {
+            return value;
+        }
     }
 
 }

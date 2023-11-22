@@ -13,14 +13,10 @@ import com.hele.mrd.app.lib.base.BaseFragment
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
 import com.jhteck.icebox.adapter.InventoryListItemAdapter
-import com.jhteck.icebox.adapter.InventoryListItemAdapterScener
 import com.jhteck.icebox.adapter.ItemEditCellNumberAdapter
 import com.jhteck.icebox.api.AvailRfid
-import com.jhteck.icebox.api.ROLE_ID
 import com.jhteck.icebox.api.RfidDao
-import com.jhteck.icebox.bean.InventoryDao
 import com.jhteck.icebox.databinding.AppFragmentInventoryBinding
-import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.viewmodel.InventoryListViewModel
 import java.util.stream.Collectors
 
@@ -66,7 +62,6 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
     }
 
 
-
     override fun initView() {
         //监听搜索栏里面的变化
         binding.svInventoryList.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -79,7 +74,14 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
                 // 当修改了输入时的操作，根据关键字过滤列表，让Adapter填入新列表
                 // 如果只是更新部分数据，推荐使用notifyItemRangeChanged()或者notifyItemChanged()
                 val filterList = keyword?.let { filter(it) }
-                updateUIbyAvailList(filterList!!)
+                var mapOutList = filterList!!.stream()
+                    .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_number + t.remain })//根据批号分组
+
+                var tempOutList = mutableListOf<List<AvailRfid>>()
+                for (key in mapOutList.keys) {
+                    mapOutList.get(key)?.let { tempOutList.add(it) }
+                }
+                updateUIbyAvailList(tempOutList)
                 return false
             }
         })
@@ -138,137 +140,144 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
     }
 
 
-
-
     private fun AvailRfidsListSortBy(index: Int, tv: TextView) {
-        var sortByList: List<AvailRfid>? = null
+        var mapOutList = availRfidsList!!.stream()
+            .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_number + t.remain })//根据批号分组
 
+        var tempOutList = mutableListOf<List<AvailRfid>>()
+        for (key in mapOutList.keys) {
+            mapOutList.get(key)?.let { tempOutList.add(it) }
+        }
+
+        var tempsortList: List<List<AvailRfid>> ?=null
         when (index) {
             // (0 1) 根据eas_material_number 升降序
             0 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex0 = 1
-                sortByList = availRfidsList!!.sortedBy { it.material.eas_material_number }
+                tempsortList=tempOutList.sortedBy { it[0].material.eas_material_number }
             }
             1 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex0 = 0
-                sortByList = availRfidsList!!.sortedByDescending { it.material.eas_material_number }
+                tempsortList=tempOutList.sortedByDescending { it[0].material.eas_material_number }
             }
             // (2 3) eas_material_name 升降序 之后一次类推
             2 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex2 = 3
-                sortByList = availRfidsList!!.sortedBy { it.material.eas_material_name }
+                tempsortList=tempOutList.sortedBy { it[0].material.eas_material_name }
             }
             3 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex2 = 2
-                sortByList = availRfidsList!!.sortedByDescending { it.material.eas_material_name }
+                tempsortList=tempOutList.sortedByDescending { it[0].material.eas_material_name }
             }
 
             // (4 5) eas_material_desc 升降序 之后一次类推
             4 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex4 = 5
-                sortByList = availRfidsList!!.sortedBy { it.remain }
+                tempsortList=tempOutList.sortedBy { it[0].material_batch.eas_specs }
             }
             5 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex4 = 4
-                sortByList = availRfidsList!!.sortedByDescending { it.remain }
+                tempsortList=tempOutList.sortedByDescending { it[0].material_batch.eas_specs }
             }
             // (6 7)生产厂家 eas_supplier_name 升降序 之后一次类推
             6 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex6 = 7
-                sortByList = availRfidsList!!.sortedBy { it.eas_supplier_name }
+                tempsortList=tempOutList.sortedBy { it[0].eas_supplier_name }
             }
             7 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex6 = 6
-                sortByList = availRfidsList!!.sortedByDescending { it.eas_supplier_name }
+                tempsortList=tempOutList.sortedByDescending { it[0].eas_supplier_name }
             }
             // (8 9) 单位 eas_unit_name 升降序 之后一次类推
             8 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex8 = 9
-                sortByList = availRfidsList!!.sortedBy { it.material.eas_unit_name }
+                tempsortList=tempOutList.sortedBy { it[0].material.eas_unit_name }
             }
             9 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex8 = 9
-                sortByList = availRfidsList!!.sortedByDescending { it.material.eas_unit_name }
+                tempsortList=tempOutList.sortedByDescending { it[0].material.eas_unit_name }
             }
             // (10 11) remain 升降序 之后一次类推
             10 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex10 = 11
-                sortByList = availRfidsList!!.sortedBy { it.material.eas_material_name }
+                tempsortList=tempOutList.sortedBy { it[0].material.eas_material_name }
             }
             11 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex10 = 10
-                sortByList = availRfidsList!!.sortedByDescending { it.material.eas_material_name }
+                tempsortList=tempOutList.sortedByDescending { it[0].material.eas_material_name }
             }
             // (12 13) remain 升降序 之后一次类推
             12 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex12 = 13
-                sortByList = availRfidsList!!.sortedBy { it.remain }
+                tempsortList=tempOutList.sortedBy { it[0].remain }
             }
             13 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex12 = 12
-                sortByList = availRfidsList!!.sortedByDescending { it.remain }
+                tempsortList=tempOutList.sortedByDescending { it[0].remain }
             }
             // (14 15) eas_unit_number 升降序 之后一次类推
             14 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex14 = 15
-                sortByList = availRfidsList!!.sortedBy { it.material_batch.eas_lot }
+                tempsortList=tempOutList.sortedBy { it[0].material_batch.eas_lot }
             }
             15 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex14 = 14
-                sortByList = availRfidsList!!.sortedByDescending { it.material_batch.eas_lot }
+                tempsortList=tempOutList.sortedByDescending { it[0].material_batch.eas_lot }
             }
             // (16 17)有效期 is_out_eas 升降序 之后一次类推
             16 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex16 = 17
-                sortByList = availRfidsList!!.sortedBy { it.material_batch.expired_at }
+                tempsortList=tempOutList.sortedBy { it[0].material_batch.expired_at }
             }
             17 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex16 = 16
-                sortByList = availRfidsList!!.sortedByDescending { it.material_batch.expired_at }
+                tempsortList=tempOutList.sortedByDescending { it[0].material_batch.expired_at }
             }
             // (2 3) is_out_eas 升降序 之后一次类推
             18 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex18 = 19
-                sortByList = availRfidsList!!.sortedBy { it.is_out_eas }
+                tempsortList=tempOutList.sortedBy { it[0].is_out_eas }
             }
             19 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex18 = 18
-                sortByList = availRfidsList!!.sortedByDescending { it.is_out_eas }
+                tempsortList=tempOutList.sortedByDescending { it[0].is_out_eas }
             }
             20 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex20 = 21
-                sortByList = availRfidsList!!.sortedBy { it.cell_number }
+                tempsortList=tempOutList.sortedBy { it[0].cell_number }
             }
             21 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex20 = 20
-                sortByList = availRfidsList!!.sortedByDescending { it.cell_number }
+                tempsortList=tempOutList.sortedByDescending { it[0].cell_number }
             }
 
-            else -> sortByList = availRfidsList!!
+            else -> tempsortList=tempOutList.sortedBy { it[0].eas_supplier_name }
         }
-        updateUIbyAvailList(sortByList!!)
+
+//        val temp = tempOutList.sortedBy { it[0].material_batch.expired_at }
+        updateUIbyAvailList(tempsortList)
     }
 
     private fun changeTextViewIcon(tv: TextView, up: Boolean) {
@@ -294,37 +303,39 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
         if (bindingInitialzed()) {
             //获取用户角色ID
             availRfidsList = rfidDao.results.avail_rfids
-            updateUIbyAvailList(availRfidsList!!)
-        }
-    }
 
-    private fun updateUIbyAvailList(list: List<AvailRfid>) {
-        val roleID = SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10)
-        binding.tvCountNumber.text = "共${list!!.size}个"
-        if (list!!.isNotEmpty()) {
-            val layoutManager = LinearLayoutManager(BaseApp.app)
-            layoutManager.orientation = LinearLayoutManager.VERTICAL
-            binding.rvDrugContent.layoutManager = layoutManager
-
-            var mapOutList = list!!.stream()
-                .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_number+t.remain })//根据批号分组
+            var mapOutList = availRfidsList!!.stream()
+                .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_number + t.remain })//根据批号分组
 
             var tempOutList = mutableListOf<List<AvailRfid>>()
             for (key in mapOutList.keys) {
                 mapOutList.get(key)?.let { tempOutList.add(it) }
             }
+            updateUIbyAvailList(tempOutList)
+        }
+    }
+
+
+    private fun updateUIbyAvailList(list: List<List<AvailRfid>>) {
+        binding.tvCountNumber.text = "共${availRfidsList!!.size}个"
+        if (list!!.isNotEmpty()) {
+            val layoutManager = LinearLayoutManager(BaseApp.app)
+            layoutManager.orientation = LinearLayoutManager.VERTICAL
+            binding.rvDrugContent.layoutManager = layoutManager
+
             if (clickTvNumber && currentIndex10 == 10) {
-                tempOutList = tempOutList.sortedBy { it.size }.toMutableList()
+                list.sortedBy { it.size }.toMutableList()
             } else {
-                tempOutList = tempOutList.sortedByDescending { it.size }.toMutableList()
+                list.sortedByDescending { it.size }.toMutableList()
             }
             clickTvNumber = false
-            binding.rvDrugContent.adapter = InventoryListItemAdapter(this, tempOutList,
+            binding.rvDrugContent.adapter = InventoryListItemAdapter(this, list,
                 object : ItemEditCellNumberAdapter<AvailRfid> {
                     override fun onEdit(t: AvailRfid, position: Int) {
                         viewModel.editCellNumber(t, position)
                     }
                 })
+            binding.rvDrugContent.adapter?.notifyDataSetChanged()
             /*when (roleID) {
                 10, 20 -> {
                     binding.rvDrugContent.adapter = InventoryListItemAdapter(this, tempOutList,

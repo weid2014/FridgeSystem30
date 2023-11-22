@@ -10,12 +10,14 @@ public class InventoryDao {
     private String DrugName;
     private int DrugNumber;
     private int CellNumber;
+    private String expired_at;
 
-    public InventoryDao(String drugNO, String drugName, int drugNumber, int cellNumber) {
+    public InventoryDao(String drugNO, String drugName, int drugNumber, int cellNumber,String expired_at) {
         DrugNO = drugNO;
         DrugName = drugName;
         DrugNumber = drugNumber;
         CellNumber = cellNumber;
+         this.expired_at=expired_at;
     }
 
     public String getDrugNO() {
@@ -48,5 +50,13 @@ public class InventoryDao {
 
     public void setCellNumber(int cellNumber) {
         CellNumber = cellNumber;
+    }
+
+    public String getExpired_at() {
+        return expired_at;
+    }
+
+    public void setExpired_at(String expired_at) {
+        this.expired_at = expired_at;
     }
 }

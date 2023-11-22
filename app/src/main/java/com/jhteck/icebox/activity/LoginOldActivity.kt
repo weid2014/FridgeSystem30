@@ -22,7 +22,6 @@ import com.jhteck.icebox.adapter.LoginPageShowItemAdapter
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.bean.InventoryDao
 import com.jhteck.icebox.databinding.AppActivityLoginOldBinding
-import com.jhteck.icebox.face.activity.CameraXActivity
 import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.utils.CustomDialog
 import com.jhteck.icebox.utils.SharedPreferencesUtils
@@ -121,16 +120,20 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         binding.imTestLogin.setOnClickListener {
             if (DEBUG) {
 //                takePhoto()
-//                viewModel.login("admin", "Jinghe233")
+                viewModel.login("admin", "Jinghe233")
 //                service?.sendRfid()
-                startActivity(Intent(this, CameraXActivity::class.java))
+//                startActivity(Intent(this, CameraXActivity::class.java))
             }
         }
         binding.imTestLogin.setOnLongClickListener {
-            val isAutoLogin=SharedPreferencesUtils.getPrefBoolean(this@LoginOldActivity, AUTO_LOGIN_STR, AUTO_LOGIN)
-            val showMessageText = if(isAutoLogin){
+            val isAutoLogin = SharedPreferencesUtils.getPrefBoolean(
+                this@LoginOldActivity,
+                AUTO_LOGIN_STR,
+                AUTO_LOGIN
+            )
+            val showMessageText = if (isAutoLogin) {
                 "是否关闭老化测试"
-            }else{
+            } else {
                 "是否开启老化测试"
             }
             val customDialog = CustomDialog(this@LoginOldActivity)
@@ -138,11 +141,23 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
                 .setsCancel("取消", View.OnClickListener {
                     customDialog.dismiss()
                 }).setsConfirm("确定", View.OnClickListener {
-                    SharedPreferencesUtils.setPrefBoolean(this@LoginOldActivity, AUTO_LOGIN_STR, !isAutoLogin)
+                    SharedPreferencesUtils.setPrefBoolean(
+                        this@LoginOldActivity,
+                        AUTO_LOGIN_STR,
+                        !isAutoLogin
+                    )
                     customDialog.dismiss()
                     viewModel.login_auto("admin", "Jinghe233")
                 }).show()
             true
+        }
+        binding.cbShowAllName?.isChecked =
+            SharedPreferencesUtils.getPrefBoolean(this, SHOW_ALL_NAME, false)
+        binding.cbShowAllName?.setOnCheckedChangeListener { compoundButton, b ->
+            SharedPreferencesUtils.setPrefBoolean(this, SHOW_ALL_NAME, b)
+            binding.rvNormalContent?.adapter?.notifyDataSetChanged()
+
+            binding.rvPauseContent1?.adapter?.notifyDataSetChanged()
         }
         initPermission()
 //        doRegisterReceiver();
@@ -150,7 +165,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
 
     override fun tryLoadData() {
 
-            viewModel.login_auto("admin", "Jinghe233")
+        viewModel.login_auto("admin", "Jinghe233")
     }
 
     private fun initPermission() {
@@ -201,21 +216,23 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
     }
 
     private fun loadRridsData() {
-        viewModel.rfidDatas.observe(this) {
+        viewModel.rfidDatas.observe(this) { it ->
             clearList()
             for (i in it.avail_rfids) {
                 if (i.remain == 100) {
                     tempListNormal.add(i)
                 }
             }
-            var map = it.avail_rfids.stream()
+
+            val map = it.avail_rfids.stream()
                 .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_id + t.remain })//根据批号分组
             for (i in map.values) {
                 val inventoryDao = InventoryDao(
-                    "${i[0].material_batch.eas_lot}",
-                    "${i[0].material?.eas_material_name}",
+                    i[0].material_batch.eas_lot,
+                    i[0].material?.eas_material_name,
                     i.size,
-                    i[0].cell_number
+                    i[0].cell_number,
+                    i[0].material_batch.expired_at,
                 )
                 if (i[0].remain == 100) {
                     tempList.add(inventoryDao)
@@ -223,6 +240,8 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
                     tempListPause.add(inventoryDao)
                 }
             }
+            tempList.sortBy { it.expired_at }
+            tempListPause.sortBy { it.expired_at }
 
             binding.rvNormalContent?.adapter?.notifyDataSetChanged()
             binding.tvNormalNum.text = "共${tempListNormal.size}个"
@@ -390,6 +409,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         requestCode: Int, permissions: Array<String>, grantResults:
         IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 startCamera()

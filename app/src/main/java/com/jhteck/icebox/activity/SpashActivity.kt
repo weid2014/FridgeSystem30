@@ -183,7 +183,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     private fun initSpinnerView() {
         SharedPreferencesUtils.setPrefString(this@SpashActivity, URL_REQUEST, URL_TEST)
         val selectUrlList = listOf(
-            URL_TEST, URL_KM
+            URL_TEST, URL_KM, URL_KM1, URL_KM2
         )
         binding.spSelectUrl.adapter =
             ArrayAdapter(

@@ -23,6 +23,17 @@
                 android:layout_height="0.1dp" />
         </FrameLayout>
 
+        <CheckBox
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="24dp"
+            android:text="是否显示物料全名"
+            android:textColor="@color/app_white"
+            android:buttonTint="@color/app_white"
+            android:textSize="16sp"
+            android:id="@+id/cb_show_all_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <TextView
             android:id="@+id/tv_offline_num"
             android:layout_width="252dp"
@@ -43,17 +54,17 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="862dp"
         android:layout_marginStart="50dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="50dp"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="68dp"
@@ -103,7 +114,6 @@
                 android:background="@drawable/app_shape_bottom_green_radius_5" />
 
         </LinearLayout>
-
     </LinearLayout>
 
 

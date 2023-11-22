@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="120dp"
     android:layout_height="144dp"
-    android:layout_gravity="center"
-    android:layout_marginStart="24dp"
+    android:layout_marginStart="18dp"
     android:layout_marginTop="24dp"
+    android:id="@+id/ll_drug_bg"
     android:background="@drawable/app_shape_white_radius_10"
     android:orientation="vertical">
 
@@ -25,8 +25,8 @@
         android:id="@+id/tv_DrugName"
         android:layout_width="match_parent"
         android:layout_height="88dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="2dp"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
         android:focusableInTouchMode="true"
         android:gravity="center"
         android:text="物料号"
@@ -34,6 +34,7 @@
         android:textSize="12sp" />
 
     <View
+        android:id="@+id/v_line"
         android:layout_width="100dp"
         android:layout_height="1dp"
         android:layout_gravity="center_horizontal"
