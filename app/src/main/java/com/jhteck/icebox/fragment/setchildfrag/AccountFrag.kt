@@ -69,6 +69,12 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
         parentFragment as AccountFrag
     }
 
+    override fun tryLoadData() {
+        super.tryLoadData()
+        Log.d("tryLoadData","重新加载")
+        viewModel.getAllUsers()
+    }
+
     override fun initView() {
         binding.btnNewAccount.setOnClickListener {
             showNewAccountPopWindow()
@@ -399,7 +405,8 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                     val curDate = Date(System.currentTimeMillis()) //获取当前时间
                     val createDate: String = formatter.format(curDate) //格式转换
 
-                    user.user_id = SnowFlake.getInstance().nextId().toString()
+                    var nextId=SnowFlake.getInstance().nextId().toString()
+                    user.user_id = nextId.substring(nextId.length-7)
                     user.created_by =
                         SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10).toString()
                     user.created_time = createDate

@@ -92,9 +92,11 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         binding.btnLogin.setOnClickListener {
             //登录按键点击事件
             takePhoto()
-            viewModel.login(binding.edUserName.text.toString(), binding.edPassword.text.toString())
+            viewModel.login(
+                binding.edUserName.text.trim().toString(),
+                binding.edPassword.text.trim().toString()
+            )
         }
-        viewModel.initHFCradList()
 
 
         //点击切换到账号登录
@@ -161,6 +163,13 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         }
         initPermission()
 //        doRegisterReceiver();
+        if (SharedPreferencesUtils.getPrefBoolean(this, IS_FIRST_RUN, false)) {
+            viewModel.synchronizedAccountToServer()
+        }
+        // 将标志位设置为 false，表示应用程序已经被安装过
+        SharedPreferencesUtils.setPrefBoolean(this, IS_FIRST_RUN, false)
+        viewModel.sendCommAt4Clock(this)
+        viewModel.restartAppAt6Am(this)
     }
 
     override fun tryLoadData() {

@@ -19,6 +19,8 @@
     <string name="sncode">FEDCBA01TEST0008</string>
     <string name="url_test">https://jh.test.lavandachen.com/</string>
     <string name="url_km">http://10.128.81.174:8086/</string>
+    <string name="url_km1">http://101.37.124.39:3002/</string>
+    <string name="url_km2">https://rfid.kingmed.com.cn/</string>
     <string name="admin_password">Jinghe233</string>
 
     <string name="drug_spec">规格</string>

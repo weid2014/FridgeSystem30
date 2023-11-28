@@ -81,20 +81,24 @@ class InventoryListItemAdapter(
             )
             val remainDay=DateUtils.getDaysBetween(toDay,showDate,DateUtils.format_yyyyMMdd)
             binding.tvValidityDate.text = showDate
+
+            binding.tvValidityStatus.text = "未过期"
+            binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_color_00d88e))
             if(remainDay<0){
+                binding.tvValidityStatus.text = "过期"
+                binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_color_ff3030))
                 binding.tvValidityDate.setTextColor(BaseApp.app.getColor(R.color.app_color_ff3030))
             }else if(remainDay<7){
                 binding.tvValidityDate.setTextColor(BaseApp.app.getColor(R.color.app_color_fbaf5d))
             }
 
-            //效期状态
+            /*//效期状态
             if (item[0].is_out_eas) {
-                binding.tvValidityStatus.text = "过期"
-                binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_color_ff3030))
+
+
             } else {
-                binding.tvValidityStatus.text = "未过期"
-                binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_color_00d88e))
-            }
+
+            }*/
 
             //位置
             binding.tvCellNumber.text = CellNumberUtil.getCellNumberText(item[0].cell_number)

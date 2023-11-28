@@ -54,7 +54,7 @@ class SettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingBinding>() 
 
 
         when (roleID) {
-            10 -> {
+            10,20 -> {
                 val upgradesFrag = UpgradesFrag.newInstance()
                 val deviceSettingFrag = DeviceSettingFrag.newInstance()
                 tabs.add(binding.tvAccount)
@@ -80,7 +80,7 @@ class SettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingBinding>() 
                     setupSelectItem(2)
                 }
             }
-            20->{
+            /*20->{
                 tabs.add(binding.tvAccount)
                 binding.vpContentSetting.adapter =
                     AppTabPagerAdapter(
@@ -96,7 +96,7 @@ class SettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingBinding>() 
                 binding.tvAccount.setOnClickListener {
                     setupSelectItem(0)
                 }
-            }
+            }*/
         }
         setupSelectItem(0)
     }
@@ -118,7 +118,9 @@ class SettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingBinding>() 
 
     override fun initObservables() {
         super.initObservables()
-
+        viewModel.syncAccountSuccess.observe(this){
+            accountFrag.tryLoadData()
+        }
     }
 
 

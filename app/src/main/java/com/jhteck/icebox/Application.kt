@@ -30,7 +30,7 @@ class Application : BaseApp(), Thread.UncaughtExceptionHandler {
     val Target = "Application";
     override fun setupApiManager(): ApiManager {
         return ApiManager.build {
-            baseUrl(SharedPreferencesUtils.getPrefString(app, URL_REQUEST, URL_TEST))
+            baseUrl(SharedPreferencesUtils.getPrefString(app, URL_REQUEST, URL_KM2))
 
             //                baseUrl("http://10.128.81.174:8086")
 //            baseUrl("https://rfid.kingmed.com.cn")
@@ -51,7 +51,7 @@ class Application : BaseApp(), Thread.UncaughtExceptionHandler {
                     "authorization", "Bearer ${
                         SharedPreferencesUtils.getPrefString(
                             app, SNCODE,
-                            SNCODE_TEST
+                            URL_KM2
                         )
                     }"
                 )
@@ -79,7 +79,7 @@ class Application : BaseApp(), Thread.UncaughtExceptionHandler {
     override fun onCreate() {
         super.onCreate()
         //腾讯bugly捕获bug日志.如果是外网才初始化
-        if (SharedPreferencesUtils.getPrefString(this, URL_REQUEST, URL_TEST).equals(URL_TEST)) {
+        if (!SharedPreferencesUtils.getPrefString(this, URL_REQUEST, URL_TEST).equals(URL_KM)) {
             CrashReport.initCrashReport(applicationContext, "30a4125338", false);
         }
         Thread.setDefaultUncaughtExceptionHandler(this)

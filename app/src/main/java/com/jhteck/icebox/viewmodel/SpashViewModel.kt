@@ -110,8 +110,8 @@ class SpashViewModel(application: android.app.Application) :
                     if (adminUser == null) {
                         var user = AccountEntity();
                         user.id = 1;
-                        user.user_id = SnowFlake.getInstance().nextId().toString();
-                        user.km_user_id = "30812321";
+                        user.user_id = "123456";
+                        user.km_user_id = "admin";
                         user.real_name = "管理员";
                         user.nick_name = "admin";
                         user.role_id = "10";
@@ -133,44 +133,17 @@ class SpashViewModel(application: android.app.Application) :
                         }
                         LockManage.getInstance().closeLock()
                         loginStatus.postValue(true)
-                        setAdminStatus.postValue(true)
+
                     } else {
 //                        DbUtil.getDb().userDao().delete(adminUser)
                     }
                     //wait wait wait
 //                    synchronizedAccount()//同步账户
 
-
-//                    if (users.count() == 1) {
-                    /*var keeper = AccountEntity();
-                    keeper.id = 2;
-                    keeper.user_id = SnowFlake.getInstance().nextId().toString();
-                    keeper.km_user_id = SnowFlake.getInstance().nextId().toString();
-                    keeper.real_name = "仓库管理员";
-                    keeper.nick_name = "keeper";
-                    keeper.role_id = "20";
-                    keeper.password_digest = MD5Util.encrypt("Jinghe233");
-                    keeper.status = 0;
-                    keeper.created_time =
-                        DateUtils.formatDateToString(Date(), DateUtils.format_yyyyMMddhhmmssfff)
-                    accountDao.insertAll(keeper)
-
-                    var scener = AccountEntity();
-                   scener.id = 3;
-                   scener.user_id = SnowFlake.getInstance().nextId().toString();
-                   scener.km_user_id = SnowFlake.getInstance().nextId().toString();
-                   scener.real_name = "现场人员";
-                   scener.nick_name = "scener";
-                   scener.role_id = "30";
-                   scener.password_digest = MD5Util.encrypt("Jinghe233");
-                   scener.status = 0;
-                   scener.created_time =
-                        DateUtils.formatDateToString(Date(), DateUtils.format_yyyyMMddhhmmssfff)
-                    accountDao.insertAll(scener)*/
-//                    }
-
                 } catch (e: Exception) {
                     e.printStackTrace()
+                }finally {
+                    setAdminStatus.postValue(true)
                 }
 
             }
@@ -255,7 +228,7 @@ class SpashViewModel(application: android.app.Application) :
                 } else {
                     var response = accountService.addAccount(user)
                     if (response.code() == 200) {
-                        //                                        Log.i("Application",user.nick_name+"---delete")
+                        Log.i(Target,user.nick_name+"---delete")
                         user.hasUpload = true
                         accountDao.update(user)
                     }

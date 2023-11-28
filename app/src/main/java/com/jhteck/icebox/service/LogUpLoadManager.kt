@@ -68,17 +68,19 @@ class LogUpLoadManager {
                                 DbUtil.getDb().accountOperationDao().update(item);//操作记录状态更新
                             }
                         }
+                        break
                     } catch (e: Exception) {
-                        Log.i(
+                        break
+                       /* Log.i(
                             TAG, e.message.toString()
                         )
                         try {
-                            Thread.sleep(60 * 1000 * 30);//五分钟后尝试推送数据
+                            Thread.sleep(60 * 1000 * 60);//五分钟后尝试推送数据
                         } catch (e: Exception) {
                             Log.i(
                                 TAG, e.message.toString()
                             )
-                        }
+                        }*/
                     }
                 }
             }
@@ -120,18 +122,19 @@ class LogUpLoadManager {
                                 DbUtil.getDb().rfidOperationDao().update(data);
                             }
                         }
-
+                        break
                     } catch (e: Exception) {
-                        Log.i(
+                        break
+                        /*Log.i(
                             TAG, e.message.toString()
                         )
                         try {
-                            Thread.sleep(60 * 1000 * 30);//五分钟后尝试推送数据
+                            Thread.sleep(60 * 1000 * 60);//五分钟后尝试推送数据
                         } catch (e: Exception) {
                             Log.i(
                                 TAG, e.message.toString()
                             )
-                        }
+                        }*/
                     }
                 }
             }
@@ -179,8 +182,10 @@ class LogUpLoadManager {
                                 sysOperationErrorDao.update(data);
                             }
                         }
+                        break
                     } catch (e: Exception) {
                         Log.i(TAG, e.message.toString())
+                        break
                     }
                 }
             }
@@ -222,8 +227,10 @@ class LogUpLoadManager {
                                 operationErrorDao.update(data);
                             }
                         }
+                        break
                     } catch (e: Exception) {
                         Log.i(TAG, e.message.toString())
+                        break
                     }
                 }
             }

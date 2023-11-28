@@ -181,7 +181,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
 
 
     private fun initSpinnerView() {
-        SharedPreferencesUtils.setPrefString(this@SpashActivity, URL_REQUEST, URL_TEST)
+//        SharedPreferencesUtils.setPrefString(this@SpashActivity, URL_REQUEST, URL_TEST)
         val selectUrlList = listOf(
             URL_TEST, URL_KM, URL_KM1, URL_KM2
         )
@@ -330,10 +330,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
             //同步其他冰箱信息，操作记录，库存记录等
             viewModel.syncOtherSystem(sncode)
         }
-        if (isSyncOtherSystem) {
-            //同步旧账号信息
-            oldSncoede?.let { viewModel.synchronizedAccount(it) }
-        }
+
         viewModel.activeFridges(fridgesActiveBo)
     }
 
@@ -379,8 +376,6 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         viewModel.loginStatus.observe(this) {
             startActivity(Intent(this, LoginOldActivity::class.java))
             finish()
-            // 将标志位设置为 false，表示应用程序已经被安装过
-            SharedPreferencesUtils.setPrefBoolean(this@SpashActivity, IS_FIRST_RUN, false)
         }
         viewModel.setAntPowerStatus.observe(this) {
             registIceBox()
@@ -391,6 +386,12 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 viewModel.registAdmin(password)
             } else {
                 toast("密码不能为空!")
+            }
+        }
+        viewModel.setAdminStatus.observe(this){
+            if (isSyncOtherSystem) {
+                //同步旧账号信息
+                oldSncoede?.let { viewModel.synchronizedAccount(it) }
             }
         }
 

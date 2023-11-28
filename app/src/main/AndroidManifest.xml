@@ -82,6 +82,7 @@
             android:launchMode="singleTop" />
 
         <service android:name=".service.MyService" />
+        <service android:name=".service.CommandService" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

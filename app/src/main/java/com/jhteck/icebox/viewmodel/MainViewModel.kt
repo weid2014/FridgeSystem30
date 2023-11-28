@@ -56,7 +56,7 @@ class MainViewModel(application: android.app.Application) :
             } catch (e: Exception) {
                 toast(e.message)
                 loadDataLocalStatus.postValue(false)
-                LocalService.cleanTable()
+//                LocalService.cleanTable()
                 toast("加载数据异常")
             } finally {
 //                hideLoading()
@@ -136,7 +136,7 @@ class MainViewModel(application: android.app.Application) :
     }
 
 
-    fun rfidsSync(rfids: List<String>) {
+    fun rfidsSync(rfids: List<AvailRfid>) {
         viewModelScope.launch {
             try {
 //                showLoading("全量上报，请稍等...")
@@ -144,7 +144,7 @@ class MainViewModel(application: android.app.Application) :
                 val rfidList = mutableListOf<RfidSync>()
 
                 for (rfid in rfids) {
-                    var rfidEntity = DbUtil.getDb().availRfidDao().getByRfid(rfid);
+                    /*var rfidEntity = DbUtil.getDb().availRfidDao().getByRfid(rfid.rfid);
                     rfidEntity.cell_number
                     var cellNumber = 1
                     if (rfidEntity.cell_number != null) {
@@ -153,20 +153,19 @@ class MainViewModel(application: android.app.Application) :
                     var remain = 100
                     if (rfidEntity.remain != null) {
                         remain = rfidEntity.remain!!;
-                    }
-                    rfidList.add(RfidSync(cellNumber, remain, rfid))
+                    }*/
+                    rfidList.add(RfidSync(rfid.cell_number, rfid.remain, rfid.rfid))
                 }
                 val bodySync = genBody(requestSync(rfidList))
 //                apiService.syncRfids()
                 val repSync = RetrofitClient.getService().syncRfids(bodySync)
                 if (repSync.code() == 200) {
                     Log.d(TAG, "全量上报成功")
-                    DbUtil.getDb().offlineRfidDao().clean()
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "全量上报异常$e")
             } finally {
-
+                DbUtil.getDb().offlineRfidDao().clean()
 //                hideLoading()
             }
         }
@@ -260,7 +259,7 @@ class MainViewModel(application: android.app.Application) :
                     } else {
                         noData.postValue(true)
                     }
-                    rfidsSync(rfids)
+                    rfidsSync(getAvailRfid)
                 }else{
                     goToOffLineData(rfids)
                 }

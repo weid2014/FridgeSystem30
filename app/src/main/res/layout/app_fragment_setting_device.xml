@@ -16,12 +16,11 @@
             android:orientation="horizontal">
 
             <Button
-                android:visibility="gone"
                 android:id="@+id/btn_url_select"
                 android:layout_width="170dp"
                 android:layout_height="60dp"
                 android:layout_centerInParent="true"
-                android:background="@drawable/app_shape_white_radius_5"
+                android:background="@drawable/app_shape_bottom_green_radius_5"
                 android:gravity="center"
                 android:text="平台地址选择"
                 android:textColor="@color/app_white"
@@ -50,6 +49,18 @@
                 android:background="@drawable/app_shape_bottom_green_radius_5"
                 android:gravity="center"
                 android:text="串口设置"
+                android:textColor="@color/app_white"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_account_sync"
+                android:layout_width="170dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="54dp"
+                android:background="@drawable/app_shape_bottom_green_radius_5"
+                android:gravity="center"
+                android:text="账号同步"
                 android:textColor="@color/app_white"
                 android:textSize="16sp" />
 
@@ -359,7 +370,7 @@
                 android:gravity="center"
                 android:text="@string/url_test"
                 android:textColor="#000000"
-                android:textSize="22sp" />
+                android:textSize="16sp" />
 
             <RadioButton
                 android:id="@+id/rb_url2"
@@ -373,7 +384,35 @@
                 android:gravity="center"
                 android:text="@string/url_km"
                 android:textColor="#000000"
-                android:textSize="22sp" />
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/rb_url3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/radiobutton_style"
+                android:button="@null"
+                android:checked="false"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:text="@string/url_km1"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/rb_url4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/radiobutton_style"
+                android:button="@null"
+                android:checked="false"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:text="@string/url_km2"
+                android:textColor="#000000"
+                android:textSize="16sp" />
 
 
         </RadioGroup>
@@ -682,6 +721,77 @@
                 android:textSize="15sp" />
         </LinearLayout>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_account_sync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="240dp"
+        android:layout_marginEnd="120dp"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="(可以同步其他已经激活的冰箱的账号信息)"
+            android:textSize="15dp" />
+        <EditText
+            android:layout_gravity="center"
+            android:id="@+id/ed_old_sncode"
+            android:layout_width="400dp"
+            android:layout_marginTop="24dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:gravity="center"
+            android:background="@drawable/app_shape_white_radius_9"
+            android:hint="请输入"
+            android:text="@string/sncode"
+            android:textSize="19sp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="54dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/btn_sync_account_cancle"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_centerInParent="true"
+
+                    android:background="@drawable/app_shape_white_radius_5"
+                    android:gravity="center"
+                    android:text="取消"
+                    android:textColor="@color/app_white"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn_sync_account_ok"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="54dp"
+                    android:background="@drawable/app_shape_bottom_green_radius_5"
+                    android:gravity="center"
+                    android:text="同步"
+                    android:textColor="@color/app_white"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>

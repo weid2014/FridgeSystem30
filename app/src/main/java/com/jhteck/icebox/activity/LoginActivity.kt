@@ -82,7 +82,6 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
             //登录按键点击事件
             viewModel.login(binding.edUserName.text.toString(), binding.edPassword.text.toString())
         }
-        viewModel.initHFCradList()
 
 
         //点击切换到账号登录

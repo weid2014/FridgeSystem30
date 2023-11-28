@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseFragment
+import com.hele.mrd.app.lib.common.ext.toast
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.adapter.AntListAdapter
 import com.jhteck.icebox.adapter.IAntPowerCallback
@@ -26,6 +27,7 @@ import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.utils.BroadcastUtil
 import com.jhteck.icebox.utils.CustomDialog
 import com.jhteck.icebox.utils.SharedPreferencesUtils
+import com.jhteck.icebox.utils.ToastUtils
 import com.jhteck.icebox.viewmodel.SettingViewModel
 import com.naz.serial.port.SerialPortFinder
 import org.json.JSONArray
@@ -179,19 +181,20 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             }
         })
 
-        binding.btnUrlSelect.visibility=View.GONE
         binding.btnUrlSelect.setOnClickListener {
             hideAllLayout()
             binding.llUrlSelect.visibility = View.VISIBLE
 
         }
-        if (SharedPreferencesUtils.getPrefString(requireContext(), URL_REQUEST, URL_TEST).equals(
-                URL_TEST
-            )
-        ) {
+        val baseUrl=SharedPreferencesUtils.getPrefString(requireContext(), URL_REQUEST, URL_TEST)
+        if (baseUrl.equals(URL_TEST)) {
             binding.rbUrl1.isChecked = true
-        } else {
+        } else if(baseUrl.equals(URL_KM)){
             binding.rbUrl2.isChecked = true
+        }else if(baseUrl.equals(URL_KM1)){
+            binding.rbUrl3.isChecked = true
+        }else if(baseUrl.equals(URL_KM2)){
+            binding.rbUrl4.isChecked = true
         }
 
         binding.btnSaveUrl.setOnClickListener {
@@ -202,11 +205,15 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
                     customDialog.dismiss()
                 }).setsConfirm("确定", View.OnClickListener {
                     //保存url
-                    var urlText = URL_TEST
+                    var urlText = URL_KM2
                     if (binding.rbUrl1.isChecked) {
                         urlText = URL_TEST
                     } else if (binding.rbUrl2.isChecked) {
                         urlText = URL_KM
+                    }else if(binding.rbUrl3.isChecked){
+                        urlText = URL_KM1
+                    }else if(binding.rbUrl4.isChecked){
+                        urlText = URL_KM2
                     }
                     SharedPreferencesUtils.setPrefString(requireContext(), URL_REQUEST, urlText)
                     binding.llUrlSelect.visibility = View.GONE
@@ -275,6 +282,22 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         binding.btnLockStatus.setOnClickListener {
             viewModel.getLockStatus()
         }
+        //账号同步相关按键事件
+        binding.btnAccountSync.setOnClickListener {
+            showSyncAccountLayout()
+        }
+        binding.btnSyncAccountOk.setOnClickListener {
+            //账号拉取
+            val oldSncoede = binding.edOldSncode.text.toString().trim()
+            if (!chechSnCode(oldSncoede)) {
+                ToastUtils.longToast(requireContext(),"请输入正确的SN码")
+                return@setOnClickListener
+            }
+            oldSncoede?.let { viewModel.synchronizedAccount(it) }
+        }
+        binding.btnSyncAccountCancle.setOnClickListener {
+            hideAllLayout()
+        }
         doRegisterReceiver()
     }
 
@@ -339,22 +362,40 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         binding.llFridgesOperate.visibility = View.VISIBLE
     }
 
+    private fun showSyncAccountLayout(){
+        hideAllLayout()
+        binding.llAccountSync.visibility = View.VISIBLE
+    }
+
     private fun hideAllLayout() {
         binding.llFridgesOperate.visibility = View.GONE
         binding.llSerialSetting.visibility = View.GONE
         binding.llUrlSelect.visibility = View.GONE
+        binding.llAccountSync.visibility=View.GONE
     }
 
     override fun initObservables() {
         super.initObservables()
         viewModel.fridgesActiveResultBo.observe(this) {
+            if(it!=null){
             showFridgesOperateLayout()
             binding.edLocation.setText(it.location)
             binding.edDeviceAlias.setText(it.device_alias)
             binding.edCells.setText(it.cells.toString())
             binding.edSncode.setText(it.sncode)
             binding.edStyle.setText(it.style.toString())
-            binding.edTemperature.setText("${(it.temperature)}")
+            binding.edTemperature.setText("${(it.temperature)}")}
+            else{
+                val customDialog = CustomDialog(requireContext())
+                val sncode =SharedPreferencesUtils.getPrefString(requireContext(), SNCODE,
+                    SNCODE_TEST)
+                customDialog.setsTitle("温馨提示").setsMessage("${sncode}状态异常，请重新激活")
+                    .setsCancel("取消", View.OnClickListener {
+                        customDialog.dismiss()
+                    }).setsConfirm("确定", View.OnClickListener {
+                        customDialog.dismiss()
+                    }).show()
+            }
         }
 
         viewModel.syncAccountSuccess.observe(this) {
@@ -431,5 +472,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         startActivity(intent)
         requireActivity().finish()
     }
-
+    fun chechSnCode(sncodeStr: String): Boolean {
+        return sncodeStr.isNotEmpty() && sncodeStr.length == 16 && sncodeStr.startsWith("FEDCBA")
+    }
 }
