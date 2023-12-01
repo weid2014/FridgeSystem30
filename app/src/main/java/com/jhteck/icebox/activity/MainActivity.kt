@@ -454,6 +454,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
                 if (inList.isNotEmpty()) {
                     tvRemainTitle?.visibility = View.VISIBLE
                 }
+                Log.d("TAG", "inList${inList.toString()}")
                 rvInventoryResultIN?.adapter =
                     InventoryListAdapterScener(inList, object : ISettlement {
                         override fun settlement(availRfid: AvailRfid) {

@@ -5,6 +5,7 @@ package com.jhteck.icebox.adapter
  *@author wade
  *@date 2023/7/1 23:19
  */
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +36,10 @@ class LoginPageShowItemAdapter(private val data: List<InventoryDao>) :
         holder.bindData(data[position])
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     class ViewHolder(private val binding: RvNomalContentItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindData(item: InventoryDao) {
@@ -52,6 +57,7 @@ class LoginPageShowItemAdapter(private val data: List<InventoryDao>) :
                 DateUtils.format_yyyyMMdd
             )
             val remainDay = DateUtils.getDaysBetween(toDay, showDate, DateUtils.format_yyyyMMdd)
+            Log.d("remainDay","toDay=${toDay},showDate=${showDate},remainDay=${remainDay}")
             if (remainDay < 0) {
                 binding.tvDrugName.setTextColor(BaseApp.app.getColor(R.color.app_color_ff3030))
                 binding.tvDrugNumber.setTextColor(BaseApp.app.getColor(R.color.app_color_ff3030))

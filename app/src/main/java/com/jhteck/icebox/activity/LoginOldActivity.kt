@@ -234,7 +234,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
             }
 
             val map = it.avail_rfids.stream()
-                .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_id + t.remain })//根据批号分组
+                .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_id + t.remain + t.material_batch.expired_at})//根据批号分组
             for (i in map.values) {
                 val inventoryDao = InventoryDao(
                     i[0].material_batch.eas_lot,

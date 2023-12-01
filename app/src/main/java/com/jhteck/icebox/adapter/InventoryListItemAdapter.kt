@@ -48,6 +48,9 @@ class InventoryListItemAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindData(data[position], operator)
     }
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
 
     class ViewHolder(
         private val frag: InventoryListFrag,

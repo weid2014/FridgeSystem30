@@ -1,5 +1,6 @@
 package com.jhteck.icebox.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,7 @@ class InventoryListAdapterScener(
         fun bindData(item: AvailRfid, settlement: ISettlement) {
             val tempName = PatternUtil.removeDigitalAndLetter(item.material.eas_material_name)
             binding.tvDrugName.text = tempName
+            Log.d("TAG", "item.remain: $item.remain")
             when (item.remain) {
                 20 -> {
                     binding.tvRemain40.visibility = View.INVISIBLE

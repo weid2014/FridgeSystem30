@@ -18,7 +18,7 @@ interface ILoginApiService :IAccountService, ApiService {
 //    @Headers("authorization: Bearer FEDCBA01CC000001")
     suspend fun login(@Body body: RequestBody): ApiResponse<LoginResponseDto>
     //批量查询rfid
-    @POST("/api/f/rfids/")
+    @POST("/api/f/rfids")
 //    @Headers("authorization: Bearer FEDCBA01CC000001")
     suspend fun getRfids(@Body body: RequestBody): Response<RfidDao>
 

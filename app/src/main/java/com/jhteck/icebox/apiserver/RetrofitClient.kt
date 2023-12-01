@@ -23,7 +23,7 @@ object RetrofitClient {
         BaseApp.app,
         SNCODE,
         SNCODE_TEST
-    ),baseUrl:String =SharedPreferencesUtils.getPrefString(BaseApp.app, URL_REQUEST, URL_TEST)): ILoginApiService {
+    ),baseUrl:String =SharedPreferencesUtils.getPrefString(BaseApp.app, URL_REQUEST, URL_KM2)): ILoginApiService {
         Log.d("RetrofitClient", "正在同步冰箱账号信息==${baseUrl}")
         val okHttpClient = OkHttpClient.Builder()
             .callTimeout(30, TimeUnit.SECONDS)

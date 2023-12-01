@@ -71,7 +71,7 @@ class MyService : Service() {
         Log.d(TAG, "MyService onCreate")
         if(DEBUG)
             return
-//        LogUpLoadManager.startUploadAsync();
+        OperaterLogUpLoadManager.startUploadAsync();
 
         //wait wait wait
         NfcManage.getInstance().startNfcPort()

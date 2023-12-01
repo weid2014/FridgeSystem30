@@ -20,6 +20,7 @@ import com.jhteck.icebox.bean.AccountOperationEnum
 import com.jhteck.icebox.bean.OperationErrorEnum
 import com.jhteck.icebox.repository.entity.*
 import com.jhteck.icebox.rfidmodel.RfidManage
+import com.jhteck.icebox.service.OperaterLogUpLoadManager
 import com.jhteck.icebox.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -425,6 +426,9 @@ class MainViewModel(application: android.app.Application) :
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 LocalService.updateAvailRfidOnly(availRfid)
+                val tempList= mutableListOf<AvailRfid>()
+                tempList.add(availRfid)
+                rfidsSync(tempList)
             } catch (e: Exception) {
 
                 toast("更新失败${e.message}")
@@ -468,8 +472,9 @@ class MainViewModel(application: android.app.Application) :
 
                 var toJson = Gson().toJson(accountOperationBO)
                 println(toJson)
-
+                Log.d(TAG, "$toJson")
                 var result = RetrofitClient.getService().addAccountLogs(accountOperationBO)//发送到平台
+                Log.d(TAG, "$result")
                 if (result.code() == 200) {
                     accountOperationEntity.hasUploaded = true
                     DbUtil.getDb().accountOperationDao().update(accountOperationEntity);//操作记录状态更新
@@ -566,6 +571,7 @@ class MainViewModel(application: android.app.Application) :
                     Log.d(TAG, "${toJson}")
                     try {
                         var res = RetrofitClient.getService().syncRfidsLogs(rfidOperationBO)
+                        Log.d(TAG, "${res}")
                         if (res.code() == 200) {
                             for (data in rfidOperationBO.logs) {
                                 data.isHasUpload = true;
@@ -733,7 +739,7 @@ class MainViewModel(application: android.app.Application) :
 
     private var timer: CountDownTimer? = null
     fun startCountDownTime() {
-        timer = object : CountDownTimer(10 * 1000, 1000) {
+        timer = object : CountDownTimer(20 * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 println("seconds remaining: " + millisUntilFinished / 1000)
                 var remainTimeInt: Int = (millisUntilFinished / 1000).toInt()
