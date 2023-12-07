@@ -6,10 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
 import com.jhteck.icebox.Lockmodel.LockManage
-import com.jhteck.icebox.api.AntPowerDao
-import com.jhteck.icebox.api.DEBUG
-import com.jhteck.icebox.api.FridgesActiveBo
-import com.jhteck.icebox.api.SNCODE
+import com.jhteck.icebox.api.*
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.RetrofitClient
 import com.jhteck.icebox.repository.entity.AccountEntity
@@ -53,7 +50,8 @@ class SpashViewModel(application: android.app.Application) :
             viewModelScope.launch(Dispatchers.Default) {
                 try {
                     showLoading("正在激活冰箱，请稍等...")
-                    val response = RetrofitClient.getService(sncode =fridgesActiveBo.sncode).fridgesActive(fridgesActiveBo);
+                    val response = RetrofitClient.getService(sncode = fridgesActiveBo.sncode)
+                        .fridgesActive(fridgesActiveBo);
                     if (response.code() == 200) {
                         toast("激活冰箱成功")
                         var res = response.body()?.results;
@@ -67,6 +65,7 @@ class SpashViewModel(application: android.app.Application) :
                                 } else {
                                     DbUtil.getDb().fridgesInfoDao().insert(res)
                                 }
+                                SharedPreferencesUtils.setPrefString(getApplication(), FRIDGEID, id)
                             }
                         }
                         SharedPreferencesUtils.setPrefString(
@@ -74,6 +73,7 @@ class SpashViewModel(application: android.app.Application) :
                             SNCODE,
                             fridgesActiveBo.sncode
                         )
+
                         activeIceBoxStatus.postValue(true)
                         //wait wait wait
 //                        synchronizedAccount()//同步账户
@@ -142,7 +142,7 @@ class SpashViewModel(application: android.app.Application) :
 
                 } catch (e: Exception) {
                     e.printStackTrace()
-                }finally {
+                } finally {
                     setAdminStatus.postValue(true)
                 }
 
@@ -155,7 +155,7 @@ class SpashViewModel(application: android.app.Application) :
             try {
                 showLoading("正在获取天线功率，请稍等...")
 //                MyTcpServerListener.getInstance().getAntPower()
-                if(!DEBUG) {
+                if (!DEBUG) {
                     RfidManage.getInstance().getOutputPower()
                 }
             } catch (e: Exception) {
@@ -171,7 +171,7 @@ class SpashViewModel(application: android.app.Application) :
             try {
                 showLoading("正在设置天线功率，请稍等...")
 //                MyTcpServerListener.getInstance().setAntPower(antPowerDaoList)
-                if(!DEBUG) {
+                if (!DEBUG) {
                     RfidManage.getInstance().setOutputPower(antPowerDaoList)
                 }
                 delay(1000)
@@ -215,7 +215,7 @@ class SpashViewModel(application: android.app.Application) :
         val users = accountDao.getAll();
         val uploadUsers = users.filter { user -> user.hasUpload == false }
         GlobalScope.launch(context = Dispatchers.IO) {
-            var accountService = RetrofitClient.getService(sncode=sncode);
+            var accountService = RetrofitClient.getService(sncode = sncode);
             //同步远端到本地账户
             for (user in uploadUsers) {
                 if (user.status != 0) {
@@ -228,7 +228,7 @@ class SpashViewModel(application: android.app.Application) :
                 } else {
                     var response = accountService.addAccount(user)
                     if (response.code() == 200) {
-                        Log.i(Target,user.nick_name+"---delete")
+                        Log.i(Target, user.nick_name + "---delete")
                         user.hasUpload = true
                         accountDao.update(user)
                     }
@@ -242,7 +242,7 @@ class SpashViewModel(application: android.app.Application) :
                 if (accountResponse.code() == 200) {
                     var remoteAccounts = accountResponse.body()?.results
                     if (remoteAccounts?.accounts != null) {
-                       for (u in localUsers) {
+                        for (u in localUsers) {
                             if ("10".equals(u.role_id)) continue//系统管理员不做任何修改
                             var userLists =
                                 remoteAccounts.accounts.filter { obj -> obj.user_id == u.user_id }

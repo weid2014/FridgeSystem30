@@ -7,7 +7,7 @@
     <!--    padding ：内边距-->
     <!--    gradient ：渐变色（背景）-->
     <!--    size ：大小-->
-    <solid android:color="#ffffff"/>
+    <solid android:color="#ff3030"/>
     <corners android:radius="5dip"/>
     <stroke android:width="2dp" android:color="#ff3030"/>
     <padding

@@ -9,19 +9,8 @@ import retrofit2.http.*
 interface IMainApiService : ApiService {
 
     //单个查询frid
-    @GET("/api/f/rfids/{rfid}")
+    @GET("api/f/rfids/{rfid}")
     suspend fun getRfid(@Path("rfid") rfid: String): Response<TestDao>;
 
-    //批量查询rfid
-    @POST("/api/f/rfids/")
-    suspend fun getRfids(@Body body: RequestBody): Response<RfidDao>
-
-    //全量上报
-    @PUT("/api/f/rfids/sync")
-    suspend fun syncRfids(@Body body: RequestBody): Response<RfidDao>
-
-    //全量上报
-    @PUT("/api/f/rfids/logs/sync")
-    suspend fun syncRfidsLogs(@Body body: RfidOperationBO): Response<CommonResponse<RfidOperationReturnBO>>
 
 }

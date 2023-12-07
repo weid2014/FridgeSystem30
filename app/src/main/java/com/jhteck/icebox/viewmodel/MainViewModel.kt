@@ -20,8 +20,10 @@ import com.jhteck.icebox.bean.AccountOperationEnum
 import com.jhteck.icebox.bean.OperationErrorEnum
 import com.jhteck.icebox.repository.entity.*
 import com.jhteck.icebox.rfidmodel.RfidManage
-import com.jhteck.icebox.service.OperaterLogUpLoadManager
-import com.jhteck.icebox.utils.*
+import com.jhteck.icebox.utils.ContextUtils
+import com.jhteck.icebox.utils.DateUtils
+import com.jhteck.icebox.utils.DbUtil
+import com.jhteck.icebox.utils.SharedPreferencesUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -143,7 +145,7 @@ class MainViewModel(application: android.app.Application) :
 //                showLoading("全量上报，请稍等...")
                 //全量上报
                 val rfidList = mutableListOf<RfidSync>()
-
+//                Log.d(TAG, "全量上报成功 outList${outList}--inList${inList} ")
                 for (rfid in rfids) {
                     /*var rfidEntity = DbUtil.getDb().availRfidDao().getByRfid(rfid.rfid);
                     rfidEntity.cell_number
@@ -159,6 +161,7 @@ class MainViewModel(application: android.app.Application) :
                 }
                 val bodySync = genBody(requestSync(rfidList))
 //                apiService.syncRfids()
+                Log.d(TAG, "全量上报成功 rfidList ${rfidList}")
                 val repSync = RetrofitClient.getService().syncRfids(bodySync)
                 if (repSync.code() == 200) {
                     Log.d(TAG, "全量上报成功")
@@ -220,6 +223,8 @@ class MainViewModel(application: android.app.Application) :
                                 }
                             } catch (e: Exception) {
                                 Log.e(TAG, e.toString())
+                            }finally {
+                                rfidsSync(getAvailRfid)
                             }
                         }
                     }
@@ -260,8 +265,8 @@ class MainViewModel(application: android.app.Application) :
                     } else {
                         noData.postValue(true)
                     }
-                    rfidsSync(getAvailRfid)
-                }else{
+
+                } else {
                     goToOffLineData(rfids)
                 }
             } catch (e: Exception) {
@@ -273,6 +278,10 @@ class MainViewModel(application: android.app.Application) :
                 hideLoading()
             }
         }
+    }
+
+    fun testSyncRfid(){
+        rfidsSync(LocalService.loadRfidsFromLocal(Gson()).avail_rfids)
     }
 
 
@@ -426,7 +435,7 @@ class MainViewModel(application: android.app.Application) :
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 LocalService.updateAvailRfidOnly(availRfid)
-                val tempList= mutableListOf<AvailRfid>()
+                val tempList = mutableListOf<AvailRfid>()
                 tempList.add(availRfid)
                 rfidsSync(tempList)
             } catch (e: Exception) {
@@ -446,8 +455,7 @@ class MainViewModel(application: android.app.Application) :
     ) {
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                var accountOperationEntity =
-                    createAccountOperationEntity(accountOperationEnum, accountEntity.user_id)
+
                 when (accountOperationEnum) {
                     AccountOperationEnum.DEPOSIT -> accountEntity.deposit_count += 1;
                     AccountOperationEnum.STORE -> accountEntity.store_count += 1;
@@ -461,6 +469,15 @@ class MainViewModel(application: android.app.Application) :
                         accountEntity.consume_count += 1;
                     }
                 }
+
+                val fridgeId = SharedPreferencesUtils.getPrefString(BaseApp.app, FRIDGEID, "0")
+                var accountOperationEntity =
+                    createAccountOperationEntity(
+                        accountOperationEnum,
+                        accountEntity.user_id,
+                        fridgeId
+                    )
+
                 DbUtil.getDb().accountDao().update(accountEntity)//更新用户操作
 
                 DbUtil.getDb().accountOperationDao().insert(accountOperationEntity);//增加操作日志
@@ -493,6 +510,7 @@ class MainViewModel(application: android.app.Application) :
      * RFID操作
      */
     fun rfidOperationLog(
+        accountOperationEnum: AccountOperationEnum,
         accountEntity: AccountEntity,
         inList: List<AvailRfid>,
         outList: List<AvailRfid>
@@ -503,7 +521,12 @@ class MainViewModel(application: android.app.Application) :
                 for (item in inList) {
                     var rfidOperationEntity = RfidOperationEntity()
                     rfidOperationEntity.user_id = accountEntity.user_id;
-                    rfidOperationEntity.user_log_id = SnowFlake.getInstance().nextIdStr();
+                    rfidOperationEntity.user_log_id = "${accountOperationEnum.desc}${
+                        SharedPreferencesUtils.getPrefString(
+                            BaseApp.app,
+                            FRIDGEID, "0"
+                        )
+                    }${System.currentTimeMillis() / 1000}";
                     rfidOperationEntity.nick_name = accountEntity.nick_name;
                     rfidOperationEntity.isOfflineData = false;
                     if (accountEntity.role_id.toInt() == 30) {
@@ -511,12 +534,7 @@ class MainViewModel(application: android.app.Application) :
                     } else {
                         rfidOperationEntity.operation = 0
                     }
-                    rfidOperationEntity.log_at = "${
-                        DateUtils.formatDateToString(
-                            Date(),
-                            DateUtils.format_yyyyMMddhhmmssfff
-                        )
-                    }+08:00".replace(" ", "T")
+                    rfidOperationEntity.log_at = DateUtils.currentStringFormatTime()
                     rfidOperationEntity.eas_material_number = item.material.eas_material_number;
                     rfidOperationEntity.eas_material_name = item.material.eas_material_name;
                     rfidOperationEntity.eas_unit_number = item.material.eas_unit_number;
@@ -537,15 +555,15 @@ class MainViewModel(application: android.app.Application) :
                     var rfidOperationEntity = RfidOperationEntity()
                     rfidOperationEntity.isOfflineData = false
                     rfidOperationEntity.user_id = accountEntity.user_id;
-                    rfidOperationEntity.user_log_id = SnowFlake.getInstance().nextIdStr();
+                    rfidOperationEntity.user_log_id = "${accountOperationEnum.desc}${
+                        SharedPreferencesUtils.getPrefString(
+                            BaseApp.app,
+                            FRIDGEID, "0"
+                        )
+                    }${System.currentTimeMillis() / 1000}"
                     rfidOperationEntity.nick_name = accountEntity.nick_name;
                     rfidOperationEntity.operation = 1
-                    rfidOperationEntity.log_at = "${
-                        DateUtils.formatDateToString(
-                            Date(),
-                            DateUtils.format_yyyyMMddhhmmssfff
-                        )
-                    }+08:00".replace(" ", "T")
+                    rfidOperationEntity.log_at = DateUtils.currentStringFormatTime()
                     rfidOperationEntity.eas_material_number = item.material.eas_material_number;
                     rfidOperationEntity.eas_material_name = item.material.eas_material_name;
                     rfidOperationEntity.eas_unit_number = item.material.eas_unit_number;
@@ -609,6 +627,7 @@ class MainViewModel(application: android.app.Application) :
      * RFID 离线操作记录
      */
     fun rfidOffLineOperationLog(
+        accountOperationEnum: AccountOperationEnum,
         accountEntity: AccountEntity,
         inList: List<OfflineRfidEntity>,
         outList: List<OfflineRfidEntity>
@@ -619,7 +638,12 @@ class MainViewModel(application: android.app.Application) :
                 for (item in inList) {
                     var rfidOperationEntity = RfidOperationEntity()
                     rfidOperationEntity.user_id = accountEntity.user_id;
-                    rfidOperationEntity.user_log_id = SnowFlake.getInstance().nextIdStr();
+                    rfidOperationEntity.user_log_id = "${accountOperationEnum.desc}${
+                        SharedPreferencesUtils.getPrefString(
+                            BaseApp.app,
+                            FRIDGEID, "0"
+                        )
+                    }${System.currentTimeMillis() / 1000}"
                     rfidOperationEntity.nick_name = accountEntity.nick_name;
                     rfidOperationEntity.isOfflineData = true;
                     if (accountEntity.role_id.toInt() == 30) {
@@ -627,12 +651,7 @@ class MainViewModel(application: android.app.Application) :
                     } else {
                         rfidOperationEntity.operation = 0
                     }
-                    rfidOperationEntity.log_at = "${
-                        DateUtils.formatDateToString(
-                            Date(),
-                            DateUtils.format_yyyyMMddhhmmssfff
-                        )
-                    }+08:00".replace(" ", "T")
+                    rfidOperationEntity.log_at = DateUtils.currentStringFormatTime()
                     rfidOperationEntity.eas_material_number = "";
                     rfidOperationEntity.eas_material_name = "-";
                     rfidOperationEntity.eas_unit_number = "-";
@@ -652,16 +671,16 @@ class MainViewModel(application: android.app.Application) :
                 for (item in outList) {
                     var rfidOperationEntity = RfidOperationEntity()
                     rfidOperationEntity.user_id = accountEntity.user_id;
-                    rfidOperationEntity.user_log_id = SnowFlake.getInstance().nextIdStr();
+                    rfidOperationEntity.user_log_id = "${accountOperationEnum.desc}${
+                        SharedPreferencesUtils.getPrefString(
+                            BaseApp.app,
+                            FRIDGEID, "0"
+                        )
+                    }${System.currentTimeMillis() / 1000}"
                     rfidOperationEntity.nick_name = accountEntity.nick_name;
                     rfidOperationEntity.isOfflineData = true;
                     rfidOperationEntity.operation = 1
-                    rfidOperationEntity.log_at = "${
-                        DateUtils.formatDateToString(
-                            Date(),
-                            DateUtils.format_yyyyMMddhhmmssfff
-                        )
-                    }+08:00".replace(" ", "T")
+                    rfidOperationEntity.log_at = DateUtils.currentStringFormatTime()
                     rfidOperationEntity.eas_material_number = "-";
                     rfidOperationEntity.eas_material_name = "-";
                     rfidOperationEntity.eas_unit_number = "-";
@@ -726,13 +745,15 @@ class MainViewModel(application: android.app.Application) :
 
     private fun createAccountOperationEntity(
         operation: AccountOperationEnum,
-        userId: String
+        userId: String,
+        fridgeId: String
     ): AccountOperationEntity {
         var accountOperationEntity = AccountOperationEntity()
         accountOperationEntity.operation = operation.v.toByte()
         accountOperationEntity.user_id = userId
-        accountOperationEntity.user_log_id = SnowFlake.getInstance().nextIdStr()
-        accountOperationEntity.log_at = Date().toString()
+        accountOperationEntity.user_log_id =
+            "${operation.desc}${fridgeId}${System.currentTimeMillis() / 1000}"
+        accountOperationEntity.log_at = DateUtils.currentStringFormatTime()
         accountOperationEntity.hasUploaded = false
         return accountOperationEntity
     }

@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class DateUtils {
 
-    public final static String format_yyyyMMddhhmmssfff = "yyyy-MM-dd HH:mm:ss SSS";
+    public final static String format_yyyyMMddhhmmssfff = "yyyy-MM-dd HH:mm:ss.SSS";
     public final static String format_yyyyMMddhhmmss = "yyyy-MM-dd HH:mm:ss";
     public final static String format_yyyyMMddhhmmssNew = "yyyyMMddHHmmss";
 
@@ -34,7 +34,7 @@ public class DateUtils {
     public static String currentStringFormatTime() {
         return (DateUtils.formatDateToString(
                 new Date(),
-                DateUtils.format_yyyyMMddhhmmssfff) + "08:00").replace(" ", "T");
+                DateUtils.format_yyyyMMddhhmmssfff) + "+08:00").replace(" ", "T");
     }
 
     //日期转字符串

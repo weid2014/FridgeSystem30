@@ -43,8 +43,7 @@ class AccoutListItemAdapter(
             //姓名
             binding.tvNickName.text = item.real_name
             //用户名
-            binding.tvUserName.text = item.nick_name
-            //商品规格
+            binding.tvUserName.text = item.km_user_id
             binding.tvUserID.text = item.km_user_id
 
             val roleID = SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10)

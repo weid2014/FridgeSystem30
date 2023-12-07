@@ -20,6 +20,7 @@ const val SYNC_ACCOUNT_MSG = "sync_account_msg"
 const val UPDATE_JSON_ADDRESS = "update_json_address"
 const val UPDATE_APK_ADDRESS = "update_apk_address"
 const val SNCODE = "sncode"
+const val FRIDGEID = "fridge_id"
 //const val SNCODE_TEST = "FEDCBA0123456788"
 
 const val SNCODE_TEST = "FEDCBA01TEST0008"

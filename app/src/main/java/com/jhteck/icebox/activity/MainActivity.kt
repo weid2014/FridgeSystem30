@@ -390,7 +390,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             }
         }
         viewModel.accountOperationLog(operationEntity, loginUserInfo)//操作日志
-        viewModel.rfidOperationLog(loginUserInfo, inList, outList)//操作日志
+        viewModel.rfidOperationLog(operationEntity,loginUserInfo, inList, outList)//操作日志
 
         //弹出结算界面
         popupWindow = SingletonPopupWindow.getInstance(this@MainActivity)
@@ -549,7 +549,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         }
         viewModel.accountOperationLog(operationEntity, loginUserInfo)//操作日志
 
-        viewModel.rfidOffLineOperationLog(loginUserInfo, inOffList, outOffList);//操作日志
+        viewModel.rfidOffLineOperationLog(operationEntity,loginUserInfo, inOffList, outOffList);//操作日志
 //        viewModel.rfidOperationLog(loginUserInfo, inList, outList)//操作日志
 
         popupWindow = SingletonPopupWindow.getInstance(this@MainActivity)
@@ -633,6 +633,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             when (key) {
                 LOCKED_SUCCESS -> {
                     if (DEBUG) {
+                        viewModel.testSyncRfid()
                         showPopWindow(
                             localData!!.results.avail_rfids,
                             localData!!.results.avail_rfids,

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="440dp"
+    android:layout_width="800dp"
     android:layout_height="48dp"
     android:layout_gravity="center_horizontal"
     android:orientation="horizontal">
 
     <TextView
-        android:layout_marginStart="54px"
+        android:paddingStart="128dp"
         android:id="@+id/tvDrugName"
         android:layout_width="0dp"
         android:layout_height="match_parent"

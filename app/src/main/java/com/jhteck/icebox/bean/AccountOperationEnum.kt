@@ -4,13 +4,13 @@ package com.jhteck.icebox.bean
  * 用户操作日志
  */
 enum class AccountOperationEnum(val v: Int, val desc: String) {
-    UNKNOWN(-10, "未知"),
-    NO_OPERATION(0, "无存取"),
-    STORE(1, "存入"),
-    CONSUME(2, "取出"),
-    DEPOSIT(3, "暂存"),
-    STORE_CONSUME(4, "存入和取出"),
-    DESPOSIT_CONSUME(5, "暂存和取出")
+    UNKNOWN(-10, "UNKNOWN"),//未知
+    NO_OPERATION(0, "N"),//无存取
+    STORE(1, "S"),//存入
+    CONSUME(2, "T"),//取出
+    DEPOSIT(3, "TS"),//暂存
+    STORE_CONSUME(4, "ST"),//存入和取出
+    DESPOSIT_CONSUME(5, "TST")//暂存和取出
     ;
 
     companion object {

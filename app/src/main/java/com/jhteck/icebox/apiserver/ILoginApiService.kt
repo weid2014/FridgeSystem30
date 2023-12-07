@@ -18,28 +18,28 @@ interface ILoginApiService :IAccountService, ApiService {
 //    @Headers("authorization: Bearer FEDCBA01CC000001")
     suspend fun login(@Body body: RequestBody): ApiResponse<LoginResponseDto>
     //批量查询rfid
-    @POST("/api/f/rfids")
+    @POST("api/f/rfids")
 //    @Headers("authorization: Bearer FEDCBA01CC000001")
     suspend fun getRfids(@Body body: RequestBody): Response<RfidDao>
 
 //    /**
 //     * 添加用户
 //     */
-//    @POST("/api/f/accounts")
+//    @POST("api/f/accounts")
 //    @Headers("authorization: Bearer FEDCBA01CC000001")
 //    suspend fun addAccount(@Body body: RequestBody): Response<UserTestDao>;
 //
 //    /**
 //     * 更新用户
 //     */
-//    @PUT("/api/f/accounts")
+//    @PUT("api/f/accounts")
 //    @Headers("authorization: Bearer FEDCBA01CC000001")
 //    suspend fun updateAccount(@Body body: RequestBody): Response<UserTestDao>;
 //
 //    /**
 //     * 删除用户
 //     */
-//    @DELETE("/api/f/accounts/{id}")
+//    @DELETE("api/f/accounts/{id}")
 //    @Headers("authorization: Bearer FEDCBA0123456788")
 //    suspend fun deleteAccount(@Path("id") id:Int):Response<DeleteUserDao>;
 
@@ -47,6 +47,6 @@ interface ILoginApiService :IAccountService, ApiService {
     suspend fun getUpdateInfo(@Url url: String?): UpdateInfoDto
 
     //全量上报
-    @PUT("/api/f/rfids/sync")
+    @PUT("api/f/rfids/sync")
     suspend fun syncRfids(@Body body: RequestBody): Response<RfidDao>
 }

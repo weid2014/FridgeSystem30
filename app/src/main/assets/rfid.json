@@ -9,7 +9,7 @@
                 "remain": 100,
                 "eas_supplier_number": "01.19.16.9005",
                 "eas_supplier_name": "上海科华生物工程股份有限公司",
-                "created_at": "2022-12-12T14:34:37.168+08:00",
+                "created_at": "2023-12-10T14:34:37.168+08:00",
                 "is_out_eas": false,
                 "material": {
                     "eas_material_id": "Xe8AAAiuS+RECefw",
@@ -33,7 +33,7 @@
                 "remain": 100,
                 "eas_supplier_number": "01.19.16.9005",
                 "eas_supplier_name": "上海科华生物工程股份有限公司",
-                "created_at": "2022-12-12T14:34:37.160+08:00",
+                "created_at": "2023-12-09T14:34:37.160+08:00",
                 "is_out_eas": false,
                 "material": {
                     "eas_material_id": "Xe8AAAiuS+RECefw",
@@ -129,7 +129,7 @@
                 "remain": 80,
                 "eas_supplier_number": "01.04.04.0015",
                 "eas_supplier_name": "广州市宝迪科技有限公司",
-                "created_at": "2022-10-26T17:47:26.647+08:00",
+                "created_at": "2023-12-26T17:47:26.647+08:00",
                 "is_out_eas": true,
                 "material": {
                     "eas_material_id": "Xe8AAAACkjBECefw5",
@@ -153,7 +153,7 @@
                 "remain": 80,
                 "eas_supplier_number": "01.04.04.0016",
                 "eas_supplier_name": "广州市宝迪科技有限公司",
-                "created_at": "2022-10-26T17:47:26.647+08:00",
+                "created_at": "2023-12-26T17:47:26.647+08:00",
                 "is_out_eas": true,
                 "material": {
                     "eas_material_id": "Xe8AAAACkjBECefw6",
@@ -168,7 +168,7 @@
                 "material_batch": {
                     "eas_lot": "87821",
                     "eas_specs": "6*3ml",
-                    "expired_at": "2023-12-16T00:00:00.000+08:00"
+                    "expired_at": "2023-12-11T00:00:00.000+08:00"
                 }
             },
             {
@@ -177,7 +177,7 @@
                 "remain": 80,
                 "eas_supplier_number": "01.04.04.0017",
                 "eas_supplier_name": "广州市宝迪科技有限公司",
-                "created_at": "2022-10-26T17:47:26.647+08:00",
+                "created_at": "2023-12-11T17:47:26.647+08:00",
                 "is_out_eas": true,
                 "material": {
                     "eas_material_id": "Xe8AAAACkjBECef7",
@@ -192,7 +192,7 @@
                 "material_batch": {
                     "eas_lot": "87821",
                     "eas_specs": "6*3ml",
-                    "expired_at": "2023-11-26T00:00:00.000+08:00"
+                    "expired_at": "2023-12-26T00:00:00.000+08:00"
                 }
             },
             {
@@ -201,7 +201,7 @@
                 "remain": 80,
                 "eas_supplier_number": "01.04.04.0018",
                 "eas_supplier_name": "广州市宝迪科技有限公司",
-                "created_at": "2022-10-26T17:47:26.647+08:00",
+                "created_at": "2023-12-10T17:47:26.647+08:00",
                 "is_out_eas": true,
                 "material": {
                     "eas_material_id": "Xe8AAAACkjBECefw",
@@ -216,7 +216,7 @@
                 "material_batch": {
                     "eas_lot": "87821",
                     "eas_specs": "6*3ml",
-                    "expired_at": "2023-11-12T00:00:00.000+08:00"
+                    "expired_at": "2023-12-22T00:00:00.000+08:00"
                 }
             },
             {
@@ -240,7 +240,7 @@
                 "material_batch": {
                     "eas_lot": "87821",
                     "eas_specs": "6*3ml",
-                    "expired_at": "2023-12-16T00:00:00.000+08:00"
+                    "expired_at": "2023-12-08T00:00:00.000+08:00"
                 }
             },
             {

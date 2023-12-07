@@ -6,6 +6,7 @@ import com.jhteck.icebox.api.*
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -23,10 +24,14 @@ object RetrofitClient {
         BaseApp.app,
         SNCODE,
         SNCODE_TEST
-    ),baseUrl:String =SharedPreferencesUtils.getPrefString(BaseApp.app, URL_REQUEST, URL_KM2)): ILoginApiService {
+    ),baseUrl:String =SharedPreferencesUtils.getPrefString(BaseApp.app, URL_REQUEST, URL_KM1)): ILoginApiService {
         Log.d("RetrofitClient", "正在同步冰箱账号信息==${baseUrl}")
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+
         val okHttpClient = OkHttpClient.Builder()
             .callTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(loggingInterceptor)
             .addInterceptor(Interceptor { chain ->
 //                val request = chain.request().newBuilder()
 //                    .removeHeader("authorization")

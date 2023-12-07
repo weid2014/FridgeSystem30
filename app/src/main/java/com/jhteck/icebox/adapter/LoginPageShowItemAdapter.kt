@@ -59,15 +59,15 @@ class LoginPageShowItemAdapter(private val data: List<InventoryDao>) :
             val remainDay = DateUtils.getDaysBetween(toDay, showDate, DateUtils.format_yyyyMMdd)
             Log.d("remainDay","toDay=${toDay},showDate=${showDate},remainDay=${remainDay}")
             if (remainDay < 0) {
-                binding.tvDrugName.setTextColor(BaseApp.app.getColor(R.color.app_color_ff3030))
-                binding.tvDrugNumber.setTextColor(BaseApp.app.getColor(R.color.app_color_ff3030))
+                binding.tvDrugName.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
                 binding.llDrugBg.setBackgroundResource(R.drawable.app_shape_red_radius_10)
-                binding.vLine.setBackgroundResource(R.color.app_color_ff3030)
+                binding.vLine.setBackgroundResource(R.color.app_white)
             } else if (remainDay < 7) {
-                binding.tvDrugName.setTextColor(BaseApp.app.getColor(R.color.app_color_fbaf5d))
-                binding.tvDrugNumber.setTextColor(BaseApp.app.getColor(R.color.app_color_fbaf5d))
+                binding.tvDrugName.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
                 binding.llDrugBg.setBackgroundResource(R.drawable.app_shape_yellow_radius_10)
-                binding.vLine.setBackgroundResource(R.color.app_color_fbaf5d)
+                binding.vLine.setBackgroundResource(R.color.app_white)
             }
         }
     }

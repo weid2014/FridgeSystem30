@@ -71,7 +71,6 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
 
     override fun tryLoadData() {
         super.tryLoadData()
-        Log.d("tryLoadData","重新加载")
         viewModel.getAllUsers()
     }
 
@@ -80,7 +79,6 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
             showNewAccountPopWindow()
         }
         binding.fullscreenView.setOnClickListener {
-            Log.d("AccountFrag", "fullscreenView")
             LockManage.getInstance().tryOpenLock();
         }
         initRecyclerView()
@@ -150,7 +148,6 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
     }
 
     fun updateList(list: List<AccountEntity>) {
-        Log.d("updateList"," list.size+=${list.size}")
         inventoryListItemAdapter = AccoutListItemAdapter(list,
             object : ItemOperatorAdapter<AccountEntity> {
                 override fun onDelete(t: AccountEntity) {
@@ -205,10 +202,10 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
 
             val btnSavePop = contentView.findViewById<Button>(R.id.btn_save)
             val edUsername = contentView.findViewById<EditText>(R.id.ed_UserName)
-            edUsername.setText(item.nick_name)
+            edUsername.setText(item.km_user_id)
             val edPassWord = contentView.findViewById<EditText>(R.id.ed_PassWord)
-            val edUserId = contentView.findViewById<EditText>(R.id.ed_UserId)
-            edUserId.setText(item.km_user_id)
+            val edRealName = contentView.findViewById<EditText>(R.id.ed_real_name)
+            edRealName.setText(item.real_name)
             val edCommitPassWord = contentView.findViewById<EditText>(R.id.ed_CommitPassword)
             tv_nfcId = contentView.findViewById<TextView>(R.id.tv_nfcId)
             ll_nfc_id = contentView.findViewById<LinearLayout>(R.id.ll_nfc_id)
@@ -268,7 +265,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
 
                 if (edPassWord.text.toString() == "" || edCommitPassWord.text.toString()
                     == "" || edUsername.text.toString() == ""
-                    || edUserId.text.toString()
+                    || edRealName.text.toString()
                     == "" || tv_nfcId?.text.toString().length == 0
                 ) {
                     tvTips.setText("请输入必填项，请检查！")
@@ -276,12 +273,11 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                     tvTips.setText("密码不一致，请检查！")
                 } else {
 //                //获取账户信息
-//                var user = AccountEntity();
-                    item.nick_name = edUsername.text.toString();
-                    item.password_digest = MD5Util.encrypt(edPassWord.text.toString());
-                    item.real_name = edUsername.text.toString();
-                    item.nfc_id = tv_nfcId?.text.toString();
-                    item.km_user_id = edUserId.text.toString();
+                    item.nick_name = edRealName.text.toString()
+                    item.password_digest = MD5Util.encrypt(edPassWord.text.toString())
+                    item.real_name = edRealName.text.toString()
+                    item.nfc_id = tv_nfcId?.text.toString()
+                    item.km_user_id = edUsername.text.toString()
 
                     var checkRadioButton =
                         contentView.findViewById<RadioButton>(roleId.checkedRadioButtonId)
@@ -353,7 +349,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
             val btnSavePop = contentView.findViewById<Button>(R.id.btn_save)
             val edUsername = contentView.findViewById<EditText>(R.id.ed_UserName)
             val edPassWord = contentView.findViewById<EditText>(R.id.ed_PassWord)
-            val edUserId = contentView.findViewById<EditText>(R.id.ed_UserId)
+            val edRealName = contentView.findViewById<EditText>(R.id.ed_real_name)
             val edCommitPassWord = contentView.findViewById<EditText>(R.id.ed_CommitPassword)
             tv_nfcId = contentView.findViewById<TextView>(R.id.tv_nfcId)
             ll_nfc_id = contentView.findViewById<LinearLayout>(R.id.ll_nfc_id)
@@ -368,31 +364,30 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                 rbRole1.visibility = View.GONE
                 rbRole2.isChecked = true
             }
+            val nextId=SnowFlake.getInstance().nextId().toString()
             //调试
             if (DEBUG) {
-                var tempStr = "TEST8A858A115F604010100${SnowFlake.getInstance().nextId()}"
-                tv_nfcId?.setText(tempStr.substring(0, 36))
+                tv_nfcId?.text = nextId.substring(nextId.length-8)
                 changeNfcBackground(true)
             }
 
             btnSavePop.setOnClickListener {
                 if (edPassWord.text.toString() == "" || edCommitPassWord.text.toString()
                     == "" || edUsername.text.toString() == ""
-                    || edUserId.text.toString()
+                    || edRealName.text.toString()
                     == "" || tv_nfcId?.text.toString().length == 0
                 ) {
-                    tvTips.setText("请输入必填项，请检查！")
+                    tvTips.text = "请输入必填项，请检查！"
                 } else if (edPassWord.text.toString() != edCommitPassWord.text.toString()) {
-                    tvTips.setText("密码不一致，请检查！")
+                    tvTips.text = "密码不一致，请检查！"
                 } else {
 //                //获取账户信息
-                    var user = AccountEntity();
-                    user.nick_name = edUsername.text.toString();
-                    user.password_digest = MD5Util.encrypt(edPassWord.text.toString());
-                    user.real_name = edUsername.text.toString();
-                    user.nfc_id = tv_nfcId?.text.toString();
-                    user.km_user_id = edUserId.text.toString();
-
+                    var user = AccountEntity()
+                    user.nick_name = edRealName.text.toString()
+                    user.password_digest = MD5Util.encrypt(edPassWord.text.toString())
+                    user.real_name = edRealName.text.toString()
+                    user.nfc_id = tv_nfcId?.text.toString()
+                    user.km_user_id = edUsername.text.toString()
                     var checkRadioButton =
                         contentView.findViewById<RadioButton>(roleId.checkedRadioButtonId)
                     var roleText = checkRadioButton.text
@@ -405,8 +400,8 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                     val curDate = Date(System.currentTimeMillis()) //获取当前时间
                     val createDate: String = formatter.format(curDate) //格式转换
 
-                    var nextId=SnowFlake.getInstance().nextId().toString()
                     user.user_id = nextId.substring(nextId.length-7)
+
                     user.created_by =
                         SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10).toString()
                     user.created_time = createDate
