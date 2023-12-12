@@ -312,6 +312,7 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
                 mapOutList.get(key)?.let { tempOutList.add(it) }
             }
             updateUIbyAvailList(tempOutList)
+            viewModel.showOutTimeTip(requireContext(), availRfidsList!!)
         }
     }
 

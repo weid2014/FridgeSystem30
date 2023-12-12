@@ -1,17 +1,23 @@
 package com.jhteck.icebox.viewmodel
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.viewModelScope
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
+import com.jhteck.icebox.api.AUTO_LOGIN_STR
 import com.jhteck.icebox.api.AvailRfid
 import com.jhteck.icebox.api.request.RfidSync
 import com.jhteck.icebox.api.request.requestSync
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.LocalService
 import com.jhteck.icebox.apiserver.RetrofitClient
+import com.jhteck.icebox.utils.CustomDialog
+import com.jhteck.icebox.utils.DateUtils
 import com.jhteck.icebox.utils.DbUtil
+import com.jhteck.icebox.utils.SharedPreferencesUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -56,6 +62,29 @@ class InventoryListViewModel(application: Application) :
             }
         }
 
+    }
+
+    //弹出过期提示
+    fun showOutTimeTip(context: Context, availRfidsList: List<AvailRfid>) {
+        var expiredRfidList= mutableListOf<AvailRfid>()
+        var expiredRfidNameList= mutableListOf<String>()
+        for (rfidItem in availRfidsList){
+            val showDate = rfidItem.material_batch?.expired_at.substring(0, 10)
+            val remainDay= DateUtils.getDaysBetween(showDate, DateUtils.format_yyyyMMdd)
+            if(remainDay<7){
+                expiredRfidList.add(rfidItem)
+                expiredRfidNameList.add(rfidItem.material.eas_material_name)
+            }
+        }
+        if(expiredRfidList.size>0){
+            val customDialog = CustomDialog(context)
+            customDialog.setsTitle("温馨提示").setsMessage("以下物料即将过期(或已过期)，请及时处理：\n ${expiredRfidNameList.joinToString(separator = "\n")}")
+                .setsCancel("取消", View.OnClickListener {
+                    customDialog.dismiss()
+                }).setsConfirm("知道了", View.OnClickListener {
+                    customDialog.dismiss()
+                }).show()
+        }
     }
 
     val onAvailRfidLoaded by lazy {

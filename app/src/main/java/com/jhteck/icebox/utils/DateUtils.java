@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -126,11 +127,15 @@ public class DateUtils {
         return dateCompare(d1, d2);
     }
 
-    public static int getDaysBetween(String date1, String date2, String formatDate) {
-        if (date1 == null || date2 == null || formatDate == null) {
+    public static int getDaysBetween(String date2, String formatDate) {
+        String toDay = formatDateToString(
+                Calendar.getInstance().getTime(),
+                DateUtils.format_yyyyMMdd
+        );
+        if (date2 == null || formatDate == null) {
             return -1;
         }
-        Date d1 = formatStringToDate(date1, formatDate);
+        Date d1 = formatStringToDate(toDay, formatDate);
         Date d2 = formatStringToDate(date2, formatDate);
 
         return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60*24));

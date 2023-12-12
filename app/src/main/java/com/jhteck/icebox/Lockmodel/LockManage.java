@@ -1,6 +1,6 @@
 package com.jhteck.icebox.Lockmodel;
 
-import static com.jhteck.icebox.api.AppConstantsKt.FRIDGE_TYPE;
+import static com.jhteck.icebox.api.AppConstantsKt.DOOR_TYPE;
 
 import android.util.Log;
 
@@ -163,7 +163,7 @@ public class LockManage {
                         while (sendTime > 0) {
                             try {
                                 Log.i(TAG, "openLockThread: 定时开锁 +sendTime=" + sendTime);
-                                if (SharedPreferencesUtils.getPrefInt(BaseApp.app, FRIDGE_TYPE, 0) == 0) {
+                                if (SharedPreferencesUtils.getPrefInt(BaseApp.app, DOOR_TYPE, 0) == 0) {
                                     if (sensorChanged() && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
                                         Log.i(TAG, "openLockThread:tryOpenLock: 计入结算环节1");
                                         break;
@@ -343,8 +343,8 @@ public class LockManage {
 
                 sensor1Status.add(lockInfo1.sensor);
                 sensor2Status.add(lockInfo2.sensor);
-                Log.d(TAG, "fridgeType=" + SharedPreferencesUtils.getPrefInt(BaseApp.app, FRIDGE_TYPE, 0));
-                if (SharedPreferencesUtils.getPrefInt(BaseApp.app, FRIDGE_TYPE, 0) == 0) {
+                Log.d(TAG, "fridgeType=" + SharedPreferencesUtils.getPrefInt(BaseApp.app, DOOR_TYPE, 0));
+                if (SharedPreferencesUtils.getPrefInt(BaseApp.app, DOOR_TYPE, 0) == 0) {
                     if (lockInfo1.lock == 0 && lockInfo2.lock == 0 && sensorChanged() && lockInfo1.sensor == 0 && lockInfo2.sensor == 0) {
                         stopAll();
                     } else if (sensorChanged() || lockInfo1.sensor == 1 || lockInfo2.sensor == 1) {

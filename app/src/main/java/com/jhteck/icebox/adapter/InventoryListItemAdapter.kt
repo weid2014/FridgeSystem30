@@ -77,12 +77,8 @@ class InventoryListItemAdapter(
             binding.tvBatchNumber.text = item[0].material_batch.eas_lot
             //有效期
             val showDate = item[0].material_batch?.expired_at.substring(0, 10)
-            val calendar = Calendar.getInstance()
-            val toDay = DateUtils.formatDateToString(
-                calendar.time,
-                DateUtils.format_yyyyMMdd
-            )
-            val remainDay=DateUtils.getDaysBetween(toDay,showDate,DateUtils.format_yyyyMMdd)
+
+            val remainDay=DateUtils.getDaysBetween(showDate,DateUtils.format_yyyyMMdd)
             binding.tvValidityDate.text = showDate
 
             binding.tvValidityStatus.text = "未过期"

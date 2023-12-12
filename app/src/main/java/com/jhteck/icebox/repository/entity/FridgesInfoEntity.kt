@@ -19,4 +19,5 @@ data class FridgesInfoEntity(
     @ColumnInfo val style: Integer?, //类型： 0 - 普通冰箱； 1 - 常温冰箱；
     @ColumnInfo val cells: Integer?, //格子数量
     @ColumnInfo val last_sync_at: String?,//最后同步时间
+    @ColumnInfo var door_style: Int?, //类型： 0 - 双门冰箱； 1 - 单门冰箱；
 )

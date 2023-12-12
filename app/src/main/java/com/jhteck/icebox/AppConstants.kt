@@ -39,10 +39,10 @@ const val SERIAL_PORT_RFID_DEFAULT = "/dev/ttyS2"
 const val INVENTORY_TIME = "inventory_time"
 const val INVENTORY_TIME_DEFAULT = 10 * 1000L
 
-const val FRIDGE_TYPE = "fridge_type"
-const val FRIDGE_TYPE_SELECT = 0
-const val FRIDGE_TYPE_TWO = "双锁冰箱"
-const val FRIDGE_TYPE_ONE = "单锁冰箱"
+const val DOOR_TYPE = "fridge_type"
+const val DOOR_TYPE_SELECT = 0
+const val DOOR_TYPE_TWO = "双锁冰箱"
+const val DOOR_TYPE_ONE = "单锁冰箱"
 const val AUTO_LOGIN = false //自动登录，用于老化测试
 const val AUTO_LOGIN_STR = "auto_login_str"
 const val SHOW_ALL_NAME = "show_all_name"

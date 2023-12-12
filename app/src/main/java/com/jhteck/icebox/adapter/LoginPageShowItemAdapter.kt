@@ -51,13 +51,7 @@ class LoginPageShowItemAdapter(private val data: List<InventoryDao>) :
             binding.tvDrugNumber.text = "${item.drugNumber}盒"
 
             val showDate = item.expired_at.substring(0, 10)
-            val calendar = Calendar.getInstance()
-            val toDay = DateUtils.formatDateToString(
-                calendar.time,
-                DateUtils.format_yyyyMMdd
-            )
-            val remainDay = DateUtils.getDaysBetween(toDay, showDate, DateUtils.format_yyyyMMdd)
-            Log.d("remainDay","toDay=${toDay},showDate=${showDate},remainDay=${remainDay}")
+            val remainDay = DateUtils.getDaysBetween(showDate, DateUtils.format_yyyyMMdd)
             if (remainDay < 0) {
                 binding.tvDrugName.setTextColor(BaseApp.app.getColor(R.color.app_white))
                 binding.tvDrugNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))

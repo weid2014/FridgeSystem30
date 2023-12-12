@@ -3,6 +3,7 @@ package com.jhteck.icebox.viewmodel
 import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
 import com.jhteck.icebox.Lockmodel.LockManage
@@ -29,8 +30,17 @@ class SpashViewModel(application: android.app.Application) :
     BaseViewModel<ILoginApiService>(application) {
 
     fun spash() {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
+                //覆盖安装，会把单双门类型覆盖，从数据库中拿
+                var fridgesInfo = DbUtil.getDb().fridgesInfoDao().getById(SharedPreferencesUtils.getPrefString(getApplication(), FRIDGEID, ""))
+                fridgesInfo.door_style?.let {
+                    SharedPreferencesUtils.setPrefInt(
+                        getApplication(),
+                        DOOR_TYPE,
+                        it
+                    )
+                }
                 delay(2000)
                 loginStatus.postValue(true)
             } catch (e: Exception) {
@@ -54,11 +64,13 @@ class SpashViewModel(application: android.app.Application) :
                         .fridgesActive(fridgesActiveBo);
                     if (response.code() == 200) {
                         toast("激活冰箱成功")
-                        var res = response.body()?.results;
+                        var res = response.body()?.results
+                        var doorStyle=SharedPreferencesUtils.getPrefInt(BaseApp.app, DOOR_TYPE, 0)
                         if (res != null) {
                             var id = res.id;
                             if (id != null) {
                                 var fridgesInfo = DbUtil.getDb().fridgesInfoDao().getById(id)
+                                res.door_style=doorStyle
                                 if (fridgesInfo != null) {
                                     res.f_id = fridgesInfo.f_id;
                                     DbUtil.getDb().fridgesInfoDao().update(res)

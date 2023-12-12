@@ -211,9 +211,9 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 }
             }
 
-        SharedPreferencesUtils.setPrefInt(this@SpashActivity, FRIDGE_TYPE, FRIDGE_TYPE_SELECT)
+        SharedPreferencesUtils.setPrefInt(this@SpashActivity, DOOR_TYPE, DOOR_TYPE_SELECT)
         val selectFridgeType = listOf(
-            FRIDGE_TYPE_TWO, FRIDGE_TYPE_ONE
+            DOOR_TYPE_TWO, DOOR_TYPE_ONE
         )
         binding.spSelectFridgeType.adapter =
             ArrayAdapter(
@@ -232,7 +232,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 ) {
                     SharedPreferencesUtils.setPrefInt(
                         this@SpashActivity,
-                        FRIDGE_TYPE,
+                        DOOR_TYPE,
                         position
                     )
                 }

@@ -20,17 +20,17 @@
     <TextView
         android:id="@+id/message"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="1600dp"
+        android:layout_margin="16dp"
         android:gravity="center"
         android:text="是否确定执行此操作？"
         android:textColor="@color/app_black"
-        android:textSize="20sp" />
+        android:textSize="17sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginTop="20dp"
         android:background="#888888" />
 
     <LinearLayout

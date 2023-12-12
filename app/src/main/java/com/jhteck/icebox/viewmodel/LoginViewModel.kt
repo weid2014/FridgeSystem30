@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.hele.mrd.app.lib.base.BaseApp
@@ -14,6 +15,9 @@ import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
 import com.jhteck.icebox.api.*
+import com.jhteck.icebox.api.request.RequestRfidsDao
+import com.jhteck.icebox.api.request.RfidSync
+import com.jhteck.icebox.api.request.requestSync
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.LocalService
 import com.jhteck.icebox.apiserver.RetrofitClient
@@ -22,6 +26,7 @@ import com.jhteck.icebox.broacast.AlarmReceiver
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.OfflineRfidEntity
 import com.jhteck.icebox.repository.entity.SysOperationErrorEntity
+import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.service.CommandService
 import com.jhteck.icebox.utils.*
 import kotlinx.coroutines.Dispatchers
@@ -400,6 +405,211 @@ class LoginViewModel(application: android.app.Application) :
 
     }
 
+    fun startAutoTest(context: Context) {
+        val isAutoLogin = SharedPreferencesUtils.getPrefBoolean(
+            context,
+            AUTO_LOGIN_STR,
+            AUTO_LOGIN
+        )
+        val showMessageText = if (isAutoLogin) {
+            "是否关闭老化测试"
+        } else {
+            "是否开启老化测试"
+        }
+        val customDialog = CustomDialog(context)
+        customDialog.setsTitle("温馨提示").setsMessage(showMessageText)
+            .setsCancel("取消", View.OnClickListener {
+                customDialog.dismiss()
+            }).setsConfirm("确定", View.OnClickListener {
+                SharedPreferencesUtils.setPrefBoolean(
+                    context,
+                    AUTO_LOGIN_STR,
+                    !isAutoLogin
+                )
+                customDialog.dismiss()
+                startAutoTestStatus.postValue(true)
+            }).show()
+    }
+
+    //在后台无人操作的时候30分钟扫描一次
+    private var countMinutes: Int = 0
+    private var scanThread: Thread? = null
+    fun ListeningOperation() {
+        countMinutes = 30
+        if (scanThread == null) {
+            synchronized(this) {
+                if (scanThread == null) {
+                    scanThread = Thread {
+                        while (countMinutes > 0) {
+                            try {
+                                countMinutes--
+                                Log.e(TAG, "无操作开始扫描: " + countMinutes)
+                                Thread.sleep(60 * 1000)
+                            } catch (e: java.lang.Exception) {
+                                Log.e(TAG, "无操作开始扫描: " + e.message)
+                            }
+                        }
+                        scanThread = null
+                        Log.i(TAG, "无操作开始扫描1")
+                        scanBehind()
+                    }
+                    scanThread!!.start()
+                }
+            }
+        }
+    }
+
+    private fun scanBehind() {
+        viewModelScope.launch {
+            try {
+                Log.d(TAG, "开始扫描}")
+                RfidManage.getInstance().startStop(true, false)
+                RfidManage.getInstance().setRfidArraysRendEndCallback {
+                    Log.d(TAG, "扫描结果...${it.toString()}")
+                    getRfidsInfo(it.toList())
+                }
+                delay(60 * 1000)
+                RfidManage.getInstance().startStop(false, false)
+            } catch (e: Exception) {
+                Log.e(TAG, "扫描异常: " + e.message)
+            } finally {
+                RfidManage.getInstance().setRfidArraysRendEndCallback();//清空掉
+            }
+        }
+    }
+
+    private fun getRfidsInfo(rfids: List<String>) {
+        Log.d(TAG, "正在查询RFID===--->${rfids.toString()}")
+        viewModelScope.launch {
+            try {
+//                showLoading("正在查询RFID，请稍等...")
+                //获取到之后跟本地数据对比(增加或减少了什么)
+                val tempList = mutableListOf<String>()
+                val outList = mutableListOf<AvailRfid>()//领出列表
+                val inList = mutableListOf<AvailRfid>()//存入列表
+
+                val body = genBody(RequestRfidsDao(rfids))
+                val rep = RetrofitClient.getService().getRfids(body)
+                if (rep.code() == 200) {
+                    val localAvailRfid = LocalService.loadRfidsFromLocal(Gson()).avail_rfids
+                    val getAvailRfid = rep.body()!!.results.avail_rfids
+
+                    if (getAvailRfid != null && getAvailRfid.isNotEmpty()) {
+                        GlobalScope.launch {
+                            try {
+                                var localDatas = DbUtil.getDb().availRfidDao().getAll()
+                                val sncode = SharedPreferencesUtils.getPrefString(
+                                    BaseApp.app, SNCODE,
+                                    SNCODE_TEST
+                                )
+                                for (rfid in getAvailRfid) {
+                                    if (rfid.cell_number > 1) {
+                                        if (rfid.fridge_id != null && rfid.fridge_id != sncode) {
+                                            continue// 跳过
+                                        }
+                                        var res =
+                                            localDatas.stream()
+                                                .filter { obj -> obj.rfid == rfid.rfid }
+                                                .findFirst().orElse(null);
+                                        if (res != null && res.cell_number != rfid.cell_number) {
+                                            res.cell_number = rfid.cell_number
+                                            DbUtil.getDb().availRfidDao().update(res)//更新宫格
+                                        }
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Log.e(TAG, e.toString())
+                            } finally {
+
+                            }
+                        }
+                    }
+                    val aAvailRfid = mutableListOf<String>()
+                    for (availrfis in getAvailRfid) {
+                        aAvailRfid.add(availrfis.rfid)
+                    }
+                    for (localRfid in localAvailRfid) {
+                        tempList.add(localRfid.rfid)
+                    }
+                    for (rfid in tempList) {
+                        if (!aAvailRfid.contains(rfid)) {
+                            for (localRfid in localAvailRfid) {
+                                if (localRfid.rfid == rfid) {
+                                    outList.add(localRfid)
+                                }
+                            }
+                        }
+                    }
+                    for (rfid in rfids) {
+                        if (!tempList.contains(rfid)) {
+                            for (getRfid in getAvailRfid) {
+                                if (getRfid.rfid == rfid) {
+                                    inList.add(getRfid)
+                                }
+                            }
+                        }
+                    }
+                    if (outList.size > 0 && inList.size > 0) {//存取都有
+                        deleteByRfid(outList)
+                        addByRfid(inList)
+                    } else if (outList.size > 0) {//领出
+                        deleteByRfid(outList)
+                    } else if (inList.size > 0) {//领入
+                        addByRfid(inList)
+                    }
+                    rfidsSync(getAvailRfid)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, e.toString())
+            }
+        }
+    }
+
+    private fun deleteByRfid(list: List<AvailRfid>) {
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                LocalService.deleteDataToLocal(list);
+                Log.d(TAG, "保存到本地成功")
+            } catch (e: Exception) {
+                Log.e(TAG, "保存失败3${e.message}")
+            }
+        }
+    }
+
+    private fun addByRfid(list: List<AvailRfid>) {
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                LocalService.addDataToLocal(list);
+                Log.d(TAG, "保存到本地成功")
+            } catch (e: Exception) {
+                Log.e(TAG, "保存失败1${e.message}")
+            }
+        }
+    }
+
+    private fun rfidsSync(rfids: List<AvailRfid>) {
+        viewModelScope.launch {
+            try {
+                //全量上报
+                val rfidList = mutableListOf<RfidSync>()
+                for (rfid in rfids) {
+                    rfidList.add(RfidSync(rfid.cell_number, rfid.remain, rfid.rfid))
+                }
+                val bodySync = genBody(requestSync(rfidList))
+                Log.d(TAG, "全量上报成功 rfidList ${rfidList}")
+                val repSync = RetrofitClient.getService().syncRfids(bodySync)
+                if (repSync.code() == 200) {
+                    Log.d(TAG, "全量上报成功")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "全量上报异常$e")
+            } finally {
+                DbUtil.getDb().offlineRfidDao().clean()
+                loadRfidsFromLocal()
+            }
+        }
+    }
+
 
     val loginUserInfo by lazy {
         SingleLiveEvent<AccountEntity>()
@@ -413,4 +623,9 @@ class LoginViewModel(application: android.app.Application) :
     val loginStatus by lazy {
         SingleLiveEvent<Boolean>()
     }
+
+    val startAutoTestStatus by lazy {
+        SingleLiveEvent<Boolean>()
+    }
+
 }

@@ -273,11 +273,11 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                     tvTips.setText("密码不一致，请检查！")
                 } else {
 //                //获取账户信息
-                    item.nick_name = edRealName.text.toString()
-                    item.password_digest = MD5Util.encrypt(edPassWord.text.toString())
-                    item.real_name = edRealName.text.toString()
+                    item.nick_name = edRealName.text.trim().toString()
+                    item.password_digest = MD5Util.encrypt(edPassWord.text.trim().toString())
+                    item.real_name = edRealName.text.trim().toString()
                     item.nfc_id = tv_nfcId?.text.toString()
-                    item.km_user_id = edUsername.text.toString()
+                    item.km_user_id = edUsername.text.trim().toString()
 
                     var checkRadioButton =
                         contentView.findViewById<RadioButton>(roleId.checkedRadioButtonId)
@@ -383,11 +383,11 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                 } else {
 //                //获取账户信息
                     var user = AccountEntity()
-                    user.nick_name = edRealName.text.toString()
-                    user.password_digest = MD5Util.encrypt(edPassWord.text.toString())
-                    user.real_name = edRealName.text.toString()
+                    user.nick_name = edRealName.text.trim().toString()
+                    user.password_digest = MD5Util.encrypt(edPassWord.text.trim().toString())
+                    user.real_name = edRealName.text.trim().toString()
                     user.nfc_id = tv_nfcId?.text.toString()
-                    user.km_user_id = edUsername.text.toString()
+                    user.km_user_id = edUsername.text.trim().toString()
                     var checkRadioButton =
                         contentView.findViewById<RadioButton>(roleId.checkedRadioButtonId)
                     var roleText = checkRadioButton.text

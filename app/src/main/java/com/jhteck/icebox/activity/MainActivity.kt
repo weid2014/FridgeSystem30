@@ -59,8 +59,6 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             isBind = true
             val myBinder = p1 as MyService.MyBinder
             service = myBinder.service
-            val num = service!!.getRandomNumber()
-            Log.i(TAG, "MainActivity getRandomNumber =$num")
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
@@ -154,37 +152,14 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
 
         binding.imLogo.setOnClickListener {
             //点击10次可以退出app
-            exitAfterMany()
+            viewModel.exitAfterMany(this@MainActivity)
         }
-
-        /*binding.fullscreenView.setOnClickListener {
-            viewModel.tryOpenLock()
-        }*/
 
         viewModel.loadDataLocal()
 
         val intent = Intent(this, MyService::class.java)
         bindService(intent, conn, Context.BIND_AUTO_CREATE)
 
-    }
-
-    var time: Long = 0 //上次点击时间
-    var count = 1 //当前点击次数
-
-    fun exitAfterMany() { //在点击事件里调用即可
-        var timeNew = Date().time
-        if ((timeNew - time) < 1000) { //连续点击间隔
-            count += 1
-        } else {
-            count = 1
-        }
-        time = timeNew
-        if (count >= 10) {  //点击次数
-            finish()
-            finishAffinity()
-            System.exit(0)
-//            service?.sendExitMsg()
-        }
     }
 
     override fun tryLoadData() {

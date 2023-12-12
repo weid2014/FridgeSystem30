@@ -1,5 +1,6 @@
 package com.jhteck.icebox.viewmodel
 
+import android.content.Context
 import android.os.CountDownTimer
 import android.os.SystemClock
 import android.util.Log
@@ -9,6 +10,7 @@ import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseViewModel
 import com.hele.mrd.app.lib.base.livedata.SingleLiveEvent
 import com.jhteck.icebox.Lockmodel.LockManage
+import com.jhteck.icebox.activity.MainActivity
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.api.request.RequestRfidsDao
 import com.jhteck.icebox.api.request.RfidSync
@@ -224,7 +226,7 @@ class MainViewModel(application: android.app.Application) :
                             } catch (e: Exception) {
                                 Log.e(TAG, e.toString())
                             }finally {
-                                rfidsSync(getAvailRfid)
+
                             }
                         }
                     }
@@ -265,7 +267,7 @@ class MainViewModel(application: android.app.Application) :
                     } else {
                         noData.postValue(true)
                     }
-
+                    rfidsSync(getAvailRfid)
                 } else {
                     goToOffLineData(rfids)
                 }
@@ -779,6 +781,23 @@ class MainViewModel(application: android.app.Application) :
         timer?.cancel()
         timer = null
         remainTime.postValue(0)
+    }
+    var time: Long = 0 //上次点击时间
+    var count = 1 //当前点击次数
+
+    fun exitAfterMany(mainActivity: MainActivity) {
+        var timeNew = Date().time
+        if ((timeNew - time) < 1000) { //连续点击间隔
+            count += 1
+        } else {
+            count = 1
+        }
+        time = timeNew
+        if (count >= 10) {  //点击次数
+            mainActivity.finish()
+            mainActivity.finishAffinity()
+            System.exit(0)
+        }
     }
 
     val scanStatus by lazy {

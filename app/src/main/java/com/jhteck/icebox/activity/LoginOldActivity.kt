@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.IBinder
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -23,7 +24,6 @@ import com.jhteck.icebox.api.*
 import com.jhteck.icebox.bean.InventoryDao
 import com.jhteck.icebox.databinding.AppActivityLoginOldBinding
 import com.jhteck.icebox.service.MyService
-import com.jhteck.icebox.utils.CustomDialog
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.utils.ToastUtils
 import com.jhteck.icebox.viewmodel.LoginViewModel
@@ -128,29 +128,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
             }
         }
         binding.imTestLogin.setOnLongClickListener {
-            val isAutoLogin = SharedPreferencesUtils.getPrefBoolean(
-                this@LoginOldActivity,
-                AUTO_LOGIN_STR,
-                AUTO_LOGIN
-            )
-            val showMessageText = if (isAutoLogin) {
-                "是否关闭老化测试"
-            } else {
-                "是否开启老化测试"
-            }
-            val customDialog = CustomDialog(this@LoginOldActivity)
-            customDialog.setsTitle("温馨提示").setsMessage(showMessageText)
-                .setsCancel("取消", View.OnClickListener {
-                    customDialog.dismiss()
-                }).setsConfirm("确定", View.OnClickListener {
-                    SharedPreferencesUtils.setPrefBoolean(
-                        this@LoginOldActivity,
-                        AUTO_LOGIN_STR,
-                        !isAutoLogin
-                    )
-                    customDialog.dismiss()
-                    viewModel.login_auto("admin", "Jinghe233")
-                }).show()
+            viewModel.startAutoTest(this@LoginOldActivity)
             true
         }
         binding.cbShowAllName?.isChecked =
@@ -170,6 +148,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         SharedPreferencesUtils.setPrefBoolean(this, IS_FIRST_RUN, false)
         viewModel.sendCommAt4Clock(this)
         viewModel.restartAppAt6Am(this)
+        viewModel.ListeningOperation()
     }
 
     override fun tryLoadData() {
@@ -186,7 +165,6 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
-
     }
 
     fun initRecyclerView() {
@@ -212,6 +190,9 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
             if (it)
                 toMainPage()
         }
+        viewModel.startAutoTestStatus.observe(this) {
+            viewModel.login_auto("admin", "Jinghe233")
+        }
         loadRridsData()
     }
 
@@ -224,6 +205,11 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         tempListPause.clear()
     }
 
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        viewModel.ListeningOperation()
+        return super.dispatchTouchEvent(ev)
+    }
+
     private fun loadRridsData() {
         viewModel.rfidDatas.observe(this) { it ->
             clearList()
@@ -234,7 +220,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
             }
 
             val map = it.avail_rfids.stream()
-                .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_id + t.remain + t.material_batch.expired_at})//根据批号分组
+                .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_id + t.remain + t.material_batch.expired_at })//根据批号分组
             for (i in map.values) {
                 val inventoryDao = InventoryDao(
                     i[0].material_batch.eas_lot,
