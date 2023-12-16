@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="800dp"
+    android:layout_height="1500dp"
+    android:layout_margin="54dp"
+    android:background="@drawable/radius_border">
+
+    <ImageButton
+        android:id="@+id/btnClose"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="right"
+        android:layout_margin="18dp"
+        android:background="@mipmap/ic_close" />
+
+    <LinearLayout
+        android:layout_width="800dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:id="@+id/ll_Expired0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvExpired0"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:drawableLeft="@mipmap/ic_expired0"
+                android:drawablePadding="12dp"
+                android:gravity="center"
+                android:text="过期物料"
+                android:textColor="@color/app_color_ff3030"
+                android:textSize="30sp" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvExpired0"
+                android:layout_width="match_parent"
+                android:layout_height="380dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_Expired7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvExpired7"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:drawableStart="@mipmap/ic_expired7"
+                android:drawablePadding="12dp"
+                android:gravity="center"
+                android:text="临期物料"
+                android:textColor="@color/app_color_fbaf5d"
+                android:textSize="30sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvExpired7"
+                android:layout_width="match_parent"
+                android:layout_height="380dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_Expired30"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvExpired30"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:drawableStart="@mipmap/ic_expired30"
+                android:drawablePadding="12dp"
+                android:gravity="center"
+                android:text="呆滞物料"
+                android:textColor="@color/app_color_3366ff"
+                android:textSize="30sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvExpired30"
+                android:layout_width="match_parent"
+                android:layout_height="380dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnOK"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="12dp"
+            android:background="@color/app_color_btn"
+            android:gravity="center"
+            android:text="知道了"
+            android:textColor="@color/app_white"
+            android:textSize="22sp" />
+
+        <Button
+            android:id="@+id/btnCountDownTime"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="12dp"
+            android:background="@color/app_white"
+            android:gravity="center"
+            android:text="30秒后将自动关闭"
+            android:textColor="@color/app_color_8e8e8e"
+            android:textSize="16sp" />
+    </LinearLayout>
+</FrameLayout>

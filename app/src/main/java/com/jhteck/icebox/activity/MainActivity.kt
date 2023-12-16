@@ -608,7 +608,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
             when (key) {
                 LOCKED_SUCCESS -> {
                     if (DEBUG) {
-                        viewModel.testSyncRfid()
+//                        viewModel.testSyncRfid()
                         showPopWindow(
                             localData!!.results.avail_rfids,
                             localData!!.results.avail_rfids,

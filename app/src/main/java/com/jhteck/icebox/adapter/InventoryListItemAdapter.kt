@@ -85,10 +85,31 @@ class InventoryListItemAdapter(
             binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_color_00d88e))
             if(remainDay<0){
                 binding.tvValidityStatus.text = "过期"
-                binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_color_ff3030))
-                binding.tvValidityDate.setTextColor(BaseApp.app.getColor(R.color.app_color_ff3030))
+                binding.llDrugBg.setBackgroundColor(BaseApp.app.getColor(R.color.app_color_ff3030))
+                binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugName.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugSpec.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugFactory.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugUnit.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugMargin.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvBatchNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvValidityDate.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_white))
             }else if(remainDay<7){
-                binding.tvValidityDate.setTextColor(BaseApp.app.getColor(R.color.app_color_fbaf5d))
+                binding.llDrugBg.setBackgroundColor(BaseApp.app.getColor(R.color.app_color_fbaf5d))
+                binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugName.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugSpec.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugFactory.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugUnit.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvDrugMargin.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvBatchNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvValidityDate.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_white))
             }
 
             /*//效期状态

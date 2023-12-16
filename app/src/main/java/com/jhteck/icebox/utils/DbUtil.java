@@ -21,9 +21,9 @@ public class DbUtil {
         if (db == null) {
             db = Room.databaseBuilder(context,
                     AppDataBase.class, "icebox-system-08")
-//                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_34_35)
                     .allowMainThreadQueries()
-                    .fallbackToDestructiveMigration()
+//                    .fallbackToDestructiveMigration()
                     .build();
         }
         return db;
@@ -48,11 +48,12 @@ public class DbUtil {
         }
     }
 
-    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+    static final Migration MIGRATION_34_35 = new Migration(34, 35) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             // 在这里执行数据库的更新操作，例如添加新的列
-            database.execSQL("ALTER TABLE YourEntity ADD COLUMN new_column INTEGER");
+            database.execSQL("ALTER TABLE 't_avail_rfid' ADD COLUMN 'last_fridge_first_sync_at' TEXT");
+            database.execSQL("ALTER TABLE 't_fridges_info' ADD COLUMN 'door_style' INTEGER NOT NULL DEFAULT 0");
         }
     };
 

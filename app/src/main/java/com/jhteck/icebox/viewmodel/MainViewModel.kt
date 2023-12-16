@@ -159,7 +159,7 @@ class MainViewModel(application: android.app.Application) :
                     if (rfidEntity.remain != null) {
                         remain = rfidEntity.remain!!;
                     }*/
-                    rfidList.add(RfidSync(rfid.cell_number, rfid.remain, rfid.rfid))
+                    rfidList.add(RfidSync(rfid.cell_number, rfid.remain, rfid.rfid,DateUtils.currentStringFormatTime()))
                 }
                 val bodySync = genBody(requestSync(rfidList))
 //                apiService.syncRfids()

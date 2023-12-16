@@ -46,13 +46,30 @@ class LoginViewModel(application: android.app.Application) :
     private val TAG = "LoginViewModel"
     private val userDao = DbUtil.getDb().accountDao();
     fun login(username: String?, password: String?) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 showLoading(BaseApp.app.getString(R.string.login_tip))
-                var userInfo = userDao.findByKmUserId(username)
-                if (userInfo == null || userInfo.status != 0) {
+                var tempUserInfo: AccountEntity? = null
+                val userInfo = userDao.findByKmUserId(username)
+                val userInfo1 = userDao.findByName(username)
+                val userInfo2 = userDao.findByRealName(username)
+                if (userInfo == null && userInfo1 == null && userInfo2 == null) {
                     toast("用户ID不存在")
                 } else if (userInfo != null && !userInfo.password_digest.equals(
+                        MD5Util.encrypt(
+                            password
+                        )
+                    )
+                ) {
+                    toast("请检查密码")
+                } else if (userInfo1 != null && !userInfo1.password_digest.equals(
+                        MD5Util.encrypt(
+                            password
+                        )
+                    )
+                ) {
+                    toast("请检查密码")
+                } else if (userInfo2 != null && !userInfo2.password_digest.equals(
                         MD5Util.encrypt(
                             password
                         )
@@ -69,11 +86,19 @@ class LoginViewModel(application: android.app.Application) :
                         LockManage.getInstance().openLock()
                     }
 //                    delay(1000)
-                    loginUserInfo.postValue(userInfo)
+                    if (userInfo != null) {
+                        tempUserInfo = userInfo
+                    } else if (userInfo1 != null) {
+                        tempUserInfo = userInfo1
+                    } else if (userInfo2 != null) {
+                        tempUserInfo = userInfo2
+                    }
+
+                    loginUserInfo.postValue(tempUserInfo)
                     SharedPreferencesUtils.setPrefString(
                         ContextUtils.getApplicationContext(),
                         "loginUserInfo",
-                        Gson().toJson(userInfo)
+                        Gson().toJson(tempUserInfo)
                     )
 //                    loginOperator(userInfo)//记录登录信息
                 }
@@ -593,7 +618,14 @@ class LoginViewModel(application: android.app.Application) :
                 //全量上报
                 val rfidList = mutableListOf<RfidSync>()
                 for (rfid in rfids) {
-                    rfidList.add(RfidSync(rfid.cell_number, rfid.remain, rfid.rfid))
+                    rfidList.add(
+                        RfidSync(
+                            rfid.cell_number,
+                            rfid.remain,
+                            rfid.rfid,
+                            DateUtils.currentStringFormatTime()
+                        )
+                    )
                 }
                 val bodySync = genBody(requestSync(rfidList))
                 Log.d(TAG, "全量上报成功 rfidList ${rfidList}")
@@ -607,6 +639,12 @@ class LoginViewModel(application: android.app.Application) :
                 DbUtil.getDb().offlineRfidDao().clean()
                 loadRfidsFromLocal()
             }
+        }
+    }
+
+    fun ClearListeningOperation() {
+        if (scanThread != null) {
+            scanThread = null
         }
     }
 

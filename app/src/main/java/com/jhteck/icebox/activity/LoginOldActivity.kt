@@ -297,6 +297,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
     override fun onDestroy() {
         super.onDestroy()
         stopService()
+        viewModel.ClearListeningOperation()
 //        cameraExecutor.shutdown()
     }
 

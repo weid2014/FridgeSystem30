@@ -12,6 +12,7 @@ import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseFragment
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
+import com.jhteck.icebox.activity.MainActivity
 import com.jhteck.icebox.adapter.InventoryListItemAdapter
 import com.jhteck.icebox.adapter.ItemEditCellNumberAdapter
 import com.jhteck.icebox.api.AvailRfid
@@ -312,7 +313,7 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
                 mapOutList.get(key)?.let { tempOutList.add(it) }
             }
             updateUIbyAvailList(tempOutList)
-            viewModel.showOutTimeTip(requireContext(), availRfidsList!!)
+            viewModel.showOutTimePopWindow(this@InventoryListFrag, availRfidsList!!,binding)
         }
     }
 
@@ -337,24 +338,6 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
                     }
                 })
             binding.rvDrugContent.adapter?.notifyDataSetChanged()
-            /*when (roleID) {
-                10, 20 -> {
-                    binding.rvDrugContent.adapter = InventoryListItemAdapter(this, tempOutList,
-                        object : ItemEditCellNumberAdapter<AvailRfid> {
-                            override fun onEdit(t: AvailRfid, position: Int) {
-                                viewModel.editCellNumber(t, position)
-                            }
-                        })
-                }
-                else -> {
-                    binding.rvDrugContent.adapter = InventoryListItemAdapterScener(this, list!!,
-                        object : ItemEditCellNumberAdapter<AvailRfid> {
-                            override fun onEdit(t: AvailRfid, position: Int) {
-                                viewModel.editCellNumber(t, position)
-                            }
-                        })
-                }
-            }*/
 
             showEmptyImage(false)
         } else {
@@ -364,10 +347,10 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
 
     private fun showEmptyImage(isEmpty: Boolean) {
         if (isEmpty) {
-            binding.imEmpty.visibility = View.VISIBLE
+            binding.llEmpty.visibility = View.VISIBLE
             binding.rvDrugContent.visibility = View.GONE
         } else {
-            binding.imEmpty.visibility = View.GONE
+            binding.llEmpty.visibility = View.GONE
             binding.rvDrugContent.visibility = View.VISIBLE
         }
     }

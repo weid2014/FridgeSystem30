@@ -18,5 +18,6 @@ data class AvailRfidEntity(
 //    val material: Material,
 //    val material_batch: MaterialBatch,
     @ColumnInfo(name = "remain") val remain: Int?,
-    @ColumnInfo(name = "rfid") val rfid: String
+    @ColumnInfo(name = "rfid") val rfid: String,
+    @ColumnInfo(name = "last_fridge_first_sync_at") val last_fridge_first_sync_at: String?,
 )

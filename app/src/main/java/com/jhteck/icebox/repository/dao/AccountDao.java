@@ -25,6 +25,9 @@ public interface AccountDao extends BaseJavaDao<AccountEntity> {
     @Query("SELECT * FROM t_account WHERE nick_name=(:nick_name) LIMIT 1")
     AccountEntity findByName(String nick_name);
 
+    @Query("SELECT * FROM t_account WHERE real_name=(:real_name) LIMIT 1")
+    AccountEntity findByRealName(String real_name);
+
     @Query("SELECT * FROM t_account WHERE km_user_id=(:km_user_id) LIMIT 1")
     AccountEntity findByKmUserId(String km_user_id);
 

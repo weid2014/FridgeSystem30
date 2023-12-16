@@ -43,6 +43,7 @@ data class AvailRfid(
     var remain: Int,
     var rfid: String,
     var fridge_id: String,
+    var last_fridge_first_sync_at: String?,
 )
 
 data class AntPowerDao(

@@ -38,15 +38,14 @@ class SpashViewModel(application: android.app.Application) :
                     SharedPreferencesUtils.setPrefInt(
                         getApplication(),
                         DOOR_TYPE,
-                        it
+                        it.toInt()
                     )
                 }
                 delay(2000)
-                loginStatus.postValue(true)
             } catch (e: Exception) {
-                toast(e.message)
+                Log.e("SpashViewModel",e.message.toString())
             } finally {
-                hideLoading()
+                loginStatus.postValue(true)
             }
         }
     }
@@ -222,11 +221,12 @@ class SpashViewModel(application: android.app.Application) :
      * 同步账户
      */
     fun synchronizedAccount(sncode: String) {
-        val accountDao = DbUtil.getDb().accountDao()
-//        if (isNetAvailable()) {
-        val users = accountDao.getAll();
-        val uploadUsers = users.filter { user -> user.hasUpload == false }
+
         GlobalScope.launch(context = Dispatchers.IO) {
+            val accountDao = DbUtil.getDb().accountDao()
+//        if (isNetAvailable()) {
+            val users = accountDao.getAll();
+            val uploadUsers = users.filter { user -> user.hasUpload == false }
             var accountService = RetrofitClient.getService(sncode = sncode);
             //同步远端到本地账户
             for (user in uploadUsers) {
@@ -288,8 +288,6 @@ class SpashViewModel(application: android.app.Application) :
                 Log.e("synchronizedAccount", "${e}")
             }
         }
-
-//        }
     }
 
     fun syncOtherSystem(sncode: String) {

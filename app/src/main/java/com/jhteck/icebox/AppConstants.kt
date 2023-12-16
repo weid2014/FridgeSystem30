@@ -46,5 +46,6 @@ const val DOOR_TYPE_ONE = "单锁冰箱"
 const val AUTO_LOGIN = false //自动登录，用于老化测试
 const val AUTO_LOGIN_STR = "auto_login_str"
 const val SHOW_ALL_NAME = "show_all_name"
+const val LAST_PROMPT_DATE = "last_prompt_date"
 
 
