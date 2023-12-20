@@ -460,7 +460,7 @@ class LoginViewModel(application: android.app.Application) :
     private var countMinutes: Int = 0
     private var scanThread: Thread? = null
     fun ListeningOperation() {
-        countMinutes = 30
+        countMinutes = 5
         if (scanThread == null) {
             synchronized(this) {
                 if (scanThread == null) {

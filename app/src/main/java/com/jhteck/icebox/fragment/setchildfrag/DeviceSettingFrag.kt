@@ -10,12 +10,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.camera.core.impl.utils.ContextUtil.getBaseContext
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseFragment
-import com.hele.mrd.app.lib.common.ext.toast
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.adapter.AntListAdapter
 import com.jhteck.icebox.adapter.IAntPowerCallback
@@ -97,11 +95,11 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             }
         }
 
-        binding.edSncode.isEnabled=false
-        binding.edAdminName.isEnabled=false
-        binding.edAdminPassword.isEnabled=false
-        binding.edStyle.isEnabled=false
-        binding.edCells.isEnabled=false
+        binding.edSncode.isEnabled = false
+        binding.edAdminName.isEnabled = false
+        binding.edAdminPassword.isEnabled = false
+        binding.edStyle.isEnabled = false
+        binding.edCells.isEnabled = false
         binding.btnEditSave.setOnClickListener {
             val sncode = binding.edSncode.text.toString().trim()
             val deviceAlias = binding.edDeviceAlias.text.toString().trim()
@@ -153,7 +151,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         initAntRecycleView(tempList)
         if (isLink) {
             binding.btnLink.text = "关闭"
-        }else{
+        } else {
             binding.btnLink.text = "连接"
         }
         binding.btnLink.setOnClickListener {
@@ -186,14 +184,14 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             binding.llUrlSelect.visibility = View.VISIBLE
 
         }
-        val baseUrl=SharedPreferencesUtils.getPrefString(requireContext(), URL_REQUEST, URL_TEST)
+        val baseUrl = SharedPreferencesUtils.getPrefString(requireContext(), URL_REQUEST, URL_TEST)
         if (baseUrl.equals(URL_TEST)) {
             binding.rbUrl1.isChecked = true
-        } else if(baseUrl.equals(URL_KM)){
+        } else if (baseUrl.equals(URL_KM)) {
             binding.rbUrl2.isChecked = true
-        }else if(baseUrl.equals(URL_KM1)){
+        } else if (baseUrl.equals(URL_KM1)) {
             binding.rbUrl3.isChecked = true
-        }else if(baseUrl.equals(URL_KM2)){
+        } else if (baseUrl.equals(URL_KM2)) {
             binding.rbUrl4.isChecked = true
         }
 
@@ -210,9 +208,9 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
                         urlText = URL_TEST
                     } else if (binding.rbUrl2.isChecked) {
                         urlText = URL_KM
-                    }else if(binding.rbUrl3.isChecked){
+                    } else if (binding.rbUrl3.isChecked) {
                         urlText = URL_KM1
-                    }else if(binding.rbUrl4.isChecked){
+                    } else if (binding.rbUrl4.isChecked) {
                         urlText = URL_KM2
                     }
                     SharedPreferencesUtils.setPrefString(requireContext(), URL_REQUEST, urlText)
@@ -245,9 +243,9 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             viewModel.startFCLInventory30()
         }
 
-        if(isLinkLock){
+        if (isLinkLock) {
             binding.btnLinkLock.text = "关闭"
-        }else{
+        } else {
             binding.btnLinkLock.text = "连接"
         }
         binding.btnLinkLock.setOnClickListener {
@@ -290,7 +288,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             //账号拉取
             val oldSncoede = binding.edOldSncode.text.toString().trim()
             if (!chechSnCode(oldSncoede)) {
-                ToastUtils.longToast(requireContext(),"请输入正确的SN码")
+                ToastUtils.longToast(requireContext(), "请输入正确的SN码")
                 return@setOnClickListener
             }
             oldSncoede?.let { viewModel.synchronizedAccount(it) }
@@ -362,7 +360,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         binding.llFridgesOperate.visibility = View.VISIBLE
     }
 
-    private fun showSyncAccountLayout(){
+    private fun showSyncAccountLayout() {
         hideAllLayout()
         binding.llAccountSync.visibility = View.VISIBLE
     }
@@ -371,24 +369,26 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         binding.llFridgesOperate.visibility = View.GONE
         binding.llSerialSetting.visibility = View.GONE
         binding.llUrlSelect.visibility = View.GONE
-        binding.llAccountSync.visibility=View.GONE
+        binding.llAccountSync.visibility = View.GONE
     }
 
     override fun initObservables() {
         super.initObservables()
         viewModel.fridgesActiveResultBo.observe(this) {
-            if(it!=null){
-            showFridgesOperateLayout()
-            binding.edLocation.setText(it.location)
-            binding.edDeviceAlias.setText(it.device_alias)
-            binding.edCells.setText(it.cells.toString())
-            binding.edSncode.setText(it.sncode)
-            binding.edStyle.setText(it.style.toString())
-            binding.edTemperature.setText("${(it.temperature)}")}
-            else{
+            if (it != null) {
+                showFridgesOperateLayout()
+                binding.edLocation.setText(it.location)
+                binding.edDeviceAlias.setText(it.device_alias)
+                binding.edCells.setText(it.cells.toString())
+                binding.edSncode.setText(it.sncode)
+                binding.edStyle.setText(it.style.toString())
+                binding.edTemperature.setText("${(it.temperature)}")
+            } else {
                 val customDialog = CustomDialog(requireContext())
-                val sncode =SharedPreferencesUtils.getPrefString(requireContext(), SNCODE,
-                    SNCODE_TEST)
+                val sncode = SharedPreferencesUtils.getPrefString(
+                    requireContext(), SNCODE,
+                    SNCODE_TEST
+                )
                 customDialog.setsTitle("温馨提示").setsMessage("${sncode}状态异常，请重新激活")
                     .setsCancel("取消", View.OnClickListener {
                         customDialog.dismiss()
@@ -464,6 +464,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         }
         initAntRecycleView(tempList)
     }
+
     //重启app
     private fun restartApp() {
         val intent =
@@ -472,6 +473,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         startActivity(intent)
         requireActivity().finish()
     }
+
     fun chechSnCode(sncodeStr: String): Boolean {
         return sncodeStr.isNotEmpty() && sncodeStr.length == 16 && sncodeStr.startsWith("FEDCBA")
     }
