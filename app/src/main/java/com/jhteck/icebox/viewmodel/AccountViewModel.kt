@@ -29,7 +29,7 @@ class AccountViewModel(application: android.app.Application) :
     /**
      * 新增用户
      */
-    fun add(user: AccountEntity, faceUrl: String? = null) {
+    /*fun add(user: AccountEntity, faceUrl: String? = null) {
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 showLoading("正在新增账户，请稍等...")
@@ -72,7 +72,7 @@ class AccountViewModel(application: android.app.Application) :
                 hideLoading()
             }
         }
-    }
+    }*/
 
     /**
      * 更新用户
@@ -96,7 +96,7 @@ class AccountViewModel(application: android.app.Application) :
                     }
                 }
                 getAllUsers();
-                val response = RetrofitClient.getService().updateAccount(user);
+                val response = RetrofitClient.getService().updateAccount(user.id,user);
                 if (response.code() == 200) {
                     toast("平台成功更新账户")
                     user.hasUpload = true
@@ -155,13 +155,14 @@ class AccountViewModel(application: android.app.Application) :
      */
     fun getAllUsers() {
         viewModelScope.launch(Dispatchers.Default) {
-            var userResults = userDao.getAll().filter { usr -> usr.status == 0 };
+            var userResults = userDao.getAll()
+//            var userResults = userDao.getAll().filter { usr -> usr.status == 0 };
             for (user in userResults) {
                 var faceAcountEntites =
-                    DbUtil.getDb().faceAccountDao().getByFaceByUserId(user.user_id)
+                    DbUtil.getDb().faceAccountDao().getByFaceByUserId(user.user_number)
                 if (faceAcountEntites != null && faceAcountEntites.size > 1) {
                     faceAcountEntites = faceAcountEntites.stream()
-                        .sorted(Comparator.comparing(FaceAccountEntity::createTime).reversed())
+//                        .sorted(Comparator.comparing(FaceAccountEntity::createTime).reversed())
                         .collect(Collectors.toList());
                 }
                 user.faceAccount = faceAcountEntites;
@@ -183,9 +184,9 @@ class AccountViewModel(application: android.app.Application) :
             )
 
             var accountEntity = Gson().fromJson(userInfoString, AccountEntity::class.java)
-            if (accountEntity != null && accountEntity.role_id.toInt() != 10) {
+            if (accountEntity != null && accountEntity.role != 10) {
                 results =
-                    results.filter { t -> t.role_id > accountEntity.role_id.toInt() || t.user_id == accountEntity.user_id }
+                    results.filter { t -> t.role_id > accountEntity.role || t.user_id == accountEntity.user_id }
                         .map { t -> t }
             }
             onOperationsLoaded.postValue(results)
@@ -211,9 +212,9 @@ class AccountViewModel(application: android.app.Application) :
                     )
 
                     var accountEntity = Gson().fromJson(userInfoString, AccountEntity::class.java)
-                    if (accountEntity != null && accountEntity.role_id.toInt() != 10) {
+                    if (accountEntity != null && accountEntity.role != 10) {
                         results =
-                            results.filter { t -> t.role_id > accountEntity.role_id.toInt() || t.user_id == accountEntity.user_id }
+                            results.filter { t -> t.role_id > accountEntity.role || t.user_id == accountEntity.user_id }
                                 .map { t -> t }
                     }
 

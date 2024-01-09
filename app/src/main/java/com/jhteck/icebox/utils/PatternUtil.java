@@ -53,7 +53,7 @@ public class PatternUtil {
     }
 
     public static String removeDigitalAndLetter(String value) {
-        if (!SharedPreferencesUtils.getPrefBoolean(BaseApp.app, SHOW_ALL_NAME, false)) {
+        if (!SharedPreferencesUtils.getPrefBoolean(BaseApp.app, SHOW_ALL_NAME, true)) {
             String result = removeMatch(value);
             result = removeDigital(result);
             result = removeLetter(result);

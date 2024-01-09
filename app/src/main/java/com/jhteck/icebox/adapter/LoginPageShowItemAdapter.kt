@@ -48,7 +48,7 @@ class LoginPageShowItemAdapter(private val data: List<InventoryDao>) :
 
             binding.tvDrugName.isSelected = true;
             binding.tvDrugNo.text = item.drugNO
-            binding.tvDrugNumber.text = "${item.drugNumber}盒"
+            binding.tvDrugNumber.text = "${item.drugNumber}(${item.unitName})"
 
             val showDate = item.expired_at.substring(0, 10)
             val remainDay = DateUtils.getDaysBetween(showDate, DateUtils.format_yyyyMMdd)

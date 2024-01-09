@@ -132,7 +132,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
             true
         }
         binding.cbShowAllName?.isChecked =
-            SharedPreferencesUtils.getPrefBoolean(this, SHOW_ALL_NAME, false)
+            SharedPreferencesUtils.getPrefBoolean(this, SHOW_ALL_NAME, true)
         binding.cbShowAllName?.setOnCheckedChangeListener { compoundButton, b ->
             SharedPreferencesUtils.setPrefBoolean(this, SHOW_ALL_NAME, b)
             binding.rvNormalContent?.adapter?.notifyDataSetChanged()
@@ -182,7 +182,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
     override fun initObservables() {
         super.initObservables()
         viewModel.loginUserInfo.observe(this) {
-            SharedPreferencesUtils.setPrefInt(this, ROLE_ID, it.role_id.toInt())
+            SharedPreferencesUtils.setPrefInt(this, ROLE_ID, it.role)
             toMainPage()
         }
         viewModel.loginStatus.observe(this) {
@@ -213,13 +213,14 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
     private fun loadRridsData() {
         viewModel.rfidDatas.observe(this) { it ->
             clearList()
+
             for (i in it.avail_rfids) {
                 if (i.remain == 100) {
                     tempListNormal.add(i)
                 }
             }
 
-            val map = it.avail_rfids.stream()
+            /*val map = it.avail_rfids.stream()
                 .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_id + t.remain + t.material_batch.expired_at })//根据批号分组
             for (i in map.values) {
                 val inventoryDao = InventoryDao(
@@ -234,12 +235,34 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
                 } else {
                     tempListPause.add(inventoryDao)
                 }
+            }*/
+            for (i in it.avail_rfids) {
+                val inventoryDao = InventoryDao(
+                    i.material_batch.eas_lot,
+                    i.material?.eas_material_name,
+                    i.qty?.toFloat()!!/i.material_package.unit_qty,
+                    i.material_package.unit_name,
+                    i.material_batch.expired_at,
+                )
+                if (i.remain == 100) {
+                    tempList.add(inventoryDao)
+                } else {
+                    tempListPause.add(inventoryDao)
+                }
             }
             tempList.sortBy { it.expired_at }
             tempListPause.sortBy { it.expired_at }
 
             binding.rvNormalContent?.adapter?.notifyDataSetChanged()
-            binding.tvNormalNum.text = "共${tempListNormal.size}个"
+            var countNormal=0f
+            for (i in tempList){
+                countNormal+=i.drugNumber
+            }
+            var countPause=0f
+            for (i in tempListPause){
+                countPause+=i.drugNumber
+            }
+            binding.tvNormalNum.text = "共${tempList.size}个"
 
             binding.rvPauseContent1?.adapter?.notifyDataSetChanged()
             binding.tvPauseNum1?.text = "共${tempListPause.size}个"

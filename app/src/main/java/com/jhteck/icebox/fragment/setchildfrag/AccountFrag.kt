@@ -25,6 +25,7 @@ import com.jhteck.icebox.adapter.OperaRecordListAdapter
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.bean.MyTcpMsg
 import com.jhteck.icebox.databinding.AppFragmentSettingAccoutBinding
+import com.jhteck.icebox.fragment.SettingFrag
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.RfidOperationEntity
 import com.jhteck.icebox.utils.*
@@ -44,7 +45,6 @@ import java.util.*
  */
 class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBinding>() {
 
-    private var popupWindowAdd: PopupWindow? = null
     private var popupWindowEdit: PopupWindow? = null
     private var inAccountPage: Boolean = false
 
@@ -66,7 +66,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
     }
 
     private val frag by lazy {
-        parentFragment as AccountFrag
+        parentFragment as SettingFrag
     }
 
     override fun tryLoadData() {
@@ -75,9 +75,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
     }
 
     override fun initView() {
-        binding.btnNewAccount.setOnClickListener {
-            showNewAccountPopWindow()
-        }
+        binding.btnNewAccount.visibility=View.GONE
         binding.fullscreenView.setOnClickListener {
             LockManage.getInstance().tryOpenLock();
         }
@@ -135,7 +133,7 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                 }
                 else->{
                     for (user in it) {
-                        if(user.role_id.toInt()!=10) {
+                        if(user.role.toInt()!=10) {
                             testList.add(user)
                         }
                     }
@@ -174,7 +172,6 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
     private var tv_nfcId: TextView? = null
     private var ll_nfc_id: LinearLayout? = null
     fun showEditAccountPopWindow(item: AccountEntity) {
-        val roleID = SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10)
         //弹出结算界面
         popupWindowEdit = PopupWindow().apply {
             inAccountPage = true
@@ -201,22 +198,35 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
             }
 
             val btnSavePop = contentView.findViewById<Button>(R.id.btn_save)
-            val edUsername = contentView.findViewById<EditText>(R.id.ed_UserName)
-            edUsername.setText(item.km_user_id)
-            val edPassWord = contentView.findViewById<EditText>(R.id.ed_PassWord)
-            val edRealName = contentView.findViewById<EditText>(R.id.ed_real_name)
-            edRealName.setText(item.real_name)
-            val edCommitPassWord = contentView.findViewById<EditText>(R.id.ed_CommitPassword)
+            val edUsername = contentView.findViewById<EditText>(R.id.edUserName)
+            edUsername.setText(item.user_name)
             tv_nfcId = contentView.findViewById<TextView>(R.id.tv_nfcId)
             ll_nfc_id = contentView.findViewById<LinearLayout>(R.id.ll_nfc_id)
             val tvTips = contentView.findViewById<TextView>(R.id.tv_tips)
             tv_nfcId?.setText(item.nfc_id)
             changeNfcBackground(true)
-            val tv_Title = contentView.findViewById<TextView>(R.id.tv_Title)
-            val roleId = contentView.findViewById<RadioGroup>(R.id.rg_role)
-            val rbRole0 = contentView.findViewById<RadioButton>(R.id.rb_role0)
-            val rbRole1 = contentView.findViewById<RadioButton>(R.id.rb_role1)
-            val rbRole2 = contentView.findViewById<RadioButton>(R.id.rb_role2)
+            val rgNfcCard = contentView.findViewById<RadioGroup>(R.id.rg_nfc_card)
+            val rb_card1 = contentView.findViewById<RadioButton>(R.id.rb_card1)
+            rb_card1.isChecked=true
+            val rb_card2 = contentView.findViewById<RadioButton>(R.id.rb_card2)
+            val rb_card3 = contentView.findViewById<RadioButton>(R.id.rb_card3)
+            val rb_card4 = contentView.findViewById<RadioButton>(R.id.rb_card4)
+            val rb_card5 = contentView.findViewById<RadioButton>(R.id.rb_card5)
+            rb_card1.setOnClickListener {
+                tv_nfcId?.setText(item.fridge_nfc_1)
+            }
+            rb_card2.setOnClickListener {
+                tv_nfcId?.setText(item.fridge_nfc_2)
+            }
+            rb_card3.setOnClickListener {
+                tv_nfcId?.setText(item.fridge_nfc_3)
+            }
+            rb_card4.setOnClickListener {
+                tv_nfcId?.setText(item.fridge_nfc_4)
+            }
+            rb_card5.setOnClickListener {
+                tv_nfcId?.setText(item.fridge_nfc_5)
+            }
             val fullscreenView = contentView.findViewById<View>(R.id.fullscreen_view)
             fullscreenView.setOnClickListener {
                 LockManage.getInstance().tryOpenLock();
@@ -225,78 +235,26 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
                 LockManage.getInstance().tryOpenLock();
                 false
             }
-            tv_Title.text = "编辑账号"
-            when (roleID) {
-                10 -> {
-                    if (item.role_id.toInt() == 10) {
-                        rbRole0.visibility = View.VISIBLE
-                        rbRole1.visibility = View.GONE
-                        rbRole2.visibility = View.GONE
-                        rbRole0.isChecked = true
-                    } else if (item.role_id.toInt() == 20) {
-                        rbRole0.visibility = View.GONE
-                        rbRole1.visibility = View.VISIBLE
-                        rbRole2.visibility = View.VISIBLE
-                        rbRole1.isChecked = true
-                    } else {
-                        rbRole0.visibility = View.GONE
-                        rbRole1.visibility = View.VISIBLE
-                        rbRole2.visibility = View.VISIBLE
-                        rbRole2.isChecked = true
-                    }
-                }
-                20 -> {
-                    if (item.role_id.toInt() == 20) {
-                        rbRole0.visibility = View.GONE
-                        rbRole1.visibility = View.VISIBLE
-                        rbRole2.visibility = View.VISIBLE
-                        rbRole1.isChecked = true
-                    } else {
-                        rbRole0.visibility = View.GONE
-                        rbRole1.visibility = View.VISIBLE
-                        rbRole2.visibility = View.VISIBLE
-                        rbRole2.isChecked = true
-                    }
-                }
-            }
-            //admin可以新建仓库管理员和现场人员，仓库管理员可以新建现场人员账号
-
             btnSavePop.setOnClickListener {
 
-                if (edPassWord.text.toString() == "" || edCommitPassWord.text.toString()
-                    == "" || edUsername.text.toString() == ""
-                    || edRealName.text.toString()
-                    == "" || tv_nfcId?.text.toString().length == 0
+                if ( tv_nfcId?.text.toString().length == 0
                 ) {
                     tvTips.setText("请输入必填项，请检查！")
-                } else if (edPassWord.text.toString() != edCommitPassWord.text.toString()) {
-                    tvTips.setText("密码不一致，请检查！")
                 } else {
 //                //获取账户信息
-                    item.nick_name = edRealName.text.trim().toString()
-                    item.password_digest = MD5Util.encrypt(edPassWord.text.trim().toString())
-                    item.real_name = edRealName.text.trim().toString()
-                    item.nfc_id = tv_nfcId?.text.toString()
-                    item.km_user_id = edUsername.text.trim().toString()
-
+                    item.user_name = edUsername.text.trim().toString()
                     var checkRadioButton =
-                        contentView.findViewById<RadioButton>(roleId.checkedRadioButtonId)
+                        contentView.findViewById<RadioButton>(rgNfcCard.checkedRadioButtonId)
                     var roleText = checkRadioButton.text
                     when (roleText) {
-                        "系统管理员" -> item.role_id = "10"
-                        "仓库管理员" -> item.role_id = "20"
-                        "现场人员" -> item.role_id = "30"
+                        "NFC_1" -> item.fridge_nfc_1 = tv_nfcId?.text.toString()
+                        "NFC_2" -> item.fridge_nfc_2 = tv_nfcId?.text.toString()
+                        "NFC_3" -> item.fridge_nfc_3 = tv_nfcId?.text.toString()
+                        "NFC_4" -> item.fridge_nfc_4 = tv_nfcId?.text.toString()
+                        "NFC_5" -> item.fridge_nfc_5 = tv_nfcId?.text.toString()
                     }
-                    //测试
-                    val formatter = SimpleDateFormat("YYYY-MM-dd HH:mm:ss") //设置时间格式
-                    val curDate = Date(System.currentTimeMillis()) //获取当前时间
-                    val createDate: String = formatter.format(curDate) //格式转换
-                    item.created_by = item.created_by
-                    item.created_time = createDate
-                    item.updated_time = createDate
-                    item.login_time = createDate
-                    item.updated_by =
-                        SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10).toString()
+                    item.nfc_id = tv_nfcId?.text.toString()
+
                     //todo 删除旧的人脸数据，更新最新的人脸数据
 
                     viewModel.update(item);//更新
@@ -308,119 +266,9 @@ class AccountFrag : BaseFragment<AccountViewModel, AppFragmentSettingAccoutBindi
 
     }
 
-    //新建账号页面
-    private fun showNewAccountPopWindow() {
-        val roleID = SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10)
-        //弹出结算界面
-        popupWindowAdd = PopupWindow().apply {
-            inAccountPage = true
-            //入口参数配置
-            val layoutInflater = LayoutInflater.from(requireActivity())
-            contentView =
-                layoutInflater.inflate(R.layout.pup_new_account, null)
-            width = ViewGroup.LayoutParams.WRAP_CONTENT
-            height = ViewGroup.LayoutParams.WRAP_CONTENT
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                isTouchModal = false
-            }
-            isTouchable = true
-            isFocusable = true
-            isOutsideTouchable = false
-            setBackgroundDrawable(BitmapDrawable())
-//            setTouchInterceptor(OnTouchListener { v, event -> true })
-            DbUtil.setPopupWindowTouchModal(this, false)
-            DensityUtil.backgroundAlpha(requireActivity(), 0.5f)
-            update()
-            //设置按钮
-            val btnClosePop = contentView.findViewById<Button>(R.id.btn_back)
-            val fullscreenView = contentView.findViewById<View>(R.id.fullscreen_view)
-            fullscreenView.setOnClickListener {
-                LockManage.getInstance().tryOpenLock();
-            }
-            fullscreenView.setOnTouchListener { view, motionEvent ->
-                LockManage.getInstance().tryOpenLock();
-                false
-            }
-
-            btnClosePop.setOnClickListener {
-                hidePopupWindow()
-            }
-
-            val btnSavePop = contentView.findViewById<Button>(R.id.btn_save)
-            val edUsername = contentView.findViewById<EditText>(R.id.ed_UserName)
-            val edPassWord = contentView.findViewById<EditText>(R.id.ed_PassWord)
-            val edRealName = contentView.findViewById<EditText>(R.id.ed_real_name)
-            val edCommitPassWord = contentView.findViewById<EditText>(R.id.ed_CommitPassword)
-            tv_nfcId = contentView.findViewById<TextView>(R.id.tv_nfcId)
-            ll_nfc_id = contentView.findViewById<LinearLayout>(R.id.ll_nfc_id)
-            val tvTips = contentView.findViewById<TextView>(R.id.tv_tips)
-            val roleId = contentView.findViewById<RadioGroup>(R.id.rg_role)
-            val rbRole1 = contentView.findViewById<RadioButton>(R.id.rb_role1)
-            val rbRole2 = contentView.findViewById<RadioButton>(R.id.rb_role2)
-            rbRole1.isChecked = true
-
-            //admin可以新建仓库管理员和现场人员，仓库管理员可以新建现场人员账号
-            if (roleID == 20) {
-                rbRole1.visibility = View.GONE
-                rbRole2.isChecked = true
-            }
-            val nextId=SnowFlake.getInstance().nextId().toString()
-            //调试
-            if (DEBUG) {
-                tv_nfcId?.text = nextId.substring(nextId.length-8)
-                changeNfcBackground(true)
-            }
-
-            btnSavePop.setOnClickListener {
-                if (edPassWord.text.toString() == "" || edCommitPassWord.text.toString()
-                    == "" || edUsername.text.toString() == ""
-                    || edRealName.text.toString()
-                    == "" || tv_nfcId?.text.toString().length == 0
-                ) {
-                    tvTips.text = "请输入必填项，请检查！"
-                } else if (edPassWord.text.toString() != edCommitPassWord.text.toString()) {
-                    tvTips.text = "密码不一致，请检查！"
-                } else {
-//                //获取账户信息
-                    var user = AccountEntity()
-                    user.nick_name = edRealName.text.trim().toString()
-                    user.password_digest = MD5Util.encrypt(edPassWord.text.trim().toString())
-                    user.real_name = edRealName.text.trim().toString()
-                    user.nfc_id = tv_nfcId?.text.toString()
-                    user.km_user_id = edUsername.text.trim().toString()
-                    var checkRadioButton =
-                        contentView.findViewById<RadioButton>(roleId.checkedRadioButtonId)
-                    var roleText = checkRadioButton.text
-                    when (roleText) {
-                        "仓库管理员" -> user.role_id = "20"
-                        "现场人员" -> user.role_id = "30"
-                    }
-                    //测试
-                    val formatter = SimpleDateFormat("YYYY-MM-dd HH:mm:ss") //设置时间格式
-                    val curDate = Date(System.currentTimeMillis()) //获取当前时间
-                    val createDate: String = formatter.format(curDate) //格式转换
-
-                    user.user_id = nextId.substring(nextId.length-7)
-
-                    user.created_by =
-                        SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10).toString()
-                    user.created_time = createDate
-                    user.updated_time = createDate
-                    user.login_time = createDate
-                    viewModel.add(user);
-                }
-            }
-            showAtLocation(binding.root, Gravity.CENTER, width / 2, 0);
-            DbUtil.setPopupWindowTouchModal(this, false)
-        }
-    }
 
 
     fun hidePopupWindow() {
-        if (popupWindowAdd != null) {
-            popupWindowAdd?.dismiss()
-        }
-        popupWindowAdd = null
         if (popupWindowEdit != null) {
             popupWindowEdit?.dismiss()
         }

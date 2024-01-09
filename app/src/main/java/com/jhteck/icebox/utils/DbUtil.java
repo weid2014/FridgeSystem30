@@ -21,9 +21,9 @@ public class DbUtil {
         if (db == null) {
             db = Room.databaseBuilder(context,
                     AppDataBase.class, "icebox-system-08")
-                    .addMigrations(MIGRATION_34_35)
+//                    .addMigrations(MIGRATION_34_35)
                     .allowMainThreadQueries()
-//                    .fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration()
                     .build();
         }
         return db;

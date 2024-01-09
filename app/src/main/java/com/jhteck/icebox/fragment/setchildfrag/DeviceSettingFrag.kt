@@ -63,21 +63,34 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         parentFragment as SettingFrag
     }
 
+    private fun initIncludeTitle() {
+        binding.fridgeInfo.includeTitleSncodeStep2.tvTitle.text = "产品序列号"
+        binding.fridgeInfo.includeTitleTokenStep2.tvTitle.text = "激活令牌"
+        binding.fridgeInfo.includeTitleHttpStep2.tvTitle.text = "Http设置"
+        binding.fridgeInfo.includeTitleAliasStep2.tvTitle.text = "设备别名"
+        binding.fridgeInfo.includeTitleLocationStep2.tvTitle.text = "设备库位"
+        binding.fridgeInfo.includeTitlePasswordStep2.tvTitle.text = "管理员密码"
+        binding.fridgeInfo.includeTitleFridgeType.tvTitle.text = "冰箱类型设置"
+    }
+
     override fun initView() {
+        initIncludeTitle()
         binding.btnFridgesOperate.setOnClickListener {
             viewModel.getFridgesInfo()
 //            showFridgesOperateLayout()
         }
-        binding.btnActive.setOnClickListener {
-            val sncode = binding.edSncode.text.toString().trim()
-            val deviceAlias = binding.edDeviceAlias.text.toString().trim()
-            val adminName = binding.edAdminName.text.toString().trim()
-            val adminPassword = binding.edAdminPassword.text.toString().trim()
-            val location = binding.edLocation.text.toString().trim()
-            val temperature = binding.edTemperature.text.toString().trim()
-            val style = binding.edStyle.text.toString().trim()
-            val cells = binding.edCells.text.toString().trim()
 
+
+
+        /*binding.fridgeInfo.btnEditSave.setOnClickListener {
+            val sncode = binding.fridgeInfo.edSncode.text.toString().trim()
+            val deviceAlias = binding.fridgeInfo.edDeviceAlias.text.toString().trim()
+            val adminName = binding.fridgeInfo.edAdminName.text.toString().trim()
+            val adminPassword = binding.fridgeInfo.edAdminPassword.text.toString().trim()
+            val location = binding.fridgeInfo.edLocation.text.toString().trim()
+            val temperature = binding.fridgeInfo.edTemperature.text.toString().trim()
+            val style = binding.fridgeInfo.edStyle.text.toString().trim()
+            val cells = binding.fridgeInfo.edCells.text.toString().trim()
             val fridgesActiveBo = FridgesActiveBo(
                 adminName,
                 adminPassword,
@@ -88,52 +101,21 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
                 style.toInt(),
                 temperature.toInt()
             )
-            if (binding.edSncode.text.length == 16) {
-
-                viewModel.activeFridges(fridgesActiveBo)
-                showFridgesOperateLayout()
-            }
-        }
-
-        binding.edSncode.isEnabled = false
-        binding.edAdminName.isEnabled = false
-        binding.edAdminPassword.isEnabled = false
-        binding.edStyle.isEnabled = false
-        binding.edCells.isEnabled = false
-        binding.btnEditSave.setOnClickListener {
-            val sncode = binding.edSncode.text.toString().trim()
-            val deviceAlias = binding.edDeviceAlias.text.toString().trim()
-            val adminName = binding.edAdminName.text.toString().trim()
-            val adminPassword = binding.edAdminPassword.text.toString().trim()
-            val location = binding.edLocation.text.toString().trim()
-            val temperature = binding.edTemperature.text.toString().trim()
-            val style = binding.edStyle.text.toString().trim()
-            val cells = binding.edCells.text.toString().trim()
-            val fridgesActiveBo = FridgesActiveBo(
-                adminName,
-                adminPassword,
-                cells.toInt(),
-                deviceAlias,
-                location,
-                sncode,
-                style.toInt(),
-                temperature.toInt()
-            )
-            if (binding.edSncode.text.length == 16) {
+            if (binding.fridgeInfo.edSncode.text.length == 16) {
                 viewModel.updateFridgesInfo(fridgesActiveBo)
                 showFridgesOperateLayout()
             }
-        }
-        binding.btnCancle.setOnClickListener {
-            binding.llFridgesOperate.visibility = View.GONE
+        }*/
+        binding.fridgeInfo.btnCancle.setOnClickListener {
+            binding.fridgeInfo.llContent.visibility = View.GONE
         }
 
         binding.btnSerialSetting.setOnClickListener {
             hideAllLayout()
-            binding.llSerialSetting.visibility = View.VISIBLE
+            binding.includeSerialport.llContent.visibility = View.VISIBLE
             initSerialPort()
         }
-        binding.btnGetAntPower.setOnClickListener {
+        binding.includeSerialport.btnGetAntPower.setOnClickListener {
             if (DEBUG) {
                 tempList.clear()
                 for (i in 0 until 8) {
@@ -150,31 +132,32 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         }
         initAntRecycleView(tempList)
         if (isLink) {
-            binding.btnLink.text = "关闭"
+            binding.includeSerialport.btnLink.text = "关闭"
         } else {
-            binding.btnLink.text = "连接"
+            binding.includeSerialport.btnLink.text = "连接"
         }
-        binding.btnLink.setOnClickListener {
-            val devicePath = mDevicesPath!![binding.spSerialNumber.getSelectedItemPosition()]
+        binding.includeSerialport.btnLink.setOnClickListener {
+            val devicePath = mDevicesPath!![binding.includeSerialport.spSerialNumber.getSelectedItemPosition()]
             isLink = !isLink
             if (isLink) {
                 RfidManage.getInstance().linkDevice(isLink, devicePath)
                 SharedPreferencesUtils.setPrefString(requireContext(), SERIAL_PORT_RFID, devicePath)
-                binding.btnLink.text = "关闭"
+                binding.includeSerialport.btnLink.text = "关闭"
             } else {
-                binding.btnLink.text = "连接"
+                binding.includeSerialport.btnLink.text = "连接"
                 RfidManage.getInstance().linkDevice(isLink, devicePath)
             }
         }
 
-        binding.btnGetVersion.setOnClickListener {
+        binding.includeSerialport.btnGetVersion.setOnClickListener {
             RfidManage.getInstance().getVersion()
         }
 
         RfidManage.getInstance().setVersionCallback(object : MyCallback<String> {
             override fun callback(result: String) {
                 requireActivity().runOnUiThread {
-                    binding.tvVersion.text = result
+//                    binding.includeSerialport.tvVersion.text = result
+                    ToastUtils.longToast(requireContext(),"扫描仪的版本号为:$result")
                 }
             }
         })
@@ -225,61 +208,56 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
             binding.llUrlSelect.visibility = View.GONE
         }
 
-        binding.btnSyncAccount.setOnClickListener {
-            viewModel.syncAccount()
-        }
 
         mArrayAdapter = ArrayAdapter<String>(requireContext(), R.layout.simple_list_item_1)
-        binding.lvInventory.setAdapter(mArrayAdapter)
+        binding.includeSerialport.lvInventory.setAdapter(mArrayAdapter)
 
-        binding.btnInventory.setOnClickListener {
+        binding.includeSerialport.btnInventory.setOnClickListener {
             mArrayAdapter!!.clear()
-            val inventoryTime = binding.edInventoryTime.getText().toString().toInt() * 1000L
+            val inventoryTime = binding.includeSerialport.edInventoryTime.getText().toString().toInt() * 1000L
             SharedPreferencesUtils.setSettingLong(
                 BaseApp.app, INVENTORY_TIME,
                 inventoryTime
             )
-            binding.tvListSize.text = "盘点中..."
+            binding.includeSerialport.tvListSize.text = "盘点中..."
             viewModel.startFCLInventory30()
         }
 
         if (isLinkLock) {
-            binding.btnLinkLock.text = "关闭"
+            binding.includeSerialport.btnLinkLock.text = "关闭"
         } else {
-            binding.btnLinkLock.text = "连接"
+            binding.includeSerialport.btnLinkLock.text = "连接"
         }
-        binding.btnLinkLock.setOnClickListener {
-            val devicePath = mDevicesPath!![binding.spSerialNumberLock.selectedItemPosition]
+        binding.includeSerialport.btnLinkLock.setOnClickListener {
+            val devicePath = mDevicesPath!![binding.includeSerialport.spSerialNumberLock.selectedItemPosition]
             isLinkLock = !isLinkLock
             if (isLinkLock) {
                 LockManage.getInstance().initSerialByPort(devicePath)
                 SharedPreferencesUtils.setPrefString(requireContext(), SERIAL_PORT_LOCK, devicePath)
-                binding.btnLinkLock.text = "关闭"
+                binding.includeSerialport.btnLinkLock.text = "关闭"
             } else {
-                binding.btnLinkLock.text = "连接"
+                binding.includeSerialport.btnLinkLock.text = "连接"
                 LockManage.getInstance().close()
             }
         }
 
-        binding.btnGetVersionLock.setOnClickListener {
+        binding.includeSerialport.btnGetVersionLock.setOnClickListener {
             LockManage.getInstance().getVersion()
         }
         LockManage.getInstance().setVersionCallback(object : MyCallback<String> {
             override fun callback(result: String) {
                 requireActivity().runOnUiThread {
-                    binding.tvVersionLock.text = "版本号:${result}"
+                    ToastUtils.longToast(requireContext(),"电子锁的版本号为:${result}")
                 }
             }
         })
-        binding.btnOpenLock.setOnClickListener {
+        binding.includeSerialport.btnOpenLock.setOnClickListener {
             viewModel.openLock()
         }
-        binding.btnCloseLock.setOnClickListener {
+        binding.includeSerialport.btnCloseLock.setOnClickListener {
             viewModel.closeLock()
         }
-        binding.btnLockStatus.setOnClickListener {
-            viewModel.getLockStatus()
-        }
+
         //账号同步相关按键事件
         binding.btnAccountSync.setOnClickListener {
             showSyncAccountLayout()
@@ -306,13 +284,13 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         val devices: Array<String> = portFinder.allDevices
         mDevicesPath = portFinder.allDevicesPath
 //        binding.spSerialNumber.adapter=ArrayAdapter(requireContext(), R.layout.simple_list_item_1, devices)
-        binding.spSerialNumber.adapter = ArrayAdapter(
+        binding.includeSerialport.spSerialNumber.adapter = ArrayAdapter(
             requireContext(),
             com.jhteck.icebox.R.layout.app_item_text,
             com.jhteck.icebox.R.id.tv_content,
             devices
         )
-        binding.spSerialNumberLock.adapter = ArrayAdapter(
+        binding.includeSerialport.spSerialNumberLock.adapter = ArrayAdapter(
             requireContext(),
             com.jhteck.icebox.R.layout.app_item_text,
             com.jhteck.icebox.R.id.tv_content,
@@ -322,13 +300,13 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         val normalDeviceLock = "ttyS8"
         for (i in devices.indices) {
             if (devices[i].startsWith(normalDevice)) {
-                binding.spSerialNumber.setSelection(i)
+                binding.includeSerialport.spSerialNumber.setSelection(i)
                 break
             }
         }
         for (i in devices.indices) {
             if (devices[i].startsWith(normalDeviceLock)) {
-                binding.spSerialNumberLock.setSelection(i)
+                binding.includeSerialport.spSerialNumberLock.setSelection(i)
                 break
             }
         }
@@ -337,27 +315,27 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
     var tempList = mutableListOf<AntPowerDao>()
 
     private fun initAntRecycleView(antList: List<AntPowerDao>) {
-        binding.llAntPower.visibility = View.VISIBLE
-        val layoutManager = GridLayoutManager(requireContext(), 4)
-        binding.rvAnt.layoutManager = layoutManager
-        binding.rvAnt.adapter =
+        binding.includeSerialport.rvAnt.visibility = View.VISIBLE
+        val layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.includeSerialport.rvAnt.layoutManager = layoutManager
+        binding.includeSerialport.rvAnt.adapter =
             AntListAdapter(frag, antList, object : IAntPowerCallback<AntPowerDao> {
                 override fun antPowerCallback(powerDao: AntPowerDao, position: Int) {
                     tempList[position].power = powerDao.power
                 }
             })
-        binding.rvAnt?.adapter?.notifyDataSetChanged()
-        binding.btnCancleAnt.setOnClickListener {
-            binding.llAntPower.visibility = View.GONE
+        binding.includeSerialport.rvAnt?.adapter?.notifyDataSetChanged()
+        binding.includeSerialport.btnCancleAnt.setOnClickListener {
+            binding.includeSerialport.rvAnt.visibility = View.GONE
         }
-        binding.btnSaveAnt.setOnClickListener {
+        binding.includeSerialport.btnSaveAnt.setOnClickListener {
             viewModel.setAntPower(tempList)
         }
     }
 
     private fun showFridgesOperateLayout() {
         hideAllLayout()
-        binding.llFridgesOperate.visibility = View.VISIBLE
+        binding.fridgeInfo.llContent.visibility = View.VISIBLE
     }
 
     private fun showSyncAccountLayout() {
@@ -366,8 +344,8 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
     }
 
     private fun hideAllLayout() {
-        binding.llFridgesOperate.visibility = View.GONE
-        binding.llSerialSetting.visibility = View.GONE
+        binding.fridgeInfo.llContent.visibility = View.GONE
+        binding.includeSerialport.llContent.visibility = View.GONE
         binding.llUrlSelect.visibility = View.GONE
         binding.llAccountSync.visibility = View.GONE
     }
@@ -377,14 +355,21 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
         viewModel.fridgesActiveResultBo.observe(this) {
             if (it != null) {
                 showFridgesOperateLayout()
-                binding.edLocation.setText(it.location)
-                binding.edDeviceAlias.setText(it.device_alias)
-                binding.edCells.setText(it.cells.toString())
-                binding.edSncode.setText(it.sncode)
-                binding.edStyle.setText(it.style.toString())
-                binding.edTemperature.setText("${(it.temperature)}")
+                binding.fridgeInfo.tvLocation.text = it.location
+                binding.fridgeInfo.tvDeviceAlias.setText(it.device_alias)
+//                binding.fridgeInfo.edCells.setText(it.cells.toString())
+                binding.fridgeInfo.tvSncode.setText(it.sncode)
+//                binding.fridgeInfo.edStyle.setText(it.style.toString())
+//                binding.fridgeInfo.edTemperature.setText("${(it.temperature)}")
             } else {
-                val customDialog = CustomDialog(requireContext())
+                showFridgesOperateLayout()
+                binding.fridgeInfo.tvLocation.setText("ceshi")
+                binding.fridgeInfo.tvDeviceAlias.setText("ceshi")
+//                binding.fridgeInfo.edCells.setText("ceshi")
+                binding.fridgeInfo.tvSncode.setText("ceshi")
+//                binding.fridgeInfo.edStyle.setText("ceshi")
+//                binding.fridgeInfo.edTemperature.setText("ceshi")
+                /*val customDialog = CustomDialog(requireContext())
                 val sncode = SharedPreferencesUtils.getPrefString(
                     requireContext(), SNCODE,
                     SNCODE_TEST
@@ -394,7 +379,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
                         customDialog.dismiss()
                     }).setsConfirm("确定", View.OnClickListener {
                         customDialog.dismiss()
-                    }).show()
+                    }).show()*/
             }
         }
 
@@ -411,7 +396,7 @@ class DeviceSettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingDevic
                 mArrayAdapter!!.add(it[i])
             }
             mArrayAdapter!!.notifyDataSetChanged()
-            binding.tvListSize.text = "共${it.size}个"
+            binding.includeSerialport.tvListSize.text = "共${it.size}个"
         }
     }
 

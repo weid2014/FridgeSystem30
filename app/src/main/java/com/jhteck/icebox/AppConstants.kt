@@ -1,6 +1,6 @@
 package com.jhteck.icebox.api
 
-const val DEBUG = false //测试模式
+const val DEBUG = true //测试模式
 const val EXIST_HARD_DEVICE = true//是否存在硬件
 const val IS_FIRST_RUN = "is_first_run"//是否第一次运行
 const val LOCKED_SUCCESS = "全关锁成功提示"
@@ -47,5 +47,7 @@ const val AUTO_LOGIN = false //自动登录，用于老化测试
 const val AUTO_LOGIN_STR = "auto_login_str"
 const val SHOW_ALL_NAME = "show_all_name"
 const val LAST_PROMPT_DATE = "last_prompt_date"
+const val TOKEN = "token"
+const val TOKEN_DEFAULT = "EAZiJa7C2yqgHTGmYLmhtZeN"
 
 

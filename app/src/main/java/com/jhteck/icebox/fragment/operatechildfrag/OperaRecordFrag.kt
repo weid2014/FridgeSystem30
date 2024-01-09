@@ -239,7 +239,6 @@ class OperaRecordFrag : BaseFragment<AccountViewModel, AppFragmentOperaRecordBin
     }
 
     private fun updateUIbyRfidOperationList(list: List<RfidOperationEntity>) {
-        val roleID = SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10)
         binding.rvOperaContent.adapter = OperaRecordListAdapter(frag, list)
     }
 

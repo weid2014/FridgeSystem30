@@ -9,7 +9,7 @@ import retrofit2.http.*
 interface IMainApiService : ApiService {
 
     //单个查询frid
-    @GET("api/f/rfids/{rfid}")
+    @GET("api/f/v1/rfids/{rfid}")
     suspend fun getRfid(@Path("rfid") rfid: String): Response<TestDao>;
 
 

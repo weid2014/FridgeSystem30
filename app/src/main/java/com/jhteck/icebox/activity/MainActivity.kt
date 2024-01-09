@@ -88,35 +88,39 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         return viewModels<MainViewModel>().value
     }
 
-    var loginUserInfo = AccountEntity();
+    var loginUserInfo = AccountEntity()
+    var roleID = 10
     override fun initView() {
         try {
             val loginUserStr = intent.getStringExtra("loginUserInfo");
+            Log.d("lalala",loginUserStr.toString())
             if (loginUserStr != null) {
                 loginUserInfo = Gson().fromJson(loginUserStr, AccountEntity::class.java);
-                binding.tvUserName.text = loginUserInfo.nick_name;
-                binding.tvUserID.text = "User ID:${loginUserInfo.km_user_id}"
+                binding.tvUserName.text = loginUserInfo.user_name;
+                binding.tvUserID.text = "User ID:${loginUserInfo.user_number}"
+                roleID=loginUserInfo.role
             }
         } catch (e: Exception) {
 
         }
         if (DEBUG) {
             binding.tvUserName.setOnClickListener {
-                service?.asyncSendMsg()
+//                service?.asyncSendMsg()
+                viewModel.sendRfidsForTest1()
             }
             binding.tvUserID.setOnClickListener {
-                service?.sendRfid()
+//                service?.sendRfid()
+                viewModel.sendRfidsForTest()
             }
         }
 
-        val roleID = SharedPreferencesUtils.getPrefInt(this@MainActivity, ROLE_ID, 10)
         //viewpager初始化
         binding.vpContentMain.isUserInputEnabled = false
         binding.tvInventory.isSelected = true
         binding.vpContentMain.offscreenPageLimit = 3
 
         //现场人员没有设置选项
-        if (roleID == 30) {
+        if (roleID == 3) {
             tabs.add(binding.llTab1)
             tabs.add(binding.llTab2)
             binding.llTab3.visibility = View.GONE
@@ -324,10 +328,9 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
     private var btnCountDownTime: Button? = null
     private fun showPopWindow(outList: List<AvailRfid>, inList: List<AvailRfid>) {
         //获取用户角色ID
-        val roleID = SharedPreferencesUtils.getPrefInt(this, ROLE_ID, 10)
         var operationEntity = AccountOperationEnum.NO_OPERATION;
         when (roleID) {
-            10, 20 -> {
+            10, 2 -> {
                 showTitle = "存入列表"
                 if (outList.size > 0 && inList.size > 0) {
                     operatortype = 3
@@ -386,7 +389,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         tvCountIn?.text = "${showTitle}(x${inList.size})"
         btnCountDownTime = popupWindow?.contentView?.findViewById<Button>(R.id.btnCountDownTime)
         when (roleID) {
-            10, 20 -> {
+            10, 2 -> {
                 tvCountIn?.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     getDrawable(R.mipmap.ic_put_in),
                     null,
@@ -414,13 +417,19 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         rvInventoryResultIN?.layoutManager = layoutManagerResultIn
         //存入列表适配器
         when (roleID) {
-            10, 20 -> {
+            10, 2 -> {
                 tvRemainTitle?.visibility = View.INVISIBLE
-                var mapinList = inList.stream()
+                /*var mapinList = inList.stream()
                     .collect(Collectors.groupingBy { t -> t.material.eas_unit_name + t.material.eas_material_id })//根据批号分组
                 val tempInList = mutableListOf<List<AvailRfid>>()
                 for (key in mapinList.keys) {
                     mapinList.get(key)?.let { tempInList.add(it) }
+                }*/
+                val tempInList = mutableListOf<List<AvailRfid>>()
+                for (item in inList){
+                    val temp= mutableListOf<AvailRfid>()
+                    temp.add(item)
+                    tempInList.add(temp)
                 }
 
                 rvInventoryResultIN?.adapter = InventoryListAdapter(tempInList)
@@ -440,12 +449,18 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         }
 
         //领出列表适配器
-        var mapOutList = outList.stream()
+        /*var mapOutList = outList.stream()
             .collect(Collectors.groupingBy { t -> t.material.eas_unit_name + t.material.eas_material_id })//根据批号分组
 
         val tempOutList = mutableListOf<List<AvailRfid>>()
         for (key in mapOutList.keys) {
             mapOutList.get(key)?.let { tempOutList.add(it) }
+        }*/
+        val tempOutList = mutableListOf<List<AvailRfid>>()
+        for (item in outList){
+            val temp= mutableListOf<AvailRfid>()
+            temp.add(item)
+            tempOutList.add(temp)
         }
         val rvInventoryResultOUT =
             popupWindow?.contentView?.findViewById<RecyclerView>(R.id.rvInventoryResultOUT)
@@ -482,10 +497,9 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         inOffList: List<OfflineRfidEntity>
     ) {
         //获取用户角色ID
-        val roleID = SharedPreferencesUtils.getPrefInt(this, ROLE_ID, 10)
         var operationEntity = AccountOperationEnum.NO_OPERATION;
         when (roleID) {
-            10, 20 -> {
+            10, 2 -> {
                 showTitle = "存入列表"
                 if (outOffList.size > 0 && inOffList.size > 0) {
                     operatortype = 3
@@ -544,7 +558,7 @@ class MainActivity : BaseActivity<MainViewModel, AppActivityMainBinding>() {
         tvCountIn?.text = "${showTitle}(x${inOffList.size})"
         btnCountDownTime = popupWindow?.contentView?.findViewById<Button>(R.id.btnCountDownTime)
         when (roleID) {
-            10, 20 -> {
+            10, 2 -> {
                 tvCountIn?.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     getDrawable(R.mipmap.ic_put_in),
                     null,

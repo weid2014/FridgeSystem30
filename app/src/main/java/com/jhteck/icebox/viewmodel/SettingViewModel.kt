@@ -112,7 +112,7 @@ class SettingViewModel(application: Application) : BaseViewModel<ILoginApiServic
             viewModelScope.launch(Dispatchers.Default) {
                 try {
                     showLoading("正在保存冰箱信息，请稍等...")
-                    val response = RetrofitClient.getService().updatefridgesInfo(fridgesActiveBo);
+                    val response = RetrofitClient.getService().updateFridgesInfo(fridgesActiveBo);
                     if (response.code() == 200) {
                         toast("编辑冰箱成功")
                         var res = response.body()?.results;

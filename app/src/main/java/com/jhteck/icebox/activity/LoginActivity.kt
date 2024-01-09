@@ -210,8 +210,8 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
                     InventoryDao(
                         i[0].material_batch.eas_lot,
                         i[0].material?.eas_material_name,
-                        i.size,
-                        i[0].cell_number,
+                        i.size.toFloat(),
+                        i[0].cell_number.toString(),
                         i[0].material_batch.expired_at
                     )
                 )
@@ -221,7 +221,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
                     tempListNormal.add(item)
             }
 
-            for (item in tempList) {
+            /*for (item in tempList) {
                 when (item.cellNumber) {
                     2 -> inventoryDaoArray[0]?.add(item)
                     3 -> inventoryDaoArray[1]?.add(item)
@@ -241,7 +241,7 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
                     else -> tempList10.add(item)
 
                 }
-            }
+            }*/
 
             for (rvItem in rvNormalArray) {
                 rvItem?.adapter?.notifyDataSetChanged()
@@ -258,8 +258,8 @@ class LoginActivity : BaseActivity<LoginViewModel, AppActivityLoginBinding>() {
                         InventoryDao(
                             i.material_batch.eas_lot,
                             i.material?.eas_material_name,
-                            1,
-                            i.cell_number,
+                            1f,
+                            i.cell_number.toString(),
                             i.material_batch?.expired_at,
                         )
                     )

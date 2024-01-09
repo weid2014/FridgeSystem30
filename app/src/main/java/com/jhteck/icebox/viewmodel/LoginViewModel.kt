@@ -21,10 +21,12 @@ import com.jhteck.icebox.api.request.requestSync
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.LocalService
 import com.jhteck.icebox.apiserver.RetrofitClient
+import com.jhteck.icebox.bean.OperationErrorEnum
 import com.jhteck.icebox.bean.SystemOperationErrorEnum
 import com.jhteck.icebox.broacast.AlarmReceiver
 import com.jhteck.icebox.repository.entity.AccountEntity
 import com.jhteck.icebox.repository.entity.OfflineRfidEntity
+import com.jhteck.icebox.repository.entity.OperationErrorLogEntity
 import com.jhteck.icebox.repository.entity.SysOperationErrorEntity
 import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.service.CommandService
@@ -49,58 +51,25 @@ class LoginViewModel(application: android.app.Application) :
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 showLoading(BaseApp.app.getString(R.string.login_tip))
-                var tempUserInfo: AccountEntity? = null
-                val userInfo = userDao.findByKmUserId(username)
-                val userInfo1 = userDao.findByName(username)
-                val userInfo2 = userDao.findByRealName(username)
-                if (userInfo == null && userInfo1 == null && userInfo2 == null) {
-                    toast("用户ID不存在")
-                } else if (userInfo != null && !userInfo.password_digest.equals(
+                //只有admin用本地登录，其他的都要网络请求平台验证
+                val userInfo = userDao.findByUserName(username)
+                if (username.equals("admin") && userInfo.password_digest.equals(
                         MD5Util.encrypt(
                             password
                         )
                     )
                 ) {
-                    toast("请检查密码")
-                } else if (userInfo1 != null && !userInfo1.password_digest.equals(
-                        MD5Util.encrypt(
-                            password
-                        )
-                    )
-                ) {
-                    toast("请检查密码")
-                } else if (userInfo2 != null && !userInfo2.password_digest.equals(
-                        MD5Util.encrypt(
-                            password
-                        )
-                    )
-                ) {
-                    toast("请检查密码")
+                    LoginSucc(userDao.findByUserName(username))
                 } else {
-                    toast("登录成功")
-
-                    //wait wait wait
-                    if (!DEBUG) {
-//                        MyTcpServerListener.getInstance().openLock()
-                        LockManage.getInstance().preOpenLock();
-                        LockManage.getInstance().openLock()
+                    val requestBody = UserDao(username, username, password)
+                    val responseByName = RetrofitClient.getService().validateByName(requestBody)
+                    val responseByNumber = RetrofitClient.getService().validateByNumber(requestBody)
+                    if (responseByName.code() == 200 || responseByNumber.code() == 200) {
+                        LoginSucc(userDao.findByUserName(username))
+//                        loginOperator(userInfo)//记录登录信息
+                    } else {
+                        toast("请检查密码")
                     }
-//                    delay(1000)
-                    if (userInfo != null) {
-                        tempUserInfo = userInfo
-                    } else if (userInfo1 != null) {
-                        tempUserInfo = userInfo1
-                    } else if (userInfo2 != null) {
-                        tempUserInfo = userInfo2
-                    }
-
-                    loginUserInfo.postValue(tempUserInfo)
-                    SharedPreferencesUtils.setPrefString(
-                        ContextUtils.getApplicationContext(),
-                        "loginUserInfo",
-                        Gson().toJson(tempUserInfo)
-                    )
-//                    loginOperator(userInfo)//记录登录信息
                 }
             } catch (e: Exception) {
                 toast(e.message)
@@ -110,6 +79,24 @@ class LoginViewModel(application: android.app.Application) :
             }
         }
     }
+
+    private fun LoginSucc(userInfo: AccountEntity) {
+//        toast("登录成功")
+        //wait wait wait
+        if (!DEBUG) {
+            LockManage.getInstance().preOpenLock();
+            LockManage.getInstance().openLock()
+        }
+
+        loginUserInfo.postValue(userInfo)
+        SharedPreferencesUtils.setPrefString(
+            BaseApp.app,
+            "loginUserInfo",
+            Gson().toJson(userInfo)
+        )
+
+    }
+
 
     fun login_auto(username: String?, password: String?) {
         viewModelScope.launch(Dispatchers.Default) {
@@ -133,17 +120,14 @@ class LoginViewModel(application: android.app.Application) :
         try {
             var entity = SysOperationErrorEntity(
                 SnowFlake.getInstance().nextId().toInt(),
-                accountEntity.user_id,
-                accountEntity.nick_name,
-                accountEntity.role_id,
-                accountEntity.km_user_id,
-                accountEntity.real_name,
+                accountEntity.id,
+                accountEntity.name,
                 SystemOperationErrorEnum.REBOOT.v,
-                "网络状态",//todo 网络状态
-                "系统信息",//todo
-                "App版本",//todo
-                "串口信息",//
-                "冰箱信息",//
+                NetworkUtil.netWorkState(BaseApp.app),//todo 网络状态
+                AndroidVersionUtils.getAndroidVersion(),//todo
+                AndroidVersionUtils.getAppVersionName(BaseApp.app),//todo
+                AndroidVersionUtils.getPortInfo(),//
+                AndroidVersionUtils.getFridgeInfo(BaseApp.app),//
                 DateUtils.currentStringFormatTime(),
                 false
             );
@@ -156,8 +140,28 @@ class LoginViewModel(application: android.app.Application) :
             var toJson = Gson().toJson(rfidOperationBO)
             Log.d(TAG, "${toJson}")
             var res = RetrofitClient.getService().addSystemErrorLogs(rfidOperationBO)
+
+            var operationErrorLogEntity = OperationErrorLogEntity(
+                SnowFlake.getInstance().nextId(),
+                accountEntity.id,
+                accountEntity.role.toString(),
+                100,
+                "E123456700000000000000CC",
+                OperationErrorEnum.TIME_OUT.v,
+                DateUtils.currentStringFormatTime(),
+                false
+            )
+            val tempList= mutableListOf<OperationErrorLogEntity>()
+            tempList.add(operationErrorLogEntity)
+            var rfidOperationBO1 = OperationErrorLogsBo(tempList);
+            Log.d(TAG, Gson().toJson(rfidOperationBO1))
+            var res1 = RetrofitClient.getService().addOperationErrorLogs(rfidOperationBO1)
+            if (res1.code() == 200) {
+                Log.d(TAG, "rfidOperationBO${res1.body()}")
+            }
+
             if (res.code() == 200) {
-                Log.d(TAG, "addSystemErrorLogs")
+                Log.d(TAG, "addSystemErrorLogs${res}")
                 for (data in rfidOperationBO.logs) {
                     data.hasUpload = true;
                     DbUtil.getDb().sysOperationErrorDao().update(data);
@@ -181,14 +185,15 @@ class LoginViewModel(application: android.app.Application) :
                 try {
                     showLoading(BaseApp.app.getString(R.string.login_tip))
                     var userInfo = userDao.findByNfcId(myTcpMsg);
-                    Log.d(TAG, userInfo.nfc_id)
+                    Log.d("lalala",userInfo.toString())
                     if (userInfo == null) {
                         toast("${myTcpMsg} 未注册")
                         return@launch;
                     }
 
+                    LoginSucc(userInfo)
                     //wait wait wait
-                    if (!DEBUG) {
+                    /*if (!DEBUG) {
 //                        MyTcpServerListener.getInstance().openLock()
                         LockManage.getInstance().preOpenLock();
                         LockManage.getInstance().openLock()
@@ -199,7 +204,7 @@ class LoginViewModel(application: android.app.Application) :
                         ContextUtils.getApplicationContext(),
                         "loginUserInfo",
                         Gson().toJson(userInfo)
-                    )
+                    )*/
 //                    loginOperator(userInfo)//记录登录信息
 //                    cardStatus.postValue(true)
                 } catch (e: Exception) {

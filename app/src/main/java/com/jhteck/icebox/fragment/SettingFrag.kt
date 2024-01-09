@@ -54,7 +54,7 @@ class SettingFrag : BaseFragment<SettingViewModel, AppFragmentSettingBinding>() 
 
 
         when (roleID) {
-            10,20 -> {
+            10,2 -> {
                 val upgradesFrag = UpgradesFrag.newInstance()
                 val deviceSettingFrag = DeviceSettingFrag.newInstance()
                 tabs.add(binding.tvAccount)

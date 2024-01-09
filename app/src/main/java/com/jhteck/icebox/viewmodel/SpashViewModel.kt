@@ -11,12 +11,12 @@ import com.jhteck.icebox.api.*
 import com.jhteck.icebox.apiserver.ILoginApiService
 import com.jhteck.icebox.apiserver.RetrofitClient
 import com.jhteck.icebox.repository.entity.AccountEntity
+import com.jhteck.icebox.repository.entity.FridgesInfoEntity
 import com.jhteck.icebox.repository.entity.OperationErrorLogEntity
 import com.jhteck.icebox.repository.entity.SysOperationErrorEntity
 import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.utils.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -33,7 +33,8 @@ class SpashViewModel(application: android.app.Application) :
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 //覆盖安装，会把单双门类型覆盖，从数据库中拿
-                var fridgesInfo = DbUtil.getDb().fridgesInfoDao().getById(SharedPreferencesUtils.getPrefString(getApplication(), FRIDGEID, ""))
+                var fridgesInfo = DbUtil.getDb().fridgesInfoDao()
+                    .getById(SharedPreferencesUtils.getPrefString(getApplication(), FRIDGEID, ""))
                 fridgesInfo.door_style?.let {
                     SharedPreferencesUtils.setPrefInt(
                         getApplication(),
@@ -43,7 +44,7 @@ class SpashViewModel(application: android.app.Application) :
                 }
                 delay(2000)
             } catch (e: Exception) {
-                Log.e("SpashViewModel",e.message.toString())
+                Log.e("SpashViewModel", e.message.toString())
             } finally {
                 loginStatus.postValue(true)
             }
@@ -51,48 +52,37 @@ class SpashViewModel(application: android.app.Application) :
     }
 
     private var lastonclickTime = 0L;//全局变量
-    fun activeFridges(fridgesActiveBo: FridgesActiveBo) {
+    fun updateFridges(fridgesActiveBo: FridgesActiveBo) {
         var time = SystemClock.uptimeMillis();//局部变量
         if (time - lastonclickTime <= 3000) {
         } else {
             lastonclickTime = time
             viewModelScope.launch(Dispatchers.Default) {
                 try {
-                    showLoading("正在激活冰箱，请稍等...")
-                    val response = RetrofitClient.getService(sncode = fridgesActiveBo.sncode)
-                        .fridgesActive(fridgesActiveBo);
+                    showLoading("正在保存冰箱信息，请稍等...")
+                    val response = RetrofitClient.getService().updateFridgesInfo(fridgesActiveBo)
+                    Log.d(Target, "response=${response}")
                     if (response.code() == 200) {
-                        toast("激活冰箱成功")
-                        var res = response.body()?.results
-                        var doorStyle=SharedPreferencesUtils.getPrefInt(BaseApp.app, DOOR_TYPE, 0)
-                        if (res != null) {
-                            var id = res.id;
-                            if (id != null) {
-                                var fridgesInfo = DbUtil.getDb().fridgesInfoDao().getById(id)
-                                res.door_style=doorStyle
-                                if (fridgesInfo != null) {
-                                    res.f_id = fridgesInfo.f_id;
-                                    DbUtil.getDb().fridgesInfoDao().update(res)
-                                } else {
-                                    DbUtil.getDb().fridgesInfoDao().insert(res)
-                                }
-                                SharedPreferencesUtils.setPrefString(getApplication(), FRIDGEID, id)
-                            }
+                        toast("保存冰箱信息成功")
+                        val doorStyle = SharedPreferencesUtils.getPrefInt(BaseApp.app, DOOR_TYPE, 0)
+                        val id =
+                            SharedPreferencesUtils.getPrefString(getApplication(), FRIDGEID, "")
+                        if (id != null) {
+                            val fridgesInfo = DbUtil.getDb().fridgesInfoDao().getById(id)
+                            fridgesInfo.door_style = doorStyle
+                            DbUtil.getDb().fridgesInfoDao().update(fridgesInfo)
+                            SharedPreferencesUtils.setPrefString(getApplication(), FRIDGEID, id)
+                            Log.d(Target, "FRIDGEID=${id}")
                         }
-                        SharedPreferencesUtils.setPrefString(
-                            getApplication(),
-                            SNCODE,
-                            fridgesActiveBo.sncode
-                        )
 
                         activeIceBoxStatus.postValue(true)
                         //wait wait wait
 //                        synchronizedAccount()//同步账户
                     } else {
-                        toast("激活冰箱异常1${response.message()}")
+                        toast("保存冰箱信息异常1${response.message()}")
                     }
                 } catch (e: Exception) {
-                    toast("激活冰箱异常2${e.message}")
+                    toast("保存冰箱信息异常2${e.message}")
                 } finally {
                     hideLoading()
                 }
@@ -101,64 +91,56 @@ class SpashViewModel(application: android.app.Application) :
     }
 
     fun registAdmin(passWord: String) {
-        object : Thread() {
-            override fun run() {
-                try {
-
-                    var all = DbUtil.getDb().fridgesInfoDao().getAll()
-                    if (all == null || all.size == 0) {
-                        println("未激活")
-                    } else {
-                        SharedPreferencesUtils.setPrefString(
-                            ContextUtils.getApplicationContext(),
-                            SNCODE,
-                            all.first().sncode
-                        )//设备已激活
-                    }
-                    var accountDao = DbUtil.getDb().accountDao()
-                    val adminUser = accountDao.findByRoleId("10")
-
-                    if (adminUser == null) {
-                        var user = AccountEntity();
-                        user.id = 1;
-                        user.user_id = "123456";
-                        user.km_user_id = "admin";
-                        user.real_name = "管理员";
-                        user.nick_name = "admin";
-                        user.role_id = "10";
-                        user.password_digest = MD5Util.encrypt(passWord);
-//                        user.nfc_id = "1698A803CB9C2B04010100048804F1FEF453";
-                        user.nfc_id = "12345678";
-//                        user.nfc_id = "1698A803CB9C2B04010100048804C0E4718C"
-                        user.status = 0;
-                        user.created_time = "${
-                            DateUtils.formatDateToString(
-                                Date(),
-                                DateUtils.format_yyyyMMddhhmmssfff
-                            )
-                        }+08:00".replace(" ", "T")
-                        accountDao.insertAll(user)
-                        var users = accountDao.getAll()
-                        for (u in users) {
-                            println(u)
-                        }
-                        LockManage.getInstance().closeLock()
-                        loginStatus.postValue(true)
-
-                    } else {
-//                        DbUtil.getDb().userDao().delete(adminUser)
-                    }
-                    //wait wait wait
-//                    synchronizedAccount()//同步账户
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                } finally {
-                    setAdminStatus.postValue(true)
+        viewModelScope.launch {
+            try {
+                var all = DbUtil.getDb().fridgesInfoDao().getAll()
+                if (all == null || all.size == 0) {
+                    println("未激活")
+                } else {
+                    SharedPreferencesUtils.setPrefString(
+                        ContextUtils.getApplicationContext(),
+                        SNCODE,
+                        all.first().sncode
+                    )//设备已激活
                 }
+                var accountDao = DbUtil.getDb().accountDao()
+                val adminUser = accountDao.findByRole(10)
 
+                if (adminUser == null) {
+                    var user = AccountEntity();
+                    user.id = 1;
+                    user.user_number = "123456";
+                    user.user_name = "admin";
+                    user.real_name = "管理员";
+                    user.name = "管理员";
+                    user.nick_name = "admin";
+                    user.role_id = "10";
+                    user.role = 10;
+                    user.password_digest = MD5Util.encrypt(passWord);
+                    user.nfc_id = "12345678";
+                    user.fridge_nfc_1 = "12345678";
+                    user.status = 0;
+                    user.created_time = "${
+                        DateUtils.formatDateToString(
+                            Date(),
+                            DateUtils.format_yyyyMMddhhmmssfff
+                        )
+                    }+08:00".replace(" ", "T")
+                    accountDao.insertAll(user)
+                    var users = accountDao.getAll()
+                    for (u in users) {
+                        println(u)
+                    }
+                    LockManage.getInstance().closeLock()
+//                        loginStatus.postValue(true)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                setAdminStatus.postValue(true)
             }
-        }.start()
+        }
+
     }
 
     fun getAntPower() {
@@ -186,32 +168,23 @@ class SpashViewModel(application: android.app.Application) :
                     RfidManage.getInstance().setOutputPower(antPowerDaoList)
                 }
                 delay(1000)
+                loginStatus.postValue(true)
             } catch (e: Exception) {
                 toast("设置天线功率异常${e.message}")
+                loginStatus.postValue(false)
             } finally {
                 hideLoading()
-                setAntPowerStatus.postValue(true)
+
             }
         }
     }
 
     fun openLock() {
-//        MyTcpServerListener.getInstance().openLock()
         LockManage.getInstance().openLock()
     }
 
     fun closeLock() {
         LockManage.getInstance().closeLock()
-    }
-
-    fun openLamp() {
-        //开灯
-//        MyTcpServerListener.getInstance().sendOpenLamp()
-    }
-
-    fun closeLamp() {
-        //关灯
-//        MyTcpServerListener.getInstance().sendCloseLamp()
     }
 
 
@@ -220,14 +193,47 @@ class SpashViewModel(application: android.app.Application) :
     /**
      * 同步账户
      */
-    fun synchronizedAccount(sncode: String) {
+    fun synchronizedAccountV1() {
+
+        viewModelScope.launch(context = Dispatchers.IO) {
+            val accountDao = DbUtil.getDb().accountDao()
+            val accountService = RetrofitClient.getService();
+            //同步远端到本地账户
+            try {
+                val accountResponse = accountService.getAccounts()
+                Log.d("synchronizedAccount", "accountResponse=${accountResponse.body()?.results}")
+                if (accountResponse.code() == 200) {
+                    val remoteAccounts = accountResponse.body()?.results
+                    if (remoteAccounts?.accounts != null) {
+                        //更新本地账户
+                        val localUsers = accountDao.getAll();
+                        for (u in remoteAccounts.accounts) {
+                            if (u.role_id == "10") continue;
+                            val users = localUsers.filter { user -> user.user_name == u.user_name }
+                            if (users.isNotEmpty()) continue;//存在的账户已经更新过
+                            u.status = 0
+                            u.hasUpload = true
+                            accountDao.insertAll(u)
+                            Log.i(Target, u.user_name + "---sync")
+                        }
+//                        syncAccountSuccess.postValue(true)
+                    }
+
+                }
+            } catch (e: Exception) {
+                Log.e("synchronizedAccount", "${e}")
+            }
+        }
+    }
+
+    /*fun synchronizedAccount() {
 
         GlobalScope.launch(context = Dispatchers.IO) {
             val accountDao = DbUtil.getDb().accountDao()
 //        if (isNetAvailable()) {
             val users = accountDao.getAll();
             val uploadUsers = users.filter { user -> user.hasUpload == false }
-            var accountService = RetrofitClient.getService(sncode = sncode);
+            var accountService = RetrofitClient.getService();
             //同步远端到本地账户
             for (user in uploadUsers) {
                 if (user.status != 0) {
@@ -288,7 +294,7 @@ class SpashViewModel(application: android.app.Application) :
                 Log.e("synchronizedAccount", "${e}")
             }
         }
-    }
+    }*/
 
     fun syncOtherSystem(sncode: String) {
         viewModelScope.launch(Dispatchers.Default) {
@@ -324,11 +330,8 @@ class SpashViewModel(application: android.app.Application) :
                     for (item in results.logs) {
                         var itemInfo = SysOperationErrorEntity(
                             item.id,
-                            item.user.user_id,
+                            item.user.id,
                             item.user.nick_name,
-                            item.user.role_id,
-                            item.user.km_user_id,
-                            item.user.real_name,
                             item.error_code,
                             item.network,
                             item.system_info,
@@ -364,7 +367,7 @@ class SpashViewModel(application: android.app.Application) :
                     for (item in results.logs) {
                         var itemInfo = OperationErrorLogEntity(
                             item.id.toLong(),
-                            item.user.user_id,
+                            item.user.id,
                             item.user.role_id,
                             item.capture_item.remain,
                             item.capture_item.rfid,
@@ -382,13 +385,60 @@ class SpashViewModel(application: android.app.Application) :
         }
     }
 
+    /**
+     * 通过token获取冰箱信息
+     */
+    fun getFridgeInfo(token: String, sncode: String) {
+        var time = SystemClock.uptimeMillis();//局部变量
+        if (time - lastonclickTime <= 3000) {
+        } else {
+            lastonclickTime = time
+            viewModelScope.launch(Dispatchers.Default) {
+                try {
+                    showLoading("正在获取冰箱信息，请稍等...")
+                    val response =
+                        RetrofitClient.getService(sncode = sncode, token = token).fridgesInfo()
+                    if (response.code() == 200) {
+                        toast("获取冰箱信息成功")
+                        fridgesActiveResultBo.postValue(response.body()?.results)
+
+                        SharedPreferencesUtils.setPrefString(BaseApp.app, TOKEN, token)
+
+                        var res = response.body()?.results
+                        var doorStyle = SharedPreferencesUtils.getPrefInt(BaseApp.app, DOOR_TYPE, 0)
+                        if (res != null) {
+                            var id = res.id;
+                            if (id != null) {
+                                var fridgesInfo = DbUtil.getDb().fridgesInfoDao().getById(id)
+                                res.door_style = doorStyle
+                                if (fridgesInfo != null) {
+                                    res.f_id = fridgesInfo.f_id;
+                                    DbUtil.getDb().fridgesInfoDao().update(res)
+                                } else {
+                                    DbUtil.getDb().fridgesInfoDao().insert(res)
+                                }
+                                SharedPreferencesUtils.setPrefString(getApplication(), FRIDGEID, id)
+                                Log.d(Target, "FRIDGEID=${id}")
+                            }
+                            SharedPreferencesUtils.setPrefString(BaseApp.app, SNCODE, res.sncode)
+                        }
+                    } else {
+                        toast("获取冰箱信息异常${response.message()}")
+                    }
+                } catch (e: Exception) {
+                    toast("获取冰箱信息异常${e.message}")
+                } finally {
+                    hideLoading()
+                }
+            }
+        }
+    }
+
+
     val loginStatus by lazy {
         SingleLiveEvent<Boolean>()
     }
 
-    val setAntPowerStatus by lazy {
-        SingleLiveEvent<Boolean>()
-    }
 
     val setAdminStatus by lazy {
         SingleLiveEvent<Boolean>()
@@ -396,5 +446,9 @@ class SpashViewModel(application: android.app.Application) :
 
     val activeIceBoxStatus by lazy {
         SingleLiveEvent<Boolean>()
+    }
+
+    val fridgesActiveResultBo by lazy {
+        SingleLiveEvent<FridgesInfoEntity>()
     }
 }

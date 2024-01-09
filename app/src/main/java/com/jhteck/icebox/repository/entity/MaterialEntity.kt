@@ -14,5 +14,7 @@ data class MaterialEntity(
     @ColumnInfo(name="eas_material_number") val eas_material_number: String?,
     @ColumnInfo(name="eas_unit_id") val eas_unit_id: String?,
     @ColumnInfo(name="eas_unit_name") val eas_unit_name: String?,
-    @ColumnInfo(name="eas_unit_number") val eas_unit_number: String?
+    @ColumnInfo(name="eas_unit_number") val eas_unit_number: String?,
+    @ColumnInfo(name="updated_at") val updated_at: String?,
+    @ColumnInfo(name="wms_is_gift") val wms_is_gift: Int?
 )

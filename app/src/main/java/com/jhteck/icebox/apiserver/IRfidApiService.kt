@@ -13,7 +13,7 @@ interface IRfidApiService:ApiService {
     /**
      * 获取所有
      */
-    @GET("api/f/rfids/{rfid}")
+    @GET("api/f/v1/rfids/{rfid}")
     suspend fun getRfid(@Path("rfid") rfid:String): Response<RfidDao>;
 
 }

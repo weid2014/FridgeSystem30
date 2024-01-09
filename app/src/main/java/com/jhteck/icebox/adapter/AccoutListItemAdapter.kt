@@ -41,16 +41,16 @@ class AccoutListItemAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bindData(item: AccountEntity, operator: ItemOperatorAdapter<AccountEntity>) {
             //姓名
-            binding.tvNickName.text = item.real_name
+            binding.tvNickName.text = item.name
             //用户名
-            binding.tvUserName.text = item.km_user_id
-            binding.tvUserID.text = item.km_user_id
+            binding.tvUserName.text = item.user_name
+            binding.tvUserID.text = item.user_number
 
             val roleID = SharedPreferencesUtils.getPrefInt(BaseApp.app, ROLE_ID, 10)
 
             var roleValue = "系统管理员";
-            when (item.role_id) {
-                "10" -> {
+            when (item.role) {
+                10 -> {
                     roleValue = "系统管理员"
                     if (roleID == 10) {
                         //如果是系统管理员登录，可以编辑系统管理员的账号，
@@ -61,9 +61,9 @@ class AccoutListItemAdapter(
                         binding.btnDelete.visibility = View.INVISIBLE
                     }
                 }
-                "20" -> {
-                    roleValue = "仓库管理员";
-                    if (roleID == 10 || roleID == 20) {
+                2 -> {
+                    roleValue = "冰箱管理员"
+                    if (roleID == 10 || roleID == 2) {
                         //如果是系统管理员或者仓库管理员登录，可以编辑仓库管理员的账号，
                         binding.btnEdit.visibility = View.VISIBLE
                         binding.btnDelete.visibility = View.VISIBLE
@@ -72,7 +72,7 @@ class AccoutListItemAdapter(
                         binding.btnDelete.visibility = View.INVISIBLE
                     }
                 }
-                "30" -> roleValue = "现场人员";
+                3 -> roleValue = "冰箱普通用户";
             }
             binding.btnEdit.setOnClickListener {
                 operator?.onEdit(item)
@@ -84,7 +84,19 @@ class AccoutListItemAdapter(
             //生产厂家
             binding.tvAccountType.text = roleValue
             //单位
-            binding.tvNFC.text = item.nfc_id
+            var nfcId="未录入"
+            if (item.fridge_nfc_1.isNotEmpty()){
+                nfcId=item.fridge_nfc_1
+            }else if (item.fridge_nfc_2.isNotEmpty()){
+                nfcId=item.fridge_nfc_2
+            }else if (item.fridge_nfc_3.isNotEmpty()){
+                nfcId=item.fridge_nfc_3
+            }else if (item.fridge_nfc_4.isNotEmpty()){
+                nfcId=item.fridge_nfc_4
+            }else if (item.fridge_nfc_5.isNotEmpty()){
+                nfcId=item.fridge_nfc_5
+            }
+            binding.tvNFC.text = nfcId
             //数量
             binding.tvInNumber.text = item.store_count.toString()
             //试剂余量

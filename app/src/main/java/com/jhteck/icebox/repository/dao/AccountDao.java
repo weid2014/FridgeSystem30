@@ -2,7 +2,6 @@ package com.jhteck.icebox.repository.dao;
 
 import androidx.room.Dao;
 import androidx.room.Query;
-import androidx.room.Update;
 
 import com.jhteck.icebox.repository.dao.base.BaseJavaDao;
 import com.jhteck.icebox.repository.entity.AccountEntity;
@@ -15,7 +14,13 @@ public interface AccountDao extends BaseJavaDao<AccountEntity> {
     @Override
     List<AccountEntity> getAll();
 
-    @Query("SELECT * FROM t_account WHERE user_id IN (:userIds)")
+    /**
+     * 清空表
+     */
+    @Query("delete from t_account")
+    void clean();
+
+    @Query("SELECT * FROM t_account WHERE id IN (:userIds)")
     @Override
     List<AccountEntity> loadAllByIds(int[] userIds);
 
@@ -28,14 +33,18 @@ public interface AccountDao extends BaseJavaDao<AccountEntity> {
     @Query("SELECT * FROM t_account WHERE real_name=(:real_name) LIMIT 1")
     AccountEntity findByRealName(String real_name);
 
-    @Query("SELECT * FROM t_account WHERE km_user_id=(:km_user_id) LIMIT 1")
-    AccountEntity findByKmUserId(String km_user_id);
+    @Query("SELECT * FROM t_account WHERE user_name=(:user_name) LIMIT 1")
+    AccountEntity findByUserName(String user_name);
 
-    @Query("SELECT * FROM t_account WHERE nfc_id=(:nfcId) LIMIT 1")
+    @Query("SELECT * FROM t_account WHERE nfc_id=(:nfcId) or fridge_nfc_1=(:nfcId) " +
+            "or fridge_nfc_2=(:nfcId) or fridge_nfc_3=(:nfcId) or fridge_nfc_4=(:nfcId) or fridge_nfc_5=(:nfcId) LIMIT 1")
     AccountEntity findByNfcId(String nfcId);
 
     @Query("SELECT * from t_account WHERE role_id=(:roleId)")
     AccountEntity findByRoleId(String roleId);
+
+    @Query("SELECT * from t_account WHERE role=(:role)")
+    AccountEntity findByRole(int role);
 
     @Query("SELECT * FROM t_account WHERE faceUrl=(:faceUrl) LIMIT 1")
     AccountEntity findByFaceUrl(String faceUrl);

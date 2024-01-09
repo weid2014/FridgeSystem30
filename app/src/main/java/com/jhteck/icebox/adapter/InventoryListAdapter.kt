@@ -38,7 +38,8 @@ class InventoryListAdapter(private val data: List<List<AvailRfid>>) :
         fun bindData(item: List<AvailRfid>) {
             val tempName = PatternUtil.removeDigitalAndLetter(item[0].material?.eas_material_name)
             binding.tvDrugName.text = tempName
-            binding.tvDrugNo.text = "x${item.size}"
+            binding.tvDrugNo.text = "x${item[0].qty?.toFloat()!!/item[0].material_package.unit_qty}" +
+                    "${item[0].material_package.unit_name}"
         }
     }
 }

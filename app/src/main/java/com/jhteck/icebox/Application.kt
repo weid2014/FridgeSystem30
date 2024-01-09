@@ -136,19 +136,18 @@ class Application : BaseApp(), Thread.UncaughtExceptionHandler {
     private fun loginOperator(accountEntity: AccountEntity) {
         GlobalScope.launch {
             try {
+                DbUtil.getDb().fridgesInfoDao()
+
                 var entity = SysOperationErrorEntity(
                     SnowFlake.getInstance().nextId().toInt(),
-                    accountEntity.user_id,
-                    accountEntity.nick_name,
-                    accountEntity.role_id,
-                    accountEntity.km_user_id,
-                    accountEntity.real_name,
+                    accountEntity.id,
+                    accountEntity.name,
                     SystemOperationErrorEnum.REBOOT.v,
-                    "网络状态",//todo 网络状态
-                    "系统信息",//todo
-                    "App版本",//todo
-                    "串口信息",//
-                    "冰箱信息",//
+                    NetworkUtil.netWorkState(this@Application),//todo 网络状态
+                    AndroidVersionUtils.getAndroidVersion(),//todo
+                    AndroidVersionUtils.getAppVersionName(this@Application),//todo
+                    AndroidVersionUtils.getPortInfo(),//
+                    AndroidVersionUtils.getFridgeInfo(this@Application),//
                     DateUtils.currentStringFormatTime(),
                     false
                 );

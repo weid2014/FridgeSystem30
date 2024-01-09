@@ -17,7 +17,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="240dp"
+            android:layout_height="120dp"
             android:layout_marginTop="12dp"
             android:orientation="vertical">
 
@@ -28,120 +28,13 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:paddingStart="120dp"
-                android:text="新增账号"
+                android:text="编辑账号"
                 android:textColor="@color/app_black"
                 android:textSize="36sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginStart="120dp"
-                android:layout_marginEnd="120dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
 
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="账号类型 *"
-                    android:textColor="@color/app_black"
-                    android:textSize="22sp" />
-
-
-                <RadioGroup
-                    android:id="@+id/rg_role"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1.2"
-                    android:background="@drawable/app_shape_white_radius_9"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/rb_role0"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/radiobutton_style"
-                        android:button="@null"
-                        android:checked="false"
-                        android:drawablePadding="10dp"
-                        android:gravity="center"
-                        android:text="系统管理员"
-                        android:textColor="#000000"
-                        android:textSize="22sp"
-                        android:visibility="gone" />
-
-                    <RadioButton
-                        android:id="@+id/rb_role1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/radiobutton_style"
-                        android:button="@null"
-                        android:checked="false"
-                        android:drawablePadding="10dp"
-                        android:gravity="center"
-                        android:text="仓库管理员"
-                        android:textColor="#000000"
-                        android:textSize="22sp" />
-
-                    <RadioButton
-                        android:id="@+id/rb_role2"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/radiobutton_style"
-                        android:button="@null"
-                        android:checked="false"
-                        android:drawablePadding="10dp"
-                        android:gravity="center"
-                        android:text="现场人员"
-                        android:textColor="#000000"
-                        android:textSize="22sp" />
-                </RadioGroup>
-
-            </LinearLayout>
         </LinearLayout>
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_marginStart="120dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingEnd="120dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="用户名 *"
-                android:textColor="@color/app_black"
-                android:textSize="22sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_gravity="center"
-                android:layout_weight="1.2"
-                android:background="@drawable/app_shape_white_radius_9">
-
-                <EditText
-                    android:id="@+id/ed_UserName"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="20dp"
-                    android:background="@android:color/transparent"
-                    android:hint="请输入"
-                    android:textSize="16sp" />
-            </LinearLayout>
-        </LinearLayout>
 
 
         <LinearLayout
@@ -168,7 +61,7 @@
                 android:background="@drawable/app_shape_white_radius_9">
 
                 <EditText
-                    android:id="@+id/ed_real_name"
+                    android:id="@+id/edUserName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="20dp"
@@ -178,77 +71,60 @@
             </LinearLayout>
         </LinearLayout>
 
-
         <LinearLayout
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:layout_marginStart="120dp"
             android:layout_marginEnd="120dp"
+            android:layout_weight="1"
             android:orientation="vertical">
+
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="密码 *"
+                android:text="NFC卡号 *"
                 android:textColor="@color/app_black"
                 android:textSize="22sp" />
 
-            <LinearLayout
+
+            <RadioGroup
+                android:id="@+id/rg_nfc_card"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@drawable/app_shape_white_radius_9">
-
-                <EditText
-                    android:id="@+id/ed_PassWord"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="20dp"
-                    android:background="@android:color/transparent"
-                    android:hint="请输入密码"
-                    android:inputType="textPassword"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_marginStart="120dp"
-            android:layout_marginEnd="120dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="确认密码 *"
-                android:textColor="@color/app_black"
-                android:textSize="22sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_gravity="center"
                 android:layout_weight="1.2"
-                android:background="@drawable/app_shape_white_radius_9">
+                android:background="@drawable/app_shape_white_radius_9"
+                android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/ed_CommitPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="20dp"
-                    android:background="@android:color/transparent"
-                    android:hint="请再次输入已填密码"
-                    android:inputType="textPassword"
-                    android:textSize="16sp" />
-            </LinearLayout>
+                <RadioButton
+                    android:id="@+id/rb_card1"
+                    style="@style/NfcCardItemStyle"
+                    android:text="NFC_1"/>
 
+                <RadioButton
+                    android:id="@+id/rb_card2"
+                    style="@style/NfcCardItemStyle"
+                    android:text="NFC_2"/>
+
+                <RadioButton
+                    android:id="@+id/rb_card3"
+                    style="@style/NfcCardItemStyle"
+                    android:text="NFC_3"/>
+
+                <RadioButton
+                    android:id="@+id/rb_card4"
+                    style="@style/NfcCardItemStyle"
+                    android:text="NFC_4"/>
+
+                <RadioButton
+                    android:id="@+id/rb_card5"
+                    style="@style/NfcCardItemStyle"
+                    android:text="NFC_5"/>
+
+            </RadioGroup>
 
         </LinearLayout>
 

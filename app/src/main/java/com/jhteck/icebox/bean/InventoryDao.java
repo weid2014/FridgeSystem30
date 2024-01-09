@@ -8,15 +8,15 @@ package com.jhteck.icebox.bean;
 public class InventoryDao {
     private String DrugNO;//批次
     private String DrugName;
-    private int DrugNumber;
-    private int CellNumber;
+    private float DrugNumber;
+    private String UnitName;
     private String expired_at;
 
-    public InventoryDao(String drugNO, String drugName, int drugNumber, int cellNumber,String expired_at) {
+    public InventoryDao(String drugNO, String drugName, float drugNumber, String unitName,String expired_at) {
         DrugNO = drugNO;
         DrugName = drugName;
         DrugNumber = drugNumber;
-        CellNumber = cellNumber;
+        UnitName = unitName;
          this.expired_at=expired_at;
     }
 
@@ -36,20 +36,20 @@ public class InventoryDao {
         DrugName = drugName;
     }
 
-    public int getDrugNumber() {
+    public float getDrugNumber() {
         return DrugNumber;
     }
 
-    public void setDrugNumber(int drugNumber) {
+    public void setDrugNumber(float drugNumber) {
         DrugNumber = drugNumber;
     }
 
-    public int getCellNumber() {
-        return CellNumber;
+    public String getUnitName() {
+        return UnitName;
     }
 
-    public void setCellNumber(int cellNumber) {
-        CellNumber = cellNumber;
+    public void setUnitName(String unitName) {
+        UnitName = unitName;
     }
 
     public String getExpired_at() {

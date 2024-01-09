@@ -36,6 +36,12 @@ public class NetworkUtil {
         return isNetUsable;
     }
 
+    public static String netWorkState(Context context) {
+        return isNetSystemUsable(context) ? "网络正常" : "网络异常";
+    }
+    //获取安卓app信息
+
+
 
 
     /**

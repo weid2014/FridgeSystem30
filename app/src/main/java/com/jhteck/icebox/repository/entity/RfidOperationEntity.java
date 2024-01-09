@@ -16,6 +16,14 @@ public class RfidOperationEntity implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private Long id;
 
+    @ColumnInfo(name = "account_id")
+    @SerializedName("account_id")
+    private Integer account_id;
+
+    @ColumnInfo(name = "account_log_id")
+    @SerializedName("account_log_id")
+    private String account_log_id;
+
     @ColumnInfo(name = "user_log_id")
     @SerializedName("user_log_id")
     private String user_log_id;
@@ -240,15 +248,35 @@ public class RfidOperationEntity implements Serializable {
         this.cell_number = cell_number;
     }
 
+    public Integer getAccount_id() {
+        return account_id;
+    }
+
+    public void setAccount_id(Integer account_id) {
+        this.account_id = account_id;
+    }
+
+    public String getAccount_log_id() {
+        return account_log_id;
+    }
+
+    public void setAccount_log_id(String account_log_id) {
+        this.account_log_id = account_log_id;
+    }
+
     @Override
     public String toString() {
         return "RfidOperationEntity{" +
                 "id=" + id +
+                ", account_id=" + account_id +
+                ", account_log_id='" + account_log_id + '\'' +
                 ", user_log_id='" + user_log_id + '\'' +
                 ", user_id='" + user_id + '\'' +
-                ", nick_name='" + nick_name + '\'' +
                 ", operation=" + operation +
                 ", log_at='" + log_at + '\'' +
+                ", rfid='" + rfid + '\'' +
+                ", cell_number=" + cell_number +
+                ", nick_name='" + nick_name + '\'' +
                 ", eas_material_number='" + eas_material_number + '\'' +
                 ", eas_material_name='" + eas_material_name + '\'' +
                 ", eas_unit_number='" + eas_unit_number + '\'' +
@@ -256,8 +284,11 @@ public class RfidOperationEntity implements Serializable {
                 ", eas_unit_name='" + eas_unit_name + '\'' +
                 ", number='" + number + '\'' +
                 ", eas_lot='" + eas_lot + '\'' +
-                ", rfid='" + rfid + '\'' +
                 ", hasUpload=" + hasUpload +
+                ", eas_specs='" + eas_specs + '\'' +
+                ", eas_manufacturer='" + eas_manufacturer + '\'' +
+                ", role_id=" + role_id +
+                ", isOfflineData=" + isOfflineData +
                 '}';
     }
 }

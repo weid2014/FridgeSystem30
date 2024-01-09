@@ -140,6 +140,23 @@ class MainViewModel(application: android.app.Application) :
         }
     }
 
+    fun sendRfidsForTest() {
+        var rfids= mutableListOf<String>()
+        rfids.add("E1234567000000000000009A")
+        rfids.add("E123456700000000000000CC")
+        rfids.add("E123456700000000000000CB")
+        rfids.add("E123456700000000000000CA")
+        rfids.add("E123456700000000000000C9")
+        rfidsSync.postValue(rfids)
+    }
+
+    fun sendRfidsForTest1() {
+        var rfids= mutableListOf<String>()
+        rfids.add("E1234567000000000000009A")
+        rfids.add("E123456700000000000000CC")
+        rfidsSync.postValue(rfids)
+    }
+
 
     fun rfidsSync(rfids: List<AvailRfid>) {
         viewModelScope.launch {
@@ -334,8 +351,8 @@ class MainViewModel(application: android.app.Application) :
                     rfid,
                     DateUtils.format_yyyyMMddhhmmssfff,
                     accountEntity.user_id,
-                    accountEntity.role_id,
-                    accountEntity.nick_name,
+                    accountEntity.role.toString(),
+                    accountEntity.name,
                     1,
                     100
                 );
@@ -358,8 +375,8 @@ class MainViewModel(application: android.app.Application) :
                 offlineId.rfid,
                 DateUtils.format_yyyyMMddhhmmssfff,
                 accountEntity.user_id,
-                accountEntity.role_id,
-                accountEntity.nick_name,
+                accountEntity.role.toString(),
+                accountEntity.name,
                 1,
                 100
             );
@@ -476,7 +493,7 @@ class MainViewModel(application: android.app.Application) :
                 var accountOperationEntity =
                     createAccountOperationEntity(
                         accountOperationEnum,
-                        accountEntity.user_id,
+                        accountEntity.id,
                         fridgeId
                     )
 
@@ -520,18 +537,21 @@ class MainViewModel(application: android.app.Application) :
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 var updaloads = mutableListOf<RfidOperationEntity>();
+                val logId="${accountOperationEnum.desc}${
+                    SharedPreferencesUtils.getPrefString(
+                        BaseApp.app,
+                        FRIDGEID, "0"
+                    )
+                }${System.currentTimeMillis() / 1000}";
                 for (item in inList) {
                     var rfidOperationEntity = RfidOperationEntity()
+                    rfidOperationEntity.account_id = accountEntity.id.toInt()
+                    rfidOperationEntity.account_log_id = logId
                     rfidOperationEntity.user_id = accountEntity.user_id;
-                    rfidOperationEntity.user_log_id = "${accountOperationEnum.desc}${
-                        SharedPreferencesUtils.getPrefString(
-                            BaseApp.app,
-                            FRIDGEID, "0"
-                        )
-                    }${System.currentTimeMillis() / 1000}";
-                    rfidOperationEntity.nick_name = accountEntity.nick_name;
+                    rfidOperationEntity.user_log_id = logId
+                    rfidOperationEntity.nick_name = accountEntity.name;
                     rfidOperationEntity.isOfflineData = false;
-                    if (accountEntity.role_id.toInt() == 30) {
+                    if (accountEntity.role.toInt() == 3) {
                         rfidOperationEntity.operation = 2
                     } else {
                         rfidOperationEntity.operation = 0
@@ -548,7 +568,7 @@ class MainViewModel(application: android.app.Application) :
                     rfidOperationEntity.cell_number = item.cell_number
                     rfidOperationEntity.eas_specs = item.material_batch.eas_specs
                     rfidOperationEntity.eas_manufacturer = item.material.eas_manufacturer
-                    rfidOperationEntity.role_id = accountEntity.role_id.toInt()
+                    rfidOperationEntity.role_id = accountEntity.role
                     var id = DbUtil.getDb().rfidOperationDao().insert(rfidOperationEntity);
                     rfidOperationEntity.id = id
                     updaloads.add(rfidOperationEntity);
@@ -556,14 +576,11 @@ class MainViewModel(application: android.app.Application) :
                 for (item in outList) {
                     var rfidOperationEntity = RfidOperationEntity()
                     rfidOperationEntity.isOfflineData = false
+                    rfidOperationEntity.account_id = accountEntity.id.toInt()
+                    rfidOperationEntity.account_log_id = logId
                     rfidOperationEntity.user_id = accountEntity.user_id;
-                    rfidOperationEntity.user_log_id = "${accountOperationEnum.desc}${
-                        SharedPreferencesUtils.getPrefString(
-                            BaseApp.app,
-                            FRIDGEID, "0"
-                        )
-                    }${System.currentTimeMillis() / 1000}"
-                    rfidOperationEntity.nick_name = accountEntity.nick_name;
+                    rfidOperationEntity.user_log_id = logId
+                    rfidOperationEntity.nick_name = accountEntity.name;
                     rfidOperationEntity.operation = 1
                     rfidOperationEntity.log_at = DateUtils.currentStringFormatTime()
                     rfidOperationEntity.eas_material_number = item.material.eas_material_number;
@@ -577,7 +594,7 @@ class MainViewModel(application: android.app.Application) :
                     rfidOperationEntity.cell_number = item.cell_number
                     rfidOperationEntity.eas_specs = item.material_batch.eas_specs
                     rfidOperationEntity.eas_manufacturer = item.material.eas_manufacturer
-                    rfidOperationEntity.role_id = accountEntity.role_id.toInt()
+                    rfidOperationEntity.role_id = accountEntity.role
                     var id = DbUtil.getDb().rfidOperationDao().insert(rfidOperationEntity);
                     rfidOperationEntity.id = id
                     updaloads.add(rfidOperationEntity);
@@ -604,7 +621,7 @@ class MainViewModel(application: android.app.Application) :
                         for (rfidOperationEntity in updaloads) {
                             var operationErrorLogEntity = OperationErrorLogEntity(
                                 rfidOperationEntity.id,
-                                rfidOperationEntity.user_id,
+                                rfidOperationEntity.account_id.toLong(),
                                 rfidOperationEntity.role_id.toString(),
                                 100,
                                 rfidOperationEntity.rfid,
@@ -646,9 +663,9 @@ class MainViewModel(application: android.app.Application) :
                             FRIDGEID, "0"
                         )
                     }${System.currentTimeMillis() / 1000}"
-                    rfidOperationEntity.nick_name = accountEntity.nick_name;
+                    rfidOperationEntity.nick_name = accountEntity.name;
                     rfidOperationEntity.isOfflineData = true;
-                    if (accountEntity.role_id.toInt() == 30) {
+                    if (accountEntity.role.toInt() == 3) {
                         rfidOperationEntity.operation = 2
                     } else {
                         rfidOperationEntity.operation = 0
@@ -665,7 +682,7 @@ class MainViewModel(application: android.app.Application) :
                     rfidOperationEntity.cell_number = 1
                     rfidOperationEntity.eas_specs = "-"
                     rfidOperationEntity.eas_manufacturer = "-"
-                    rfidOperationEntity.role_id = accountEntity.role_id.toInt()
+                    rfidOperationEntity.role_id = accountEntity.role
                     var id = DbUtil.getDb().rfidOperationDao().insert(rfidOperationEntity);
                     rfidOperationEntity.id = id
 //                    updaloads.add(rfidOperationEntity);
@@ -679,7 +696,7 @@ class MainViewModel(application: android.app.Application) :
                             FRIDGEID, "0"
                         )
                     }${System.currentTimeMillis() / 1000}"
-                    rfidOperationEntity.nick_name = accountEntity.nick_name;
+                    rfidOperationEntity.nick_name = accountEntity.name;
                     rfidOperationEntity.isOfflineData = true;
                     rfidOperationEntity.operation = 1
                     rfidOperationEntity.log_at = DateUtils.currentStringFormatTime()
@@ -694,7 +711,7 @@ class MainViewModel(application: android.app.Application) :
                     rfidOperationEntity.cell_number = 1
                     rfidOperationEntity.eas_specs = "-";
                     rfidOperationEntity.eas_manufacturer = "-";
-                    rfidOperationEntity.role_id = accountEntity.role_id.toInt()
+                    rfidOperationEntity.role_id = accountEntity.role
                     var id = DbUtil.getDb().rfidOperationDao().insert(rfidOperationEntity);
                     rfidOperationEntity.id = id
                     updaloads.add(rfidOperationEntity);
@@ -747,13 +764,16 @@ class MainViewModel(application: android.app.Application) :
 
     private fun createAccountOperationEntity(
         operation: AccountOperationEnum,
-        userId: String,
+        userId: Long,
         fridgeId: String
     ): AccountOperationEntity {
         var accountOperationEntity = AccountOperationEntity()
         accountOperationEntity.operation = operation.v.toByte()
-        accountOperationEntity.user_id = userId
+        accountOperationEntity.account_id = userId.toInt()
+        accountOperationEntity.user_id = userId.toString()
         accountOperationEntity.user_log_id =
+            "${operation.desc}${fridgeId}${System.currentTimeMillis() / 1000}"
+        accountOperationEntity.account_log_id =
             "${operation.desc}${fridgeId}${System.currentTimeMillis() / 1000}"
         accountOperationEntity.log_at = DateUtils.currentStringFormatTime()
         accountOperationEntity.hasUploaded = false

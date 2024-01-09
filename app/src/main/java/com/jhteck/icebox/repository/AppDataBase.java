@@ -8,6 +8,7 @@ import com.jhteck.icebox.repository.dao.AccountDao;
 import com.jhteck.icebox.repository.dao.AccountOperationDao;
 import com.jhteck.icebox.repository.dao.FaceAccountDao;
 import com.jhteck.icebox.repository.dao.FridgesInfoDao;
+import com.jhteck.icebox.repository.dao.MaterialPackageDao;
 import com.jhteck.icebox.repository.dao.OfflineRfidDao;
 import com.jhteck.icebox.repository.dao.OperationErrorLogDao;
 import com.jhteck.icebox.repository.dao.RfidOperationDao;
@@ -25,6 +26,7 @@ import com.jhteck.icebox.repository.entity.AccountEntity;
 import com.jhteck.icebox.repository.entity.AccountOperationEntity;
 import com.jhteck.icebox.repository.entity.FaceAccountEntity;
 import com.jhteck.icebox.repository.entity.FridgesInfoEntity;
+import com.jhteck.icebox.repository.entity.MaterialPackageEntity;
 import com.jhteck.icebox.repository.entity.OfflineRfidEntity;
 import com.jhteck.icebox.repository.entity.OperationErrorLogEntity;
 import com.jhteck.icebox.repository.entity.RfidOperationEntity;
@@ -43,7 +45,8 @@ import com.jhteck.icebox.repository.entity.diule.User;
         Operation.class, Repertory.class,
         AbnormalChange.class, Abnormal.class,
         Rfid.class, AvailRfidEntity.class,
-        MaterialBatchEntity.class, MaterialEntity.class, AccountEntity.class,
+        MaterialBatchEntity.class, MaterialEntity.class, MaterialPackageEntity.class,
+        AccountEntity.class,
         AccountOperationEntity.class,
         RfidOperationEntity.class,
         FridgesInfoEntity.class,
@@ -51,7 +54,7 @@ import com.jhteck.icebox.repository.entity.diule.User;
         OperationErrorLogEntity.class,
         FaceAccountEntity.class,
         OfflineRfidEntity.class,
-}, version = 35, exportSchema = false)
+}, version = 37, exportSchema = false)
 public abstract class AppDataBase extends RoomDatabase {
 
     public abstract UserDao userDao();
@@ -63,6 +66,8 @@ public abstract class AppDataBase extends RoomDatabase {
     public abstract MedicalDao medicaldao();
 
     public abstract MaterialBatchDao materialBatchDao();
+
+    public abstract MaterialPackageDao materialPackageDao();
 
     /**
      * 账户

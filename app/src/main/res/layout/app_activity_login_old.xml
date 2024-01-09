@@ -230,7 +230,7 @@
             android:layout_width="504dp"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_marginTop="54dp"
+            android:layout_marginTop="80dp"
             android:layout_weight="1"
             android:orientation="vertical"
             android:visibility="gone">

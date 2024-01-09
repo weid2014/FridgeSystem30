@@ -210,6 +210,7 @@
                 android:layout_height="54dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="12dp"
+                android:layout_marginStart="49dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -240,7 +241,7 @@
             android:layout_width="504dp"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_marginTop="54dp"
+            android:layout_marginTop="84dp"
             android:layout_weight="1"
             android:orientation="vertical"
             android:visibility="gone">
@@ -260,7 +261,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="36dp"
                 android:background="@color/app_white"
                 android:hint="请输入密码"
                 android:inputType="textPassword"
@@ -273,7 +274,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="36dp"
                 android:background="@color/app_color_btn"
                 android:text="登录"
                 android:textColor="@color/app_white"
@@ -284,7 +285,7 @@
                 android:layout_width="580dp"
                 android:layout_height="54dp"
                 android:layout_marginStart="49dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="32dp"
                 android:orientation="horizontal">
 
                 <TextView

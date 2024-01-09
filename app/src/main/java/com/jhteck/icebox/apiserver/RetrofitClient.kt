@@ -20,11 +20,9 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 
 
-    fun getService(sncode: String =SharedPreferencesUtils.getPrefString(
-        BaseApp.app,
-        SNCODE,
-        SNCODE_TEST
-    ),baseUrl:String =SharedPreferencesUtils.getPrefString(BaseApp.app, URL_REQUEST, URL_KM1)): ILoginApiService {
+    fun getService(sncode: String =SharedPreferencesUtils.getPrefString(BaseApp.app, SNCODE, SNCODE_TEST),
+                   baseUrl:String =SharedPreferencesUtils.getPrefString(BaseApp.app, URL_REQUEST, URL_KM1),
+                   token:String=SharedPreferencesUtils.getPrefString(BaseApp.app, TOKEN,TOKEN_DEFAULT)): ILoginApiService {
         Log.d("RetrofitClient", "正在同步冰箱账号信息==${baseUrl}")
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -43,7 +41,7 @@ object RetrofitClient {
                     .removeHeader("authorization")
                     .addHeader(
                         "authorization",
-                        "Bearer $sncode"
+                        "Bearer $token"
                     ).build()
                 Log.d("RetrofitClient", "request addHeader=${request.headers["authorization"]}")
                 chain.proceed(request!!)

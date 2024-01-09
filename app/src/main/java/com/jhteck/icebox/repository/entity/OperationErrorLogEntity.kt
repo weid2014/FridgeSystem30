@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class OperationErrorLogEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
-    var user_id: String,
+    var account_id : Long,
     var role_id: String,
     var remain  : Int,
     var rfid : String,

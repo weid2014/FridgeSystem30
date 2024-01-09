@@ -7,6 +7,7 @@ import com.jhteck.icebox.api.*
 import com.jhteck.icebox.repository.entity.AvailRfidEntity
 import com.jhteck.icebox.repository.entity.MaterialBatchEntity
 import com.jhteck.icebox.repository.entity.MaterialEntity
+import com.jhteck.icebox.repository.entity.MaterialPackageEntity
 import com.jhteck.icebox.utils.DbUtil
 import com.jhteck.icebox.utils.GetJsonDataUtil
 
@@ -22,6 +23,7 @@ class LocalService {
             val availRfidDao = DbUtil.getDb().availRfidDao()
             val medicalDao = DbUtil.getDb().medicaldao()
             val materialBatchDao = DbUtil.getDb().materialBatchDao()
+            val materialPackageDao = DbUtil.getDb().materialPackageDao()
             var rfids = availRfidDao.getAll()
             //判断没有 则从json文件中读取一份
             if (rfids == null || rfids.isEmpty()) {//模拟數據
@@ -38,12 +40,20 @@ class LocalService {
                     )
                     materialEntity.id = data.id
                     medicalDao.insertAll(materialEntity); //插入到material药品表
+
                     val materialBatchEntity = gson.fromJson(
                         gson.toJson(data.material_batch),
                         MaterialBatchEntity::class.java
                     )
                     materialBatchEntity.id = data.id
                     materialBatchDao.insert(materialBatchEntity); //插入 material_batch 批号表
+
+                    val materialPackageEntity = gson.fromJson(
+                        gson.toJson(data.material_package),
+                        MaterialPackageEntity::class.java
+                    )
+                    materialPackageEntity.id = data.id
+                    materialPackageDao.insert(materialPackageEntity); //插入 material_batch 批号表
                 }
             }
         }
@@ -55,6 +65,7 @@ class LocalService {
             val availRfidDao = DbUtil.getDb().availRfidDao()
             val medicalDao = DbUtil.getDb().medicaldao()
             val materialBatchDao = DbUtil.getDb().materialBatchDao()
+            val materialPackageDao = DbUtil.getDb().materialPackageDao()
             var rfids = availRfidDao.getAll();//获取rfid
             var availRfids = mutableListOf<AvailRfid>();
 
@@ -72,6 +83,12 @@ class LocalService {
 
                 availRfid.material_batch = materialBatch;
 
+                var materialPackageEntity = materialPackageDao.getById(rfid.id);//获取批号
+                var materialPackage =
+                    gson.fromJson(gson.toJson(materialPackageEntity), MaterialPackage::class.java);
+
+                availRfid.material_package = materialPackage;
+
                 availRfids.add(availRfid)//拼接数据
             }
 
@@ -88,6 +105,7 @@ class LocalService {
             val availRfidDao = DbUtil.getDb().availRfidDao()
             val medicalDao = DbUtil.getDb().medicaldao()
             val materialBatchDao = DbUtil.getDb().materialBatchDao()
+            val materialPackageDao = DbUtil.getDb().materialPackageDao()
             for (data in rfidDao.results.avail_rfids) {
                 val availRfidEntity =
                     gson.fromJson(gson.toJson(data), AvailRfidEntity::class.java)
@@ -99,12 +117,20 @@ class LocalService {
                 )
                 materialEntity.id = data.id
                 medicalDao.insertAll(materialEntity); //插入到material药品表
+
                 val materialBatchEntity = gson.fromJson(
                     gson.toJson(data.material_batch),
                     MaterialBatchEntity::class.java
                 )
                 materialBatchEntity.id = data.id
                 materialBatchDao.insert(materialBatchEntity); //插入 material_batch 批号表
+
+                 val materialPackageEntity = gson.fromJson(
+                    gson.toJson(data.material_package),
+                    MaterialPackageEntity::class.java
+                )
+                materialPackageEntity.id = data.id
+                materialPackageDao.insert(materialPackageEntity)
             }
         }
 
@@ -116,6 +142,7 @@ class LocalService {
             val availRfidDao = DbUtil.getDb().availRfidDao()
             val medicalDao = DbUtil.getDb().medicaldao()
             val materialBatchDao = DbUtil.getDb().materialBatchDao()
+            val materialPackageDao = DbUtil.getDb().materialPackageDao()
             for (data in availRfidlist) {
                 val availRfidEntity =
                     gson.fromJson(gson.toJson(data), AvailRfidEntity::class.java)
@@ -127,12 +154,20 @@ class LocalService {
                 )
                 materialEntity.id = data.id
                 medicalDao.delete(materialEntity); //插入到material药品表
+
                 val materialBatchEntity = gson.fromJson(
                     gson.toJson(data.material_batch),
                     MaterialBatchEntity::class.java
                 )
                 materialBatchEntity.id = data.id
                 materialBatchDao.delete(materialBatchEntity); //插入 material_batch 批号表
+
+                val materialPackageEntity = gson.fromJson(
+                    gson.toJson(data.material_package),
+                    MaterialPackageEntity::class.java
+                )
+                materialPackageEntity.id = data.id
+                materialPackageDao.delete(materialPackageEntity)
             }
         }
 
@@ -144,6 +179,7 @@ class LocalService {
             val availRfidDao = DbUtil.getDb().availRfidDao()
             val medicalDao = DbUtil.getDb().medicaldao()
             val materialBatchDao = DbUtil.getDb().materialBatchDao()
+            val materialPackageDao = DbUtil.getDb().materialPackageDao()
             for (data in availRfidlist) {
                 val availRfidEntity =
                     gson.fromJson(gson.toJson(data), AvailRfidEntity::class.java)
@@ -161,6 +197,13 @@ class LocalService {
                 )
                 materialBatchEntity.id = data.id
                 materialBatchDao.insert(materialBatchEntity); //插入 material_batch 批号表
+
+                val materialPackageEntity = gson.fromJson(
+                    gson.toJson(data.material_package),
+                    MaterialPackageEntity::class.java
+                )
+                materialPackageEntity.id = data.id
+                materialPackageDao.insert(materialPackageEntity)
             }
         }
 
@@ -181,7 +224,7 @@ class LocalService {
             val availRfidDao = DbUtil.getDb().availRfidDao()
             val medicalDao = DbUtil.getDb().medicaldao()
             val materialBatchDao = DbUtil.getDb().materialBatchDao()
-
+            val materialPackageDao = DbUtil.getDb().materialPackageDao()
             val availRfidEntity =
                 gson.fromJson(gson.toJson(data), AvailRfidEntity::class.java)
             availRfidDao.update(availRfidEntity);//插入到rfid表
@@ -192,12 +235,20 @@ class LocalService {
             )
             materialEntity.id = data.id
             medicalDao.update(materialEntity); //插入到material药品表
+
             val materialBatchEntity = gson.fromJson(
                 gson.toJson(data.material_batch),
                 MaterialBatchEntity::class.java
             )
             materialBatchEntity.id = data.id
             materialBatchDao.update(materialBatchEntity); //插入 material_batch 批号表
+
+            val materialPackageEntity = gson.fromJson(
+                gson.toJson(data.material_package),
+                MaterialPackageEntity::class.java
+            )
+            materialPackageEntity.id = data.id
+            materialPackageDao.update(materialPackageEntity)
 
         }
 

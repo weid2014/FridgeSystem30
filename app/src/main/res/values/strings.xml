@@ -22,6 +22,7 @@
     <string name="url_km1">http://101.37.124.39:3002/</string>
     <string name="url_km2">https://rfid.kingmed.com.cn/</string>
     <string name="admin_password">Jinghe233</string>
+    <string name="token">EAZiJa7C2yqgHTGmYLmhtZeN</string>
 
     <string name="drug_spec">规格</string>
     <string name="instructions_old">如果是新安装冰箱，则选择不拉取。\n如果是恢复指定冰箱数据，则选择拉取。将拉取：\n（1）系统错误日志 （2）操作错误日志\n后续可以到操作日志界面中查看。</string>

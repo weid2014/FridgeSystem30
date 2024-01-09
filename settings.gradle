@@ -1,4 +1,4 @@
-rootProject.name = "icebox"
+rootProject.name = "FridgeSystem30"
 include ':app'
 
 include ':lib-api'

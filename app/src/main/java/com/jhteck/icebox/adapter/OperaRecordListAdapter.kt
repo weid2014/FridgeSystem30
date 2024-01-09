@@ -58,7 +58,9 @@ class OperaRecordListAdapter(
             if(item.eas_manufacturer!=null) {
                 binding.tvDrugManufacturers.text = item.eas_manufacturer.toString()
             }
-            binding.tvUnit.text = item.eas_unit_name.toString()
+            item.eas_unit_name.let {
+                binding.tvUnit.text =it
+            }
             binding.tvNumber.text = item.number.toString()
             binding.tvBatchNumber.text = item.eas_lot.toString()
             when (item.operation.toInt()) {

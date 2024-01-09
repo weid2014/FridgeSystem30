@@ -1,7 +1,10 @@
 package com.jhteck.icebox.activity
 
 import android.content.*
+import android.graphics.Color
 import android.os.IBinder
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -17,8 +20,10 @@ import com.jhteck.icebox.adapter.IAntPowerCallback
 import com.jhteck.icebox.api.*
 import com.jhteck.icebox.databinding.AppActivitySpashBinding
 import com.jhteck.icebox.myinterface.MyCallback
+import com.jhteck.icebox.repository.entity.FridgesInfoEntity
 import com.jhteck.icebox.rfidmodel.RfidManage
 import com.jhteck.icebox.service.MyService
+import com.jhteck.icebox.utils.MD5Util
 import com.jhteck.icebox.utils.SharedPreferencesUtils
 import com.jhteck.icebox.viewmodel.SpashViewModel
 import com.naz.serial.port.SerialPortFinder
@@ -38,9 +43,6 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     private var isBind = false
     private var tempList = mutableListOf<AntPowerDao>()
     private var mDevicesPath: Array<String>? = null
-    private var isGetOldInfo: Boolean = false
-    private var isSyncOtherSystem: Boolean = false
-    private var oldSncoede: String? = null
 
     private var conn = object : ServiceConnection {
         override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
@@ -61,76 +63,104 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     override fun initView() {
         startService()
         binding.llFridgesOperate.visibility = View.GONE
+        initIncludeTitle()
         initSpinnerView()
         // 检查是否是第一次运行应用程序
         var isFirstRun =
             SharedPreferencesUtils.getPrefBoolean(this@SpashActivity, IS_FIRST_RUN, true)
-        if (DEBUG) {
+        /*if (DEBUG) {
             viewModel.registAdmin("Jinghe233")
-            isFirstRun = false
-        }
+            isFirstRun = true
+        }*/
         if (isFirstRun) {
             binding.llFridgesOperate.visibility = View.VISIBLE
             binding.rlSpash.visibility = View.GONE
             var steps = mutableListOf<String>()
             steps.add("Step 1")
             steps.add("Step 2")
+            steps.add("Step 3")
             binding.stepView.setSteps(steps)
             binding.stepView.setOnStepClickListener {
                 binding.stepView.go(it, true)
                 changeUI(it)
             }
+            binding.edToken.addTextChangedListener(object :TextWatcher{
+                override fun beforeTextChanged(charSequence: CharSequence, start: Int, count: Int, after: Int) {
+
+                }
+
+                override fun onTextChanged(charSequence: CharSequence, start: Int, before: Int, count: Int) {
+                    val inputLength=charSequence.length
+                    if(inputLength!=24){
+                        binding.includeTitleToken.tvTitle.text="激活令牌(当前长度${inputLength})"
+                        binding.includeTitleToken.tvTitle.setTextColor(Color.parseColor("#FF3030"))
+                    }else{
+                        binding.includeTitleToken.tvTitle.text="激活令牌"
+                        binding.includeTitleToken.tvTitle.setTextColor(Color.parseColor("#000000"))
+                    }
+                }
+
+                override fun afterTextChanged(p0: Editable?) {
+
+                }
+
+            })
             binding.btnStep1Next.setOnClickListener {
-                oldSncoede = binding.edOldSncode.text.toString().trim()
                 val sncode = binding.edSncode.text.toString().trim()
-                if (!chechSnCode(oldSncoede!!) || !chechSnCode(sncode)) {
+                val token = binding.edToken.text.toString().trim()
+                if (!checkSnCode(sncode)) {
                     toast("请输入正确的SN码")
                     return@setOnClickListener
                 }
-                SharedPreferencesUtils.setPrefString(this@SpashActivity, SNCODE, sncode)
-                changeUI(1)
-                binding.stepView.go(1, true)
+                viewModel.getFridgeInfo(token, sncode)
+
             }
-            binding.btnStep2Back.setOnClickListener {
+            binding.llStep3.btnStep2Back.setOnClickListener {
                 binding.stepView.go(0, true)
                 changeUI(0)
             }
+            binding.btnStep2Next.setOnClickListener {
 
-            binding.btnStep2Finish.setOnClickListener {
+                registIceBox()
+            }
+
+            binding.llStep3.btnFinish.setOnClickListener {
                 activyFinish()
             }
 
-            binding.btnOpenLock.setOnClickListener {
+            binding.llStep3.btnOpenLock.setOnClickListener {
                 viewModel.openLock()
             }
-            binding.btnCloseLock.setOnClickListener {
+            binding.llStep3.btnCloseLock.setOnClickListener {
                 viewModel.closeLock()
             }
-            binding.btnLinkLock.setOnClickListener {
-                val devicePath = mDevicesPath!![binding.spSerialNumberLock.selectedItemPosition]
+            binding.llStep3.btnLinkLock.setOnClickListener {
+                val devicePath =
+                    mDevicesPath!![binding.llStep3.spSerialNumberLock.selectedItemPosition]
                 isLinkLock = !isLinkLock
                 if (isLinkLock) {
                     LockManage.getInstance().initSerialByPort(devicePath)
                     SharedPreferencesUtils.setPrefString(this, SERIAL_PORT_LOCK, devicePath)
-                    binding.btnLinkLock.text = "关闭"
+                    binding.llStep3.btnLinkLock.text = "关闭"
                 } else {
-                    binding.btnLinkLock.text = "连接"
+                    binding.llStep3.btnLinkLock.text = "连接"
                     LockManage.getInstance().close()
                 }
             }
-            binding.btnLink.setOnClickListener {
-                val devicePath = mDevicesPath!![binding.spSerialNumber.getSelectedItemPosition()]
+            binding.llStep3.btnLink.setOnClickListener {
+                val devicePath =
+                    mDevicesPath!![binding.llStep3.spSerialNumber.getSelectedItemPosition()]
                 isLink = !isLink
                 if (isLink) {
                     RfidManage.getInstance().linkDevice(isLink, devicePath)
                     SharedPreferencesUtils.setPrefString(this, SERIAL_PORT_RFID, devicePath)
-                    binding.btnLink.text = "关闭"
+                    binding.llStep3.btnLink.text = "关闭"
                 } else {
-                    binding.btnLink.text = "连接"
+                    binding.llStep3.btnLink.text = "连接"
                     RfidManage.getInstance().linkDevice(isLink, devicePath)
                 }
             }
-            binding.btnGetAntPower.setOnClickListener {
+            binding.llStep3.btnGetAntPower.setOnClickListener {
                 if (DEBUG) {
                     initTempList()
                 } else {
@@ -138,7 +168,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 }
             }
 
-            binding.btnGetVersionLock.setOnClickListener {
+            binding.llStep3.btnGetVersionLock.setOnClickListener {
                 LockManage.getInstance().getVersion()
             }
             LockManage.getInstance().setVersionCallback(object : MyCallback<String> {
@@ -148,7 +178,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                     }
                 }
             })
-            binding.btnGetVersion.setOnClickListener {
+            binding.llStep3.btnGetVersion.setOnClickListener {
                 RfidManage.getInstance().getVersion()
             }
 
@@ -163,6 +193,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         } else {
             // 不是第一次运行应用程序的操作
             binding.rlSpash.visibility = View.VISIBLE
+            binding.llFridgesOperate.visibility = View.GONE
             /*Glide.with(this)
                 .load("file:///android_asset/start.gif")
                 .into(binding.ivGif)*/
@@ -171,11 +202,24 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         doRegisterReceiver()
     }
 
+    private fun initIncludeTitle() {
+        binding.includeTitleSncode.tvTitle.text = "产品序列号"
+        binding.includeTitleSncodeStep2.tvTitle.text = "产品序列号"
+        binding.includeTitleToken.tvTitle.text = "激活令牌"
+        binding.includeTitleTokenStep2.tvTitle.text = "激活令牌"
+        binding.includeTitleHttp.tvTitle.text = "Http设置"
+        binding.includeTitleHttpStep2.tvTitle.text = "Http设置"
+        binding.includeTitleAliasStep2.tvTitle.text = "设备别名"
+        binding.includeTitleLocationStep2.tvTitle.text = "设备库位"
+        binding.includeTitlePasswordStep2.tvTitle.text = "管理员密码"
+        binding.includeTitleFridgeType.tvTitle.text = "冰箱类型设置"
+    }
+
     private fun activyFinish() {
         viewModel.setAntPower(tempList)
     }
 
-    fun chechSnCode(sncodeStr: String): Boolean {
+    fun checkSnCode(sncodeStr: String): Boolean {
         return sncodeStr.isNotEmpty() && sncodeStr.length == 16 && sncodeStr.startsWith("FEDCBA")
     }
 
@@ -241,97 +285,22 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 }
             }
 
-        val selectList = listOf(
-            "不拉取", "拉取"
-        )
-        binding.spGetOldInfo.adapter =
-            ArrayAdapter(
-                this,
-                R.layout.app_item_text,
-                R.id.tv_content,
-                selectList
-            )
-//        binding.spGetOldInfo.setSelection(item.power.toInt())
-        binding.spGetOldInfo.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    isGetOldInfo = when (position) {
-                        0 -> false
-                        1 -> true
-                        else -> false
-                    }
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
-            }
-
-        val selectListSync = listOf(
-            "不同步", "同步"
-        )
-        binding.spSyncOtherSystem.adapter =
-            ArrayAdapter(
-                this,
-                R.layout.app_item_text,
-                R.id.tv_content,
-                selectListSync
-            )
-//        binding.spGetOldInfo.setSelection(item.power.toInt())
-        binding.spSyncOtherSystem.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    if (position != 0) {
-                        binding.edOldSncode.visibility = View.VISIBLE
-                    } else {
-                        binding.edOldSncode.visibility = View.GONE
-                    }
-                    isSyncOtherSystem = when (position) {
-                        0 -> false
-                        1 -> true
-                        else -> false
-                    }
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
-            }
     }
 
+    private var fridgesInfoEntity: FridgesInfoEntity? = null
     private fun registIceBox() {
-        val sncode = binding.edSncode.text.toString().trim()
-        val deviceAlias = binding.edDeviceAlias.text.toString().trim()
-        val adminName = "admin"
         val adminPassword = binding.edAdminPassword.text.toString().trim()
-        val location = binding.edLocation.text.toString().trim()
-        val style = 0//类型（ 0 - 普通冰箱； 1 - 常温冰箱），默认为 0，不传则不更新
-        val cells = 17
         val fridgesActiveBo = FridgesActiveBo(
-            adminName,
-            adminPassword,
-            cells,
-            deviceAlias,
-            location,
-            sncode,
-            style,
-            1000
+            fridgesInfoEntity?.admin_name,
+            MD5Util.encrypt(adminPassword),
+            fridgesInfoEntity?.cells?.toInt(),
+            fridgesInfoEntity?.device_alias,
+            fridgesInfoEntity?.location,
+            fridgesInfoEntity?.sncode,
+            fridgesInfoEntity?.style?.toInt(),
+            fridgesInfoEntity?.temperature?.toInt()
         )
-//        viewModel.activeFridges(fridgesActiveBo)
-        if (isGetOldInfo) {
-            //同步其他冰箱信息，操作记录，库存记录等
-            viewModel.syncOtherSystem(sncode)
-        }
-
-        viewModel.activeFridges(fridgesActiveBo)
+        viewModel.updateFridges(fridgesActiveBo)
     }
 
     override fun tryLoadData() {
@@ -343,10 +312,17 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
             0 -> {
                 binding.llStep1.visibility = View.VISIBLE
                 binding.llStep2.visibility = View.GONE
+                binding.llStep3.step3Layout.visibility = View.GONE
             }
             1 -> {
                 binding.llStep1.visibility = View.GONE
                 binding.llStep2.visibility = View.VISIBLE
+                binding.llStep3.step3Layout.visibility = View.GONE
+            }
+            2 -> {
+                binding.llStep1.visibility = View.GONE
+                binding.llStep2.visibility = View.GONE
+                binding.llStep3.step3Layout.visibility = View.VISIBLE
                 initTempList()
                 if (DEBUG) {
                     initTempList()
@@ -374,25 +350,35 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     override fun initObservables() {
         super.initObservables()
         viewModel.loginStatus.observe(this) {
-            startActivity(Intent(this, LoginOldActivity::class.java))
-            finish()
+            if (it) {
+                startActivity(Intent(this, LoginOldActivity::class.java))
+                finish()
+            }
         }
-        viewModel.setAntPowerStatus.observe(this) {
-            registIceBox()
-        }
+
         viewModel.activeIceBoxStatus.observe(this) {
-            val password = binding.edAdminPassword.text.toString()
-            if (password.isNotEmpty()) {
-                viewModel.registAdmin(password)
-            } else {
-                toast("密码不能为空!")
-            }
+            binding.stepView.go(2, true)
+            changeUI(2)
+            viewModel.registAdmin(binding.edAdminPassword.text.toString())
         }
-        viewModel.setAdminStatus.observe(this){
-            if (isSyncOtherSystem) {
-                //同步旧账号信息
-                oldSncoede?.let { viewModel.synchronizedAccount(it) }
-            }
+        viewModel.setAdminStatus.observe(this) {
+            /* if (isSyncOtherSystem) {
+                 //同步旧账号信息
+                 oldSncoede?.let { viewModel.synchronizedAccount(it) }
+             }*/
+        }
+
+        viewModel.fridgesActiveResultBo.observe(this) {
+            binding.tvToken.text = SharedPreferencesUtils.getPrefString(this, TOKEN, TOKEN_DEFAULT)
+            binding.tvLocation.text = it.location
+            binding.tvDeviceAlias.text = it.device_alias
+            binding.tvSncode.text = it.sncode
+            binding.tvBaseUrl.text =
+                SharedPreferencesUtils.getPrefString(this, URL_REQUEST, URL_TEST)
+            changeUI(1)
+            fridgesInfoEntity = it
+            binding.stepView.go(1, true)
+            viewModel.synchronizedAccountV1()
         }
 
     }
@@ -439,7 +425,7 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
                 initAntRecycleView(tempList)
             } else if (key.equals(HFCard)) {
                 runOnUiThread {
-                    binding.tvNfcId.text = value
+                    binding.llStep3.tvNfcId.text = value
                     toast("测试卡号为：${value}")
                 }
             } else if (key.equals(REPORT_ANT_POWER_30)) {
@@ -456,10 +442,10 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
     }
 
     private fun initAntRecycleView(antList: List<AntPowerDao>) {
-        binding.llStep2.visibility = View.VISIBLE
+        binding.llStep3.step3Layout.visibility = View.VISIBLE
         val layoutManager = GridLayoutManager(this, 2)
-        binding.rvAnt.layoutManager = layoutManager
-        binding.rvAnt.adapter =
+        binding.llStep3.rvAnt.layoutManager = layoutManager
+        binding.llStep3.rvAnt.adapter =
             AntListAdapterSpash(
                 this@SpashActivity,
                 antList,
@@ -474,21 +460,21 @@ class SpashActivity : BaseActivity<SpashViewModel, AppActivitySpashBinding>() {
         val portFinder = SerialPortFinder()
         val devices: Array<String> = portFinder.allDevices
         mDevicesPath = portFinder.allDevicesPath
-        binding.spSerialNumber.adapter =
+        binding.llStep3.spSerialNumber.adapter =
             ArrayAdapter(this, R.layout.app_item_text, R.id.tv_content, devices)
-        binding.spSerialNumberLock.adapter =
+        binding.llStep3.spSerialNumberLock.adapter =
             ArrayAdapter(this, R.layout.app_item_text, R.id.tv_content, devices)
         val normalDevice = "ttyS2"
         val normalDeviceLock = "ttyS8"
         for (i in devices.indices) {
             if (devices[i].startsWith(normalDevice)) {
-                binding.spSerialNumber.setSelection(i)
+                binding.llStep3.spSerialNumber.setSelection(i)
                 break
             }
         }
         for (i in devices.indices) {
             if (devices[i].startsWith(normalDeviceLock)) {
-                binding.spSerialNumberLock.setSelection(i)
+                binding.llStep3.spSerialNumberLock.setSelection(i)
                 break
             }
         }

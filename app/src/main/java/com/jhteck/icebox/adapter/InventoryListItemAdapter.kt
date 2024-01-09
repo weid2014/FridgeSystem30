@@ -66,11 +66,11 @@ class InventoryListItemAdapter(
             //商品规格
             binding.tvDrugSpec.text = item[0].material_batch?.eas_specs
             //生产厂家
-            binding.tvDrugFactory.text = item[0].eas_supplier_name
+            binding.tvDrugFactory.text = item[0].material.eas_manufacturer
             //单位
-            binding.tvDrugUnit.text = item[0].material?.eas_unit_name
+            binding.tvDrugUnit.text = item[0].material_package?.unit_name
             //数量
-            binding.tvNumber.text = item.size.toString()
+            binding.tvNumber.text = "${item[0].qty!!/item[0].material_package.unit_qty}"
             //试剂余量
             binding.tvDrugMargin.text = "${item[0].remain}%"
             //批号

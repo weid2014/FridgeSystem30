@@ -14,6 +14,14 @@ public class AccountOperationEntity implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private Long id;
 
+    @ColumnInfo(name = "account_id")
+    @SerializedName("account_id")
+    private Integer account_id;
+
+    @ColumnInfo(name = "account_log_id")
+    @SerializedName("account_log_id")
+    private String account_log_id;
+
     @ColumnInfo(name="user_log_id")
     @SerializedName("user_log_id")
     private String user_log_id;
@@ -98,10 +106,28 @@ public class AccountOperationEntity implements Serializable {
         this.hasUploaded = hasUploaded;
     }
 
+    public Integer getAccount_id() {
+        return account_id;
+    }
+
+    public void setAccount_id(Integer account_id) {
+        this.account_id = account_id;
+    }
+
+    public String getAccount_log_id() {
+        return account_log_id;
+    }
+
+    public void setAccount_log_id(String account_log_id) {
+        this.account_log_id = account_log_id;
+    }
+
     @Override
     public String toString() {
         return "AccountOperationEntity{" +
                 "id=" + id +
+                ", account_id=" + account_id +
+                ", account_log_id='" + account_log_id + '\'' +
                 ", user_log_id='" + user_log_id + '\'' +
                 ", user_id='" + user_id + '\'' +
                 ", operation=" + operation +

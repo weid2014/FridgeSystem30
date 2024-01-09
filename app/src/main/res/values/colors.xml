@@ -60,4 +60,5 @@
     <color name="color_bg_notification">#80000000</color>
     <color name="color_white_shadow">#80FFFFFF</color>
     <color name="color_black">#000000</color>
+    <color name="text_bg">#EBEBEB</color>
 </resources>

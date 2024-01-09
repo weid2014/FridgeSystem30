@@ -11,8 +11,8 @@
         android:id="@+id/rl_spash"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="#396DFF">
+        android:background="#396DFF"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="match_parent"
@@ -24,9 +24,9 @@
             android:id="@+id/iv_gif"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/logo"
             android:layout_centerInParent="true"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:src="@mipmap/logo" />
     </RelativeLayout>
 
     <LinearLayout
@@ -81,35 +81,15 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="400dp"
+                    android:visibility="gone"
+                    android:layout_width="360dp"
                     android:layout_height="120dp"
-                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:gravity="center"
                     android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="产品序列号 "
-                            android:textColor="@color/app_black"
-                            android:textSize="22sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="*"
-                            android:textColor="@color/colorTextRed"
-                            android:textSize="22sp" />
-                    </LinearLayout>
-
+                    <include
+                        android:id="@+id/include_title_sncode"
+                        layout="@layout/layout_spash_item_title" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -119,46 +99,20 @@
 
                         <EditText
                             android:id="@+id/ed_sncode"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="20dp"
-                            android:background="@android:color/transparent"
-                            android:hint="请输入"
-                            android:text="@string/sncode"
-                            android:textSize="16sp" />
+                            style="@style/CustomEditTextStyle"
+                            android:text="@string/sncode" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="400dp"
+                    android:layout_width="360dp"
                     android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="24dp"
                     android:layout_weight="1"
-                    android:gravity="center"
                     android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="管理员密码 "
-                            android:textColor="@color/app_black"
-                            android:textSize="22sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="*"
-                            android:textColor="@color/colorTextRed"
-                            android:textSize="22sp" />
-                    </LinearLayout>
+                    <include
+                        android:id="@+id/include_title_token"
+                        layout="@layout/layout_spash_item_title" />
 
 
                     <LinearLayout
@@ -168,284 +122,25 @@
                         android:background="@drawable/app_shape_white_radius_9">
 
                         <EditText
-                            android:id="@+id/ed_admin_password"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="20dp"
-                            android:background="@android:color/transparent"
-                            android:hint="请输入"
-                            android:text="@string/admin_password"
-                            android:textSize="16sp" />
+                            android:id="@+id/ed_token"
+                            style="@style/CustomEditTextStyle"
+                            android:text="@string/token" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="400dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="设备别名 "
-                            android:textColor="@color/app_black"
-                            android:textSize="22sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="*"
-                            android:textColor="@color/colorTextRed"
-                            android:textSize="22sp" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/app_shape_white_radius_9">
-
-                        <EditText
-                            android:id="@+id/ed_device_alias"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="20dp"
-                            android:background="@android:color/transparent"
-                            android:hint="请输入"
-                            android:text="测试别名"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="400dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="24dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="设备库位 "
-                            android:textColor="@color/app_black"
-                            android:textSize="22sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="*"
-                            android:textColor="@color/colorTextRed"
-                            android:textSize="22sp" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/app_shape_white_radius_9">
-
-                        <EditText
-                            android:id="@+id/ed_location"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="20dp"
-                            android:background="@android:color/transparent"
-                            android:hint="请输入"
-                            android:text="广州中心"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="128dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="24dp"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:text="是否拉取旧操作记录 "
-                        android:textColor="@color/app_black"
-                        android:textSize="22sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:text="*"
-                        android:textColor="@color/colorTextRed"
-                        android:textSize="22sp" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="72dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/app_shape_white_radius_9">
-
-                        <androidx.appcompat.widget.AppCompatSpinner
-                            android:id="@+id/sp_get_old_info"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:paddingStart="25dp"
-                        android:text="@string/instructions_old"
-                        android:textSize="12dp" />
-                </LinearLayout>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="60dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:text="是否同步其他智能库系统账号信息"
-                        android:textColor="@color/app_black"
-                        android:textSize="22sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/app_shape_white_radius_9">
-
-                        <androidx.appcompat.widget.AppCompatSpinner
-                            android:id="@+id/sp_sync_other_system"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="20dp"
-                            android:layout_weight="1"
-                            android:hint="不同步"
-                            android:text="@string/admin_password"
-                            android:textSize="16sp" />
-
-                        <EditText
-                            android:id="@+id/ed_old_sncode"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="20dp"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:hint="请输入"
-                            android:text="@string/sncode"
-                            android:textSize="16sp"
-                            android:visibility="gone" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:paddingStart="25dp"
-                        android:text="(可以同步其他已经激活的冰箱的账号信息)"
-                        android:textSize="15dp" />
-                </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="24dp"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:text="http设置 "
-                        android:textColor="@color/app_black"
-                        android:textSize="22sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:text="*"
-                        android:textColor="@color/colorTextRed"
-                        android:textSize="22sp" />
-                </LinearLayout>
+                <include
+                    android:id="@+id/include_title_http"
+                    layout="@layout/layout_spash_item_title" />
 
 
                 <LinearLayout
@@ -464,64 +159,18 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="24dp"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:text="冰箱类型设置 "
-                        android:textColor="@color/app_black"
-                        android:textSize="22sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:text="*"
-                        android:textColor="@color/colorTextRed"
-                        android:textSize="22sp" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/app_shape_white_radius_9">
-
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/sp_select_fridge_type"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="20dp"
-                        android:textSize="16sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginTop="72dp"
+                android:layout_marginTop="120dp"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btn_step1_next"
-                    android:layout_width="300dp"
+                    android:layout_width="320dp"
                     android:layout_height="72dp"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/app_shape_bottom_green_radius_5"
+                    android:background="@drawable/app_btn_blue_radius_5"
                     android:gravity="center"
                     android:text="下一步"
                     android:textColor="@color/app_white"
@@ -534,292 +183,221 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="144dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="48dp"
             android:layout_marginEnd="144dp"
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="600dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_width="360dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:gravity="center_vertical"
-                        android:text="天线设置"
-                        android:textColor="@color/app_black"
-                        android:textSize="22sp" />
+                    <include
+                        android:id="@+id/include_title_sncode_step2"
+                        layout="@layout/layout_spash_item_title" />
+
 
                     <LinearLayout
-                        android:layout_width="200dp"
-                        android:layout_height="48dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
                         android:layout_gravity="center"
-                        android:layout_marginStart="12dp"
                         android:background="@drawable/app_shape_white_radius_9">
 
-                        <androidx.appcompat.widget.AppCompatSpinner
-                            android:id="@+id/sp_serial_number"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="20dp"
-                            android:textSize="16sp" />
+                        <TextView
+                            android:id="@+id/tv_sncode"
+                            style="@style/CustomTextViewStyle"
+                            android:text="@string/sncode" />
                     </LinearLayout>
-
-                    <Button
-                        android:id="@+id/btn_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="28dp"
-                        android:layout_marginEnd="20dp"
-                        android:background="@drawable/btn_grey_radius_5"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:text="连接"
-                        android:textColor="@color/app_white"
-                        android:textSize="16sp" />
-
-                    <Button
-                        android:id="@+id/btn_get_version"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:background="@drawable/btn_grey_radius_5"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:text="获取版本号"
-                        android:textColor="@color/app_white"
-                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="24dp"
+                    android:layout_width="360dp"
+                    android:layout_height="120dp"
+                    android:layout_marginStart="60dp"
+                    android:layout_weight="1"
                     android:orientation="vertical">
+
+                    <include
+                        android:id="@+id/include_title_token_step2"
+                        layout="@layout/layout_spash_item_title" />
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_height="72dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/app_shape_white_radius_9">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="天线强度设置 "
-                            android:textColor="@color/app_black"
-                            android:textSize="22sp" />
-
-                        <Button
-                            android:id="@+id/btn_get_ant_power"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="48dp"
-                            android:layout_marginEnd="20dp"
-                            android:background="@drawable/app_shape_bottom_green_radius_5"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp"
-                            android:text="获取天线功率"
-                            android:textColor="@color/app_white"
-                            android:textSize="15sp" />
+                            android:id="@+id/tv_token"
+                            style="@style/CustomTextViewStyle"
+                            android:text="@string/admin_password" />
                     </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_ant"
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="360dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <include
+                        android:id="@+id/include_title_alias_step2"
+                        layout="@layout/layout_spash_item_title" />
+
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="72dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/app_shape_white_radius_9">
+
+                        <TextView
+                            android:id="@+id/tv_device_alias"
+                            style="@style/CustomTextViewStyle"
+                            android:text="测试别名" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="360dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="60dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <include
+                        android:id="@+id/include_title_location_step2"
+                        layout="@layout/layout_spash_item_title" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/app_shape_white_radius_9">
+
+                        <TextView
+                            android:id="@+id/tv_location"
+                            style="@style/CustomTextViewStyle"
+                            android:text="广州中心" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="60dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/include_title_http_step2"
+                    layout="@layout/layout_spash_item_title" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/app_shape_white_radius_9">
+
+                    <TextView
+                        android:id="@+id/tv_base_url"
+                        style="@style/CustomTextViewStyle"
+                        android:text="@string/url_km" />
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="600dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="108dp"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="60dp"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="门锁设置 "
-                            android:textColor="@color/app_black"
-                            android:textSize="22sp" />
-
-                        <LinearLayout
-                            android:layout_width="200dp"
-                            android:layout_height="48dp"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="12dp"
-                            android:background="@drawable/app_shape_white_radius_9">
-
-                            <androidx.appcompat.widget.AppCompatSpinner
-                                android:id="@+id/sp_serial_number_lock"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginStart="20dp"
-                                android:textSize="16sp" />
-                        </LinearLayout>
-
-                        <Button
-                            android:id="@+id/btn_link_lock"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginEnd="20dp"
-                            android:background="@drawable/btn_grey_radius_5"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp"
-                            android:text="连接"
-                            android:textColor="@color/app_white"
-                            android:textSize="16sp" />
-
-                        <Button
-                            android:id="@+id/btn_get_version_lock"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="20dp"
-                            android:background="@drawable/btn_grey_radius_5"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp"
-                            android:text="获取版本号"
-                            android:textColor="@color/app_white"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="54dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="24dp"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:id="@+id/btn_open_lock"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="54dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/app_shape_bottom_green_radius_5"
-                            android:text="开锁"
-                            android:textColor="@color/app_white"
-                            android:textSize="24sp" />
-
-                        <Button
-                            android:id="@+id/btn_close_lock"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="27dp"
-                            android:layout_marginEnd="54dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/btn_grey_radius_5"
-                            android:text="关锁"
-                            android:textColor="@color/app_white"
-                            android:textSize="24sp" />
-                    </LinearLayout>
-                </LinearLayout>
+                <include
+                    android:id="@+id/include_title_password_step2"
+                    layout="@layout/layout_spash_item_title" />
 
 
                 <LinearLayout
-                    android:layout_marginTop="72dp"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:orientation="vertical">
+                    android:layout_height="72dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/app_shape_white_radius_9">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="48dp"
-                            android:gravity="center_vertical"
-                            android:text="NFC参数 （测试）"
-                            android:textColor="@color/app_black"
-                            android:textSize="22sp" />
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/app_shape_white_radius_9"
-                        android:orientation="horizontal">
-
-
-                        <TextView
-                            android:id="@+id/tv_nfcId"
-                            android:layout_width="300dp"
-                            android:layout_height="72dp"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="48dp"
-                            android:gravity="center"
-                            android:textColor="@color/app_color_646464"
-                            android:textSize="24sp" />
-                    </LinearLayout>
+                    <EditText
+                        android:id="@+id/ed_admin_password"
+                        style="@style/CustomEditTextStyle"
+                        android:text="@string/admin_password" />
                 </LinearLayout>
-
-
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="60dp"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/include_title_fridge_type"
+                    layout="@layout/layout_spash_item_title" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:background="@drawable/app_shape_white_radius_9">
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/sp_select_fridge_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="left"
+                        android:layout_marginStart="8dp"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginTop="122dp"
+                android:layout_marginTop="120dp"
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btn_step2_back"
-                    android:layout_width="300dp"
+                    android:id="@+id/btn_step2_next"
+                    android:layout_width="320dp"
                     android:layout_height="72dp"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/btn_grey_radius_5"
+                    android:background="@drawable/app_btn_blue_radius_5"
                     android:gravity="center"
-                    android:text="上一步"
-                    android:textColor="@color/app_white"
-                    android:textSize="24sp" />
-
-                <Button
-                    android:id="@+id/btn_step2_finish"
-                    android:layout_width="300dp"
-                    android:layout_height="72dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginStart="48dp"
-                    android:background="@drawable/app_shape_bottom_green_radius_5"
-                    android:gravity="center"
-                    android:text="完成"
+                    android:text="下一步"
                     android:textColor="@color/app_white"
                     android:textSize="24sp" />
             </LinearLayout>
         </LinearLayout>
+
+        <include layout="@layout/layout_spash_step3"
+            android:id="@+id/ll_step3"/>
 
     </LinearLayout>
 </FrameLayout>

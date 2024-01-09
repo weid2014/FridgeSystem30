@@ -59,7 +59,7 @@ class InventoryListItemAdapterScener(
             //商品规格
             binding.tvDrugSpec.text = "${item.remain}试剂/盒"
             //生产厂家
-            binding.tvDrugFactory.text = item.eas_supplier_name
+            binding.tvDrugFactory.text = item.material.eas_manufacturer
             //单位
             binding.tvDrugUnit.text = item.material?.eas_unit_name
             //数量

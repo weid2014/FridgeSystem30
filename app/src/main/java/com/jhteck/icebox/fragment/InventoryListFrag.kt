@@ -190,12 +190,12 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
             6 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex6 = 7
-                tempsortList=tempOutList.sortedBy { it[0].eas_supplier_name }
+                tempsortList=tempOutList.sortedBy { it[0].material.eas_manufacturer }
             }
             7 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex6 = 6
-                tempsortList=tempOutList.sortedByDescending { it[0].eas_supplier_name }
+                tempsortList=tempOutList.sortedByDescending { it[0].material.eas_manufacturer }
             }
             // (8 9) 单位 eas_unit_name 升降序 之后一次类推
             8 -> {
@@ -274,7 +274,7 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
                 tempsortList=tempOutList.sortedByDescending { it[0].cell_number }
             }
 
-            else -> tempsortList=tempOutList.sortedBy { it[0].eas_supplier_name }
+            else -> tempsortList=tempOutList.sortedBy { it[0].material.eas_manufacturer }
         }
 
 //        val temp = tempOutList.sortedBy { it[0].material_batch.expired_at }
@@ -305,12 +305,18 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
             //获取用户角色ID
             availRfidsList = rfidDao.results.avail_rfids
 
-            var mapOutList = availRfidsList!!.stream()
+            /*var mapOutList = availRfidsList!!.stream()
                 .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_number + t.remain })//根据批号分组
 
             var tempOutList = mutableListOf<List<AvailRfid>>()
             for (key in mapOutList.keys) {
                 mapOutList.get(key)?.let { tempOutList.add(it) }
+            }*/
+            var tempOutList = mutableListOf<List<AvailRfid>>()
+            for (item in availRfidsList!!){
+                val temp=mutableListOf<AvailRfid>()
+                temp.add(item)
+                tempOutList.add(temp)
             }
             updateUIbyAvailList(tempOutList)
             viewModel.showOutTimePopWindow(this@InventoryListFrag, availRfidsList!!,binding)

@@ -40,10 +40,12 @@ data class AvailRfid(
     var is_out_eas: Boolean,
     var material: Material,
     var material_batch: MaterialBatch,
+    var material_package: MaterialPackage,
     var remain: Int,
     var rfid: String,
     var fridge_id: String,
     var last_fridge_first_sync_at: String?,
+    var qty: Int?,
 )
 
 data class AntPowerDao(
@@ -61,20 +63,34 @@ data class Material(
     val eas_material_number: String,
     val eas_unit_id: String,
     val eas_unit_name: String,
-    val eas_unit_number: String
+    val eas_unit_number: String,
+    val updated_at: String,
+    val wms_is_gift: Int,
 )
 
 data class MaterialBatch(
     val id: Int,
     val eas_lot: String,
     val eas_specs: String,
-    val expired_at: String
+    val expired_at: String,
+    val updated_at: String,
+    val eas_exp: String,
+    val wms_manufacturer_date: String,
 )
 
-data class UserTestDao(
-    val code: Int,
-    val msg: String,
-    val results: UserResults
+data class MaterialPackage(
+    val id: Int,
+    val unit_code: String,
+    val unit_name: String,
+    val is_basic_unit: Int,
+    val unit_qty: Int
+)
+
+
+data class UserDao(
+    val user_name: String?,
+    val user_number: String?,
+    val password: String?,
 )
 
 data class UserResults(
@@ -96,38 +112,7 @@ data class UserResults(
 )
 
 
-data class requestUser(
-    val created_by: String,
-    val created_time: String,
-    val km_user_id: String,
-    val login_time: String,
-    val nfc_id: String,
-    val nick_name: String,
-    val password_digest: String,
-    val real_name: String,
-    val role_id: String,
-    val updated_by: String,
-    val updated_time: String,
-    val user_id: String
-)
 
-data class UserListDao(
-    val consume_count: Int,
-    val created_by: String,
-    val created_time: String,
-    val deposit_count: Int,
-    val km_user_id: String,
-    val login_time: String,
-    val nfc_id: String,
-    val nick_name: String,
-    val password_digest: String,
-    val real_name: String,
-    val role_id: String,
-    val store_count: Int,
-    val updated_by: String,
-    val updated_time: String,
-    val user_id: String
-)
 
 data class UpdateInfoDto(
     val content: String,
@@ -168,14 +153,14 @@ data class RfidOperationReturnBO(
 )
 
 data class FridgesActiveBo(
-    val admin_name: String,
-    val admin_password_digest: String,
-    val cells: Int,
-    val device_alias: String,
-    val location: String,
-    val sncode: String,
-    val style: Int,
-    val temperature: Int
+    val admin_name: String?,
+    val admin_password_digest: String?,
+    val cells: Int?,
+    val device_alias: String?,
+    val location: String?,
+    val sncode: String?,
+    val style: Int?,
+    val temperature: Int?
 )
 
 data class SysOperationErrorLogsBo(

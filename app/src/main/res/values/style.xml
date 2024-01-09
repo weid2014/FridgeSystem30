@@ -7,5 +7,64 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="CustomEditTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/app_black</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:hint">请输入</item>
+        <!-- 其他自定义属性 -->
+    </style>
+
+    <style name="CustomTextViewStyle" parent="CustomEditTextStyle">
+        <item name="android:background">@color/text_bg</item>
+    </style>
+
+    <style name="FridgeInfoTextTitleStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/app_black</item>
+        <item name="android:textSize">20sp</item>
+        <!-- 其他自定义属性 -->
+    </style>
+
+    <style name="FridgeInfoEditTextTitleStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/app_black</item>
+        <item name="android:textSize">20sp</item>
+        <!-- 其他自定义属性 -->
+    </style>
+
+    <style name="FridgeInfoLinearLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">120dp</item>
+        <item name="android:layout_marginTop">40dp</item>
+        <item name="android:orientation">vertical</item>
+        <!-- 其他自定义属性 -->
+    </style>
+
+    <style name="NfcCardItemStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/radiobutton_style</item>
+        <item name="android:button">@null</item>
+        <item name="android:checked">false</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">22sp</item>
+        <!-- 其他自定义属性 -->
+    </style>
+
+
 
 </resources>
