@@ -30,7 +30,7 @@
                 "material_batch": {
                     "eas_lot": "20230501",
                     "eas_specs": "4.6*150mm.5um.100A",
-                    "expired_at": "2024-12-31T00:00:00.000+08:00",
+                    "expired_at": "2024-01-31T00:00:00.000+08:00",
                     "updated_at": "2024-01-02T02:19:21.573+08:00",
                     "eas_exp": "2024-12-31",
                     "wms_manufacturer_date": "2023-05-01"
@@ -69,7 +69,7 @@
                 "material_batch": {
                     "eas_lot": "20230501",
                     "eas_specs": "4.6*150mm.5um.100A",
-                    "expired_at": "2024-12-31T00:00:00.000+08:00",
+                    "expired_at": "2024-01-05T00:00:00.000+08:00",
                     "updated_at": "2024-01-02T02:19:21.573+08:00",
                     "eas_exp": "2024-12-31",
                     "wms_manufacturer_date": "2023-05-01"
@@ -103,6 +103,84 @@
                     "updated_at": "2024-01-02T02:19:21.470+08:00",
                     "eas_material_desc": null,
                     "eas_manufacturer": "美国Sielc",
+                    "wms_is_gift": 0
+                },
+                "material_batch": {
+                    "eas_lot": "20230301",
+                    "eas_specs": "4.6*150mm.5um.100A",
+                    "expired_at": "2024-10-31T00:00:00.000+08:00",
+                    "updated_at": "2024-01-02T02:19:21.514+08:00",
+                    "eas_exp": "2024-10-31",
+                    "wms_manufacturer_date": "2023-03-01"
+                },
+                "material_package": {
+                    "unit_code": "CS",
+                    "unit_name": "箱",
+                    "is_basic_unit": 0,
+                    "unit_qty": 1000000
+                }
+            },
+            {
+                "id": 156,
+                "fridge_id": null,
+                "rfid": "E1234567000000000000009K",
+                "remain": 100,
+                "eas_supplier_number": "22",
+                "eas_supplier_name": "22",
+                "created_at": "2024-01-04T02:48:09.461+08:00",
+                "is_out_eas": false,
+                "cell_number": 1,
+                "last_fridge_first_sync_at": "2023-11-04T02:48:09.461+08:00",
+                "qty": 1000000,
+                "material": {
+                    "eas_material_id": "EASID02.03.0092.10001.000012",
+                    "eas_material_number": "02.03.0092.10001.000012",
+                    "eas_material_name": "OR-46.150.0510 Obelise R Column2",
+                    "eas_unit_id": null,
+                    "eas_unit_number": null,
+                    "eas_unit_name": null,
+                    "updated_at": "2024-01-02T02:19:21.470+08:00",
+                    "eas_material_desc": null,
+                    "eas_manufacturer": "美国Sielc2",
+                    "wms_is_gift": 0
+                },
+                "material_batch": {
+                    "eas_lot": "20230301",
+                    "eas_specs": "4.6*150mm.5um.100A2",
+                    "expired_at": "2024-10-31T00:00:00.000+08:00",
+                    "updated_at": "2024-01-02T02:19:21.514+08:00",
+                    "eas_exp": "2024-10-31",
+                    "wms_manufacturer_date": "2023-03-01"
+                },
+                "material_package": {
+                    "unit_code": "CS",
+                    "unit_name": "箱",
+                    "is_basic_unit": 0,
+                    "unit_qty": 1000000
+                }
+            },
+            {
+                "id": 157,
+                "fridge_id": null,
+                "rfid": "E1234567000000000000009M",
+                "remain": 100,
+                "eas_supplier_number": "22",
+                "eas_supplier_name": "22",
+                "created_at": "2024-01-04T02:48:09.461+08:00",
+                "is_out_eas": false,
+                "cell_number": 1,
+                "last_fridge_first_sync_at": "2023-01-04T02:48:09.461+08:00",
+                "qty": 1000000,
+                "material": {
+                    "eas_material_id": "EASID02.03.0092.10001.00001",
+                    "eas_material_number": "02.03.0092.10001.000013",
+                    "eas_material_name": "OR-46.150.0510 Obelise R Column3",
+                    "eas_unit_id": null,
+                    "eas_unit_number": null,
+                    "eas_unit_name": null,
+                    "updated_at": "2024-01-02T02:19:21.470+08:00",
+                    "eas_material_desc": null,
+                    "eas_manufacturer": "美国Sielc3",
                     "wms_is_gift": 0
                 },
                 "material_batch": {

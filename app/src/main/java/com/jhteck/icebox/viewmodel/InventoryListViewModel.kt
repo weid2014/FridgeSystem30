@@ -143,12 +143,12 @@ class InventoryListViewModel(application: Application) :
                 )
             ) {
                 val showDate1 = rfidItem.last_fridge_first_sync_at?.substring(0, 10)
-                if (DateUtils.getDaysBetween(showDate1, DateUtils.format_yyyyMMdd) > 30) {
+                if (DateUtils.getDaysBetween(showDate1, DateUtils.format_yyyyMMdd) < -30) {
                     expiredRfidList30.add(rfidItem)
                 }
             } else if (rfidItem.created_at != "null") {
                 val showDate1 = rfidItem.created_at?.substring(0, 10)
-                if (DateUtils.getDaysBetween(showDate1, DateUtils.format_yyyyMMdd) > 30) {
+                if (DateUtils.getDaysBetween(showDate1, DateUtils.format_yyyyMMdd) < -30) {
                     expiredRfidList30.add(rfidItem)
                 }
             }
@@ -191,7 +191,7 @@ class InventoryListViewModel(application: Application) :
 
                 if (expiredRfidList0.size > 0) {
                     val mapExpiredRfidList0 = expiredRfidList0.stream()
-                        .collect(Collectors.groupingBy { t -> t.material.eas_unit_name + t.material.eas_material_id })//根据批号分组
+                        .collect(Collectors.groupingBy { t -> t.rfid })//根据批号分组
                     val tempExpiredRfidList0 = mutableListOf<List<AvailRfid>>()
                     for (key in mapExpiredRfidList0.keys) {
                         mapExpiredRfidList0.get(key)?.let { tempExpiredRfidList0.add(it) }
@@ -208,7 +208,7 @@ class InventoryListViewModel(application: Application) :
 
                 if (expiredRfidList7.size > 0) {
                     val mapExpiredRfidList7 = expiredRfidList7.stream()
-                        .collect(Collectors.groupingBy { t -> t.material.eas_unit_name + t.material.eas_material_id })//根据批号分组
+                        .collect(Collectors.groupingBy { t -> t.rfid })//根据批号分组
                     val tempExpiredRfidList7 = mutableListOf<List<AvailRfid>>()
                     for (key in mapExpiredRfidList7.keys) {
                         mapExpiredRfidList7.get(key)?.let { tempExpiredRfidList7.add(it) }
@@ -225,7 +225,7 @@ class InventoryListViewModel(application: Application) :
 
                 if (expiredRfidList30.size > 0) {
                     val mapExpiredRfidList30 = expiredRfidList30.stream()
-                        .collect(Collectors.groupingBy { t -> t.material.eas_unit_name + t.material.eas_material_id })//根据批号分组
+                        .collect(Collectors.groupingBy { t -> t.rfid })//根据批号分组
                     val tempExpiredRfidList30 = mutableListOf<List<AvailRfid>>()
                     for (key in mapExpiredRfidList30.keys) {
                         mapExpiredRfidList30.get(key)?.let { tempExpiredRfidList30.add(it) }

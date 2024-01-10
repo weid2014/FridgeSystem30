@@ -26,7 +26,6 @@
         android:textSize="16dp" />
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/tv_UserID"
         android:layout_width="0dp"
         android:layout_height="match_parent"

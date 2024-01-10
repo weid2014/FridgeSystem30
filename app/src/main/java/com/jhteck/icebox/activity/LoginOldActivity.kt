@@ -21,7 +21,6 @@ import com.hele.mrd.app.lib.base.BaseActivity
 import com.jhteck.cameratest.FileUtils
 import com.jhteck.icebox.adapter.LoginPageShowItemAdapter
 import com.jhteck.icebox.api.*
-import com.jhteck.icebox.bean.InventoryDao
 import com.jhteck.icebox.databinding.AppActivityLoginOldBinding
 import com.jhteck.icebox.service.MyService
 import com.jhteck.icebox.utils.SharedPreferencesUtils
@@ -32,7 +31,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.stream.Collectors
 
 
 /**
@@ -172,7 +170,7 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         clearList()
         binding.rvNormalContent?.layoutManager =
             GridLayoutManager(this, 7)
-        binding.rvNormalContent?.adapter = LoginPageShowItemAdapter(tempList)
+        binding.rvNormalContent?.adapter = LoginPageShowItemAdapter(tempListNormal)
 
         binding.rvPauseContent1?.layoutManager =
             GridLayoutManager(this, 7)
@@ -196,11 +194,9 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
         loadRridsData()
     }
 
-    var tempListPause = mutableListOf<InventoryDao>()//未编辑位置
-    var tempList = mutableListOf<InventoryDao>()
-    var tempListNormal = mutableListOf<AvailRfid>()
+    var tempListPause = mutableListOf<AvailRfid>()//暂存
+    var tempListNormal = mutableListOf<AvailRfid>()//存储区
     private fun clearList() {
-        tempList.clear()
         tempListNormal.clear()
         tempListPause.clear()
     }
@@ -213,56 +209,19 @@ class LoginOldActivity : BaseActivity<LoginViewModel, AppActivityLoginOldBinding
     private fun loadRridsData() {
         viewModel.rfidDatas.observe(this) { it ->
             clearList()
-
-            for (i in it.avail_rfids) {
+            for (i in it) {
                 if (i.remain == 100) {
                     tempListNormal.add(i)
+                } else {
+                    tempListPause.add(i)
                 }
             }
-
-            /*val map = it.avail_rfids.stream()
-                .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_id + t.remain + t.material_batch.expired_at })//根据批号分组
-            for (i in map.values) {
-                val inventoryDao = InventoryDao(
-                    i[0].material_batch.eas_lot,
-                    i[0].material?.eas_material_name,
-                    i.size,
-                    i[0].cell_number,
-                    i[0].material_batch.expired_at,
-                )
-                if (i[0].remain == 100) {
-                    tempList.add(inventoryDao)
-                } else {
-                    tempListPause.add(inventoryDao)
-                }
-            }*/
-            for (i in it.avail_rfids) {
-                val inventoryDao = InventoryDao(
-                    i.material_batch.eas_lot,
-                    i.material?.eas_material_name,
-                    i.qty?.toFloat()!!/i.material_package.unit_qty,
-                    i.material_package.unit_name,
-                    i.material_batch.expired_at,
-                )
-                if (i.remain == 100) {
-                    tempList.add(inventoryDao)
-                } else {
-                    tempListPause.add(inventoryDao)
-                }
-            }
-            tempList.sortBy { it.expired_at }
-            tempListPause.sortBy { it.expired_at }
+            //按照过期时间排序
+            tempListNormal.sortBy { it.material_batch.expired_at }
+            tempListPause.sortBy { it.material_batch.expired_at }
 
             binding.rvNormalContent?.adapter?.notifyDataSetChanged()
-            var countNormal=0f
-            for (i in tempList){
-                countNormal+=i.drugNumber
-            }
-            var countPause=0f
-            for (i in tempListPause){
-                countPause+=i.drugNumber
-            }
-            binding.tvNormalNum.text = "共${tempList.size}个"
+            binding.tvNormalNum.text = "共${tempListNormal.size}个"
 
             binding.rvPauseContent1?.adapter?.notifyDataSetChanged()
             binding.tvPauseNum1?.text = "共${tempListPause.size}个"

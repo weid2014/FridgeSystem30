@@ -77,6 +77,7 @@ class AccoutListItemAdapter(
             binding.btnEdit.setOnClickListener {
                 operator?.onEdit(item)
             }
+            binding.btnDelete.visibility=View.GONE
             binding.btnDelete.setOnClickListener {
                 operator?.onDelete(item)
             }

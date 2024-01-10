@@ -6,7 +6,6 @@ package com.jhteck.icebox.adapter
  *@date 2023/7/1 23:19
  */
 import android.graphics.drawable.BitmapDrawable
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -22,7 +21,6 @@ import com.jhteck.icebox.utils.CellNumberUtil
 import com.jhteck.icebox.utils.DateUtils
 import com.jhteck.icebox.utils.DensityUtil
 import com.jhteck.icebox.utils.PatternUtil
-import java.util.*
 
 
 class InventoryListItemAdapter(
@@ -48,6 +46,7 @@ class InventoryListItemAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindData(data[position], operator)
     }
+
     override fun getItemViewType(position: Int): Int {
         return position
     }
@@ -70,7 +69,7 @@ class InventoryListItemAdapter(
             //单位
             binding.tvDrugUnit.text = item[0].material_package?.unit_name
             //数量
-            binding.tvNumber.text = "${item[0].qty!!/item[0].material_package.unit_qty}"
+            binding.tvNumber.text = "${item[0].qty!! / item[0].material_package.unit_qty}"
             //试剂余量
             binding.tvDrugMargin.text = "${item[0].remain}%"
             //批号
@@ -78,47 +77,49 @@ class InventoryListItemAdapter(
             //有效期
             val showDate = item[0].material_batch?.expired_at.substring(0, 10)
 
-            val remainDay=DateUtils.getDaysBetween(showDate,DateUtils.format_yyyyMMdd)
+            val remainDay = DateUtils.getDaysBetween(showDate, DateUtils.format_yyyyMMdd)
             binding.tvValidityDate.text = showDate
 
             binding.tvValidityStatus.text = "未过期"
             binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_color_00d88e))
-            if(remainDay<0){
+            if (remainDay < 0) {
                 binding.tvValidityStatus.text = "过期"
-                binding.llDrugBg.setBackgroundColor(BaseApp.app.getColor(R.color.app_color_ff3030))
-                binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvDrugName.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvDrugNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvDrugSpec.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvDrugFactory.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvDrugUnit.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvDrugMargin.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvBatchNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvValidityDate.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_white))
-            }else if(remainDay<7){
-                binding.llDrugBg.setBackgroundColor(BaseApp.app.getColor(R.color.app_color_fbaf5d))
-                binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvDrugName.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvDrugNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvDrugSpec.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvDrugFactory.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvDrugUnit.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvDrugMargin.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvBatchNumber.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvValidityDate.setTextColor(BaseApp.app.getColor(R.color.app_white))
-                binding.tvValidityStatus.setTextColor(BaseApp.app.getColor(R.color.app_white))
+                changeUI(
+                    binding,
+                    BaseApp.app.getColor(R.color.app_color_ff3030),
+                    BaseApp.app.getColor(R.color.app_white)
+                )
+            } else if (remainDay < 7) {
+                changeUI(
+                    binding,
+                    BaseApp.app.getColor(R.color.app_color_fbaf5d),
+                    BaseApp.app.getColor(R.color.app_white)
+                )
             }
 
-            /*//效期状态
-            if (item[0].is_out_eas) {
-
-
-            } else {
-
-            }*/
+            //先取最后一次同步的时间，如果没有取创建的时间
+            if (item[0].last_fridge_first_sync_at != null && !item[0].last_fridge_first_sync_at.equals(
+                    "null"
+                )
+            ) {
+                val showDate1 = item[0].last_fridge_first_sync_at?.substring(0, 10)
+                if (DateUtils.getDaysBetween(showDate1, DateUtils.format_yyyyMMdd) < -30) {
+                    changeUI(
+                        binding,
+                        BaseApp.app.getColor(R.color.app_color_1775ef),
+                        BaseApp.app.getColor(R.color.app_white)
+                    )
+                }
+            } else if (item[0].created_at != "null") {
+                val showDate1 = item[0].created_at?.substring(0, 10)
+                if (DateUtils.getDaysBetween(showDate1, DateUtils.format_yyyyMMdd) < -30) {
+                    changeUI(
+                        binding,
+                        BaseApp.app.getColor(R.color.app_color_1775ef),
+                        BaseApp.app.getColor(R.color.app_white)
+                    )
+                }
+            }
 
             //位置
             binding.tvCellNumber.text = CellNumberUtil.getCellNumberText(item[0].cell_number)
@@ -335,6 +336,23 @@ class InventoryListItemAdapter(
                 }
             }
         }
+
+        private fun changeUI(binding: RvDrugContentItemBinding, bgColor: Int, textColor: Int) {
+            binding.llDrugBg.setBackgroundColor(bgColor)
+            binding.tvValidityStatus.setTextColor(textColor)
+            binding.tvDrugName.setTextColor(textColor)
+            binding.tvDrugNumber.setTextColor(textColor)
+            binding.tvDrugSpec.setTextColor(textColor)
+            binding.tvDrugFactory.setTextColor(textColor)
+            binding.tvDrugUnit.setTextColor(textColor)
+            binding.tvNumber.setTextColor(textColor)
+            binding.tvDrugMargin.setTextColor(textColor)
+            binding.tvBatchNumber.setTextColor(textColor)
+            binding.tvValidityDate.setTextColor(textColor)
+            binding.tvValidityStatus.setTextColor(textColor)
+        }
+
+
     }
 
     override fun getItemCount(): Int {

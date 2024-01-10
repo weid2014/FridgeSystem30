@@ -291,8 +291,8 @@ class LoginViewModel(application: android.app.Application) :
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 var gson = Gson();
-                var datas = LocalService.loadRfidsFromLocal(gson);
-                rfidDatas.postValue(datas);
+                var datas = LocalService.loadRfidsFromLocal(gson)
+                rfidDatas.postValue(datas.avail_rfids)
             } catch (e: Exception) {
             }
         }
@@ -658,7 +658,7 @@ class LoginViewModel(application: android.app.Application) :
         SingleLiveEvent<AccountEntity>()
     }
     val rfidDatas by lazy {
-        SingleLiveEvent<RfidResults>()
+        SingleLiveEvent<List<AvailRfid>>()
     }
     val rfidOfflineDatas by lazy {
         SingleLiveEvent<List<OfflineRfidEntity>>()

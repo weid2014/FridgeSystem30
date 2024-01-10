@@ -12,7 +12,6 @@ import com.hele.mrd.app.lib.base.BaseApp
 import com.hele.mrd.app.lib.base.BaseFragment
 import com.jhteck.icebox.Lockmodel.LockManage
 import com.jhteck.icebox.R
-import com.jhteck.icebox.activity.MainActivity
 import com.jhteck.icebox.adapter.InventoryListItemAdapter
 import com.jhteck.icebox.adapter.ItemEditCellNumberAdapter
 import com.jhteck.icebox.api.AvailRfid
@@ -76,7 +75,7 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
                 // 如果只是更新部分数据，推荐使用notifyItemRangeChanged()或者notifyItemChanged()
                 val filterList = keyword?.let { filter(it) }
                 var mapOutList = filterList!!.stream()
-                    .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_number + t.remain })//根据批号分组
+                    .collect(Collectors.groupingBy { t -> t.rfid })//根据批号分组
 
                 var tempOutList = mutableListOf<List<AvailRfid>>()
                 for (key in mapOutList.keys) {
@@ -143,138 +142,138 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
 
     private fun AvailRfidsListSortBy(index: Int, tv: TextView) {
         var mapOutList = availRfidsList!!.stream()
-            .collect(Collectors.groupingBy { t -> t.material.eas_material_name + t.material.eas_unit_number + t.remain })//根据批号分组
+            .collect(Collectors.groupingBy { t -> t.rfid })//根据批号分组
 
         var tempOutList = mutableListOf<List<AvailRfid>>()
         for (key in mapOutList.keys) {
             mapOutList.get(key)?.let { tempOutList.add(it) }
         }
 
-        var tempsortList: List<List<AvailRfid>> ?=null
+        var tempsortList: List<List<AvailRfid>>? = null
         when (index) {
             // (0 1) 根据eas_material_number 升降序
             0 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex0 = 1
-                tempsortList=tempOutList.sortedBy { it[0].material.eas_material_number }
+                tempsortList = tempOutList.sortedBy { it[0].material.eas_material_number }
             }
             1 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex0 = 0
-                tempsortList=tempOutList.sortedByDescending { it[0].material.eas_material_number }
+                tempsortList = tempOutList.sortedByDescending { it[0].material.eas_material_number }
             }
             // (2 3) eas_material_name 升降序 之后一次类推
             2 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex2 = 3
-                tempsortList=tempOutList.sortedBy { it[0].material.eas_material_name }
+                tempsortList = tempOutList.sortedBy { it[0].material.eas_material_name }
             }
             3 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex2 = 2
-                tempsortList=tempOutList.sortedByDescending { it[0].material.eas_material_name }
+                tempsortList = tempOutList.sortedByDescending { it[0].material.eas_material_name }
             }
 
             // (4 5) eas_material_desc 升降序 之后一次类推
             4 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex4 = 5
-                tempsortList=tempOutList.sortedBy { it[0].material_batch.eas_specs }
+                tempsortList = tempOutList.sortedBy { it[0].material_batch.eas_specs }
             }
             5 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex4 = 4
-                tempsortList=tempOutList.sortedByDescending { it[0].material_batch.eas_specs }
+                tempsortList = tempOutList.sortedByDescending { it[0].material_batch.eas_specs }
             }
             // (6 7)生产厂家 eas_supplier_name 升降序 之后一次类推
             6 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex6 = 7
-                tempsortList=tempOutList.sortedBy { it[0].material.eas_manufacturer }
+                tempsortList = tempOutList.sortedBy { it[0].material.eas_manufacturer }
             }
             7 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex6 = 6
-                tempsortList=tempOutList.sortedByDescending { it[0].material.eas_manufacturer }
+                tempsortList = tempOutList.sortedByDescending { it[0].material.eas_manufacturer }
             }
             // (8 9) 单位 eas_unit_name 升降序 之后一次类推
             8 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex8 = 9
-                tempsortList=tempOutList.sortedBy { it[0].material.eas_unit_name }
+                tempsortList = tempOutList.sortedBy { it[0].material_package.unit_name }
             }
             9 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex8 = 9
-                tempsortList=tempOutList.sortedByDescending { it[0].material.eas_unit_name }
+                tempsortList = tempOutList.sortedByDescending { it[0].material_package.unit_name }
             }
             // (10 11) remain 升降序 之后一次类推
             10 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex10 = 11
-                tempsortList=tempOutList.sortedBy { it[0].material.eas_material_name }
+                tempsortList = tempOutList.sortedBy { it[0].material.eas_material_name }
             }
             11 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex10 = 10
-                tempsortList=tempOutList.sortedByDescending { it[0].material.eas_material_name }
+                tempsortList = tempOutList.sortedByDescending { it[0].material.eas_material_name }
             }
             // (12 13) remain 升降序 之后一次类推
             12 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex12 = 13
-                tempsortList=tempOutList.sortedBy { it[0].remain }
+                tempsortList = tempOutList.sortedBy { it[0].remain }
             }
             13 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex12 = 12
-                tempsortList=tempOutList.sortedByDescending { it[0].remain }
+                tempsortList = tempOutList.sortedByDescending { it[0].remain }
             }
             // (14 15) eas_unit_number 升降序 之后一次类推
             14 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex14 = 15
-                tempsortList=tempOutList.sortedBy { it[0].material_batch.eas_lot }
+                tempsortList = tempOutList.sortedBy { it[0].material_batch.eas_lot }
             }
             15 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex14 = 14
-                tempsortList=tempOutList.sortedByDescending { it[0].material_batch.eas_lot }
+                tempsortList = tempOutList.sortedByDescending { it[0].material_batch.eas_lot }
             }
             // (16 17)有效期 is_out_eas 升降序 之后一次类推
             16 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex16 = 17
-                tempsortList=tempOutList.sortedBy { it[0].material_batch.expired_at }
+                tempsortList = tempOutList.sortedBy { it[0].material_batch.expired_at }
             }
             17 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex16 = 16
-                tempsortList=tempOutList.sortedByDescending { it[0].material_batch.expired_at }
+                tempsortList = tempOutList.sortedByDescending { it[0].material_batch.expired_at }
             }
             // (2 3) is_out_eas 升降序 之后一次类推
             18 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex18 = 19
-                tempsortList=tempOutList.sortedBy { it[0].is_out_eas }
+                tempsortList = tempOutList.sortedBy { it[0].is_out_eas }
             }
             19 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex18 = 18
-                tempsortList=tempOutList.sortedByDescending { it[0].is_out_eas }
+                tempsortList = tempOutList.sortedByDescending { it[0].is_out_eas }
             }
             20 -> {
                 changeTextViewIcon(tv, true)
                 currentIndex20 = 21
-                tempsortList=tempOutList.sortedBy { it[0].cell_number }
+                tempsortList = tempOutList.sortedBy { it[0].cell_number }
             }
             21 -> {
                 changeTextViewIcon(tv, false)
                 currentIndex20 = 20
-                tempsortList=tempOutList.sortedByDescending { it[0].cell_number }
+                tempsortList = tempOutList.sortedByDescending { it[0].cell_number }
             }
 
-            else -> tempsortList=tempOutList.sortedBy { it[0].material.eas_manufacturer }
+            else -> tempsortList = tempOutList.sortedBy { it[0].material.eas_manufacturer }
         }
 
 //        val temp = tempOutList.sortedBy { it[0].material_batch.expired_at }
@@ -313,13 +312,15 @@ class InventoryListFrag : BaseFragment<InventoryListViewModel, AppFragmentInvent
                 mapOutList.get(key)?.let { tempOutList.add(it) }
             }*/
             var tempOutList = mutableListOf<List<AvailRfid>>()
-            for (item in availRfidsList!!){
-                val temp=mutableListOf<AvailRfid>()
+            for (item in availRfidsList!!) {
+                val temp = mutableListOf<AvailRfid>()
                 temp.add(item)
                 tempOutList.add(temp)
             }
             updateUIbyAvailList(tempOutList)
-            viewModel.showOutTimePopWindow(this@InventoryListFrag, availRfidsList!!,binding)
+            //进入页面初始化后按过期日期排序
+            AvailRfidsListSortBy(currentIndex16, binding.tvValidityDate)
+            viewModel.showOutTimePopWindow(this@InventoryListFrag, availRfidsList!!, binding)
         }
     }
 

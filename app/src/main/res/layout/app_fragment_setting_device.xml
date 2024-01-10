@@ -19,7 +19,6 @@
                 android:id="@+id/btn_url_select"
                 android:layout_width="170dp"
                 android:layout_height="60dp"
-                android:layout_centerInParent="true"
                 android:background="@drawable/app_shape_bottom_green_radius_5"
                 android:gravity="center"
                 android:text="平台地址选择"
@@ -31,7 +30,6 @@
                 android:id="@+id/btn_fridges_operate"
                 android:layout_width="170dp"
                 android:layout_height="60dp"
-                android:layout_centerInParent="true"
                 android:layout_marginStart="54dp"
                 android:background="@drawable/app_shape_bottom_green_radius_5"
                 android:gravity="center"
@@ -44,7 +42,6 @@
                 android:id="@+id/btn_serial_setting"
                 android:layout_width="170dp"
                 android:layout_height="60dp"
-                android:layout_centerInParent="true"
                 android:layout_marginStart="54dp"
                 android:background="@drawable/app_shape_bottom_green_radius_5"
                 android:gravity="center"
@@ -53,6 +50,7 @@
                 android:textSize="16sp" />
 
             <Button
+                android:visibility="gone"
                 android:id="@+id/btn_account_sync"
                 android:layout_width="170dp"
                 android:layout_height="60dp"
